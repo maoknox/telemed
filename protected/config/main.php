@@ -55,12 +55,12 @@ return array(
 		// uncomment the following to use a MySQL database
 		
 		'db'=>array(
-			'connectionString' => 'pgsql:host=localhost;dbname=telemed',
-			'emulatePrepare' => true,
-			'username' => 'postgres',
-			'password' => 'root',
-			'charset' => 'utf8',
-		),
+                    'tablePrefix'=>'',
+                    'connectionString' => 'pgsql:host=ec2-174-129-242-241.compute-1.amazonaws.com;port=5432;dbname=d1b9pv88jl26t9',
+                    'username'=>'ajrbjyuywyluwm',
+                    'password'=>'sRVVqYKhD2bdn_qWz6tCYSP71h',
+                    'charset'=>'UTF8',
+                ),
 		
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
