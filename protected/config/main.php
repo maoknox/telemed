@@ -61,7 +61,13 @@ return array(
                     'password'=>'sRVVqYKhD2bdn_qWz6tCYSP71h',
                     'charset'=>'UTF8',
                 ),
-		
+//		'db'=>array(
+//                    'tablePrefix'=>'',
+//                    'connectionString' => 'pgsql:host=localhost;port=5432;dbname=telemed',
+//                    'username'=>'postgres',
+//                    'password'=>'root',
+//                    'charset'=>'UTF8',
+//                ),
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
 			'errorAction'=>'site/error',
