@@ -111,7 +111,7 @@
                  <!-- /.box-body -->
 
                 <div class="box-footer">
-                    <?php echo $formMagnitude->hiddenField($modelMagnitudeEntDev,'id_entdev',array("value"=>"1")); ?>
+                    <?php echo $formMagnitude->hiddenField($modelMagnitudeEntDev,'id_entdev'); ?>
                     <?php echo CHtml::button('Registrar', array ('class' => 'btn btn-primary','id'=>'btnRegMagnitude')); ?>
                 </div>
                 <?php $this->endWidget(); ?>

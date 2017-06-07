@@ -291,6 +291,7 @@ var Entitydevice = function(){
                     self.div.find("#entitydevice-form").trigger("reset");  
                     self.div.find("#entitydevice-form #EntityService_id_entity").val(""); 
                     self.div.find('#entitydevice-form').find('input, textarea, select').attr('disabled','disabled');
+                    self.div.find('#magnitude-form #MagnitudeEntdev_id_entdev').val(response.id_entdev);
                     estadoGuarda=true;
                 }
                 else{
