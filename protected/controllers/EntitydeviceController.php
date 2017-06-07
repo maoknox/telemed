@@ -60,23 +60,34 @@ class EntitydeviceController extends Controller{
             $modelObject->attributes=Yii::app()->request->getPost("Object");
             $modelEntityDevice->attributes=Yii::app()->request->getPost("EntityDevice");
             $modelEntityDevice->serialid_object=0;
-            $nameForm="entityservice-form";
+            $nameForm="entitydevice-form";
             $this->performAjaxValidation(array($modelObject,$modelEntityDevice),$nameForm);
             if($modelObject->validate()&&$modelEntityDevice->validate()){
-                $transaction=Yii::app()->db->beginTransaction();
-                try{
-                    $modelObject->save();
-                    $modelEntityDevice->serialid_object=$modelObject->serialid_object;
-                    $modelEntityDevice->save();
-                    $transaction->commit();
-                    $response["status"]="exito";
-                    $response["msg"]="Dispositivo registrado satisfactoriamete";
-                    echo CJSON::encode($response);
+                $device=  Device::model()->findByAttributes(array("id_device"=>$modelEntityDevice->id_device,"device_associated"=>1));
+                if(empty($device)){
+                    $transaction=Yii::app()->db->beginTransaction();
+                    try{
+                        $modelObject->save();
+                        $modelEntityDevice->serialid_object=$modelObject->serialid_object;
+                        $modelEntityDevice->save();
+                        $modelDevice = Device::model()->findByPk($modelEntityDevice->id_device);
+                        $modelDevice->device_associated=1;
+                        $modelDevice->update(array('device_associated'));
+                        $transaction->commit();
+                        $response["status"]="exito";
+                        $response["msg"]="Objeto registrado satisfactoriamete";
+                        $response["id_entdev"]=$modelEntityDevice->id_entdev;
+                    }
+                    catch(ErrorException $e){
+                        $transaction->rollback();
+                        throw new CHttpException($e->get,$e->getMessage());
+                    }
                 }
-                catch(ErrorException $e){
-                    $transaction->rollback();
-                    throw new CHttpException($e->get,$e->getMessage());
+                else{
+                    $response["status"]="noexito";
+                    $response["msg"]="El dispositivo con id ".$modelEntityDevice->id_device." ha sido asociado a otro objeto, seleccione otro";
                 }
+                echo CJSON::encode($response);
             }
             else{
                 echo CActiveForm::validate(array($modelObject,$modelEntityDevice));
@@ -139,7 +150,7 @@ class EntitydeviceController extends Controller{
     * @return $display_json Listado de titulos en formato json
     */
     protected function performAjaxValidation($model,$nameForm){
-        if(isset($_POST['ajax']) && $_POST['ajax']===$nameForm){
+        if(isset($_POST['ajax']) && $_POST['ajax']==$nameForm){
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }
