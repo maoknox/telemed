@@ -7,14 +7,10 @@
  * @property integer $id_entdev
  * @property integer $id_magnitude
  * @property integer $id_meassystem
+ * @property integer $serialid_sensor
  * @property integer $min_magnitude
  * @property integer $max_magnitude
  * @property integer $position_dataframe
- *
- * The followings are the available model relations:
- * @property EntityDevice $idEntdev
- * @property Magnitude $idMagnitude
- * @property MeasurementSystem $idMeassystem
  */
 class MagnitudeEntdev extends CActiveRecord
 {
@@ -34,11 +30,11 @@ class MagnitudeEntdev extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('id_entdev, id_magnitude, id_meassystem, position_dataframe', 'required'),
-			array('id_entdev, id_magnitude, id_meassystem, min_magnitude, max_magnitude, position_dataframe', 'numerical', 'integerOnly'=>true),
+			array('id_entdev, id_magnitude, position_dataframe', 'required'),
+			array('id_entdev, id_magnitude, id_meassystem, serialid_sensor, min_magnitude, max_magnitude, position_dataframe', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id_entdev, id_magnitude, id_meassystem, min_magnitude, max_magnitude, position_dataframe', 'safe', 'on'=>'search'),
+			array('id_entdev, id_magnitude, id_meassystem, serialid_sensor, min_magnitude, max_magnitude, position_dataframe', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -50,9 +46,6 @@ class MagnitudeEntdev extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'idEntdev' => array(self::BELONGS_TO, 'EntityDevice', 'id_entdev'),
-			'idMagnitude' => array(self::BELONGS_TO, 'Magnitude', 'id_magnitude'),
-			'idMeassystem' => array(self::BELONGS_TO, 'MeasurementSystem', 'id_meassystem'),
 		);
 	}
 
@@ -65,6 +58,7 @@ class MagnitudeEntdev extends CActiveRecord
 			'id_entdev' => 'Id Entdev',
 			'id_magnitude' => 'Id Magnitude',
 			'id_meassystem' => 'Id Meassystem',
+			'serialid_sensor' => 'Serialid Sensor',
 			'min_magnitude' => 'Min Magnitude',
 			'max_magnitude' => 'Max Magnitude',
 			'position_dataframe' => 'Position Dataframe',
@@ -92,6 +86,7 @@ class MagnitudeEntdev extends CActiveRecord
 		$criteria->compare('id_entdev',$this->id_entdev);
 		$criteria->compare('id_magnitude',$this->id_magnitude);
 		$criteria->compare('id_meassystem',$this->id_meassystem);
+		$criteria->compare('serialid_sensor',$this->serialid_sensor);
 		$criteria->compare('min_magnitude',$this->min_magnitude);
 		$criteria->compare('max_magnitude',$this->max_magnitude);
 		$criteria->compare('position_dataframe',$this->position_dataframe);
