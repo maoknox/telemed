@@ -5,16 +5,17 @@
  *
  * The followings are the available columns in table 'device':
  * @property string $id_device
- * @property integer $id_service
  * @property integer $id_type_device
  * @property integer $id_statedevice
+ * @property string $device_name
+ * @property string $device_description
  * @property integer $device_associated
  *
  * The followings are the available model relations:
- * @property TypeDevice $idTypeDevice
- * @property Service $idService
- * @property StateDevice $idStatedevice
  * @property EntityDevice[] $entityDevices
+ * @property TypeDevice $idTypeDevice
+ * @property StateDevice $idStatedevice
+ * @property Service[] $services
  */
 class Device extends CActiveRecord
 {
@@ -34,12 +35,14 @@ class Device extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('id_device, device_associated', 'required'),
-			array('id_service, id_type_device, id_statedevice, device_associated', 'numerical', 'integerOnly'=>true),
-			array('id_device', 'length', 'max'=>50),
+			array('id_device, id_type_device, id_statedevice', 'required'),
+			array('device_associated', 'required','on'=>'new'),
+			array('id_type_device, id_statedevice, device_associated', 'numerical', 'integerOnly'=>true),
+			array('id_device, device_name', 'length', 'max'=>50),
+			array('device_description', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id_device, id_service, id_type_device, id_statedevice, device_associated', 'safe', 'on'=>'search'),
+			array('id_device, id_type_device, id_statedevice, device_name, device_description, device_associated', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -51,10 +54,10 @@ class Device extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'idTypeDevice' => array(self::BELONGS_TO, 'TypeDevice', 'id_type_device'),
-			'idService' => array(self::BELONGS_TO, 'Service', 'id_service'),
-			'idStatedevice' => array(self::BELONGS_TO, 'StateDevice', 'id_statedevice'),
 			'entityDevices' => array(self::HAS_MANY, 'EntityDevice', 'id_device'),
+			'idTypeDevice' => array(self::BELONGS_TO, 'TypeDevice', 'id_type_device'),
+			'idStatedevice' => array(self::BELONGS_TO, 'StateDevice', 'id_statedevice'),
+			'services' => array(self::MANY_MANY, 'Service', 'service_device(id_device, id_service)'),
 		);
 	}
 
@@ -65,9 +68,10 @@ class Device extends CActiveRecord
 	{
 		return array(
 			'id_device' => 'Id Device',
-			'id_service' => 'Id Service',
 			'id_type_device' => 'Id Type Device',
 			'id_statedevice' => 'Id Statedevice',
+			'device_name' => 'Device Name',
+			'device_description' => 'Device Description',
 			'device_associated' => 'Device Associated',
 		);
 	}
@@ -91,9 +95,10 @@ class Device extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id_device',$this->id_device,true);
-		$criteria->compare('id_service',$this->id_service);
 		$criteria->compare('id_type_device',$this->id_type_device);
 		$criteria->compare('id_statedevice',$this->id_statedevice);
+		$criteria->compare('device_name',$this->device_name,true);
+		$criteria->compare('device_description',$this->device_description,true);
 		$criteria->compare('device_associated',$this->device_associated);
 
 		return new CActiveDataProvider($this, array(
@@ -111,6 +116,11 @@ class Device extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+        /**
+	 * Consulta los dispositivos que no están asociados y que estan en buen estado.
+	 * @param int $idService $stateDev int $assoc.
+	 * @return ide de dispositivo $res
+	 */
         public function searchDevice($idService,$stateDev,$assoc){
             $conn=Yii::app()->db;
             $sql="select id_device from device as dev "
@@ -122,6 +132,17 @@ class Device extends CActiveRecord
             $query->bindParam(":idService",$idService);
             $query->bindParam(":code",$stateDev);
             $query->bindParam(":assoc",$assoc);
+            $read=$query->query();
+            $res=$read->readAll();
+            $read->close();
+            return $res;
+        }
+        public function searchDeviceAll(){
+            $conn=Yii::app()->db;
+            $sql="select * from device as dev "
+                    . "left join type_device as td on td.id_type_device=dev.id_type_device "
+                    . "left join state_device as sd on sd.id_statedevice=dev.id_statedevice";
+            $query=$conn->createCommand($sql);
             $read=$query->query();
             $res=$read->readAll();
             $read->close();

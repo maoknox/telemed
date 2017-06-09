@@ -229,18 +229,7 @@
                     <li><a href="<?php echo Yii::app()->request->baseUrl?>/index.php/entity/createEntity"><i class="fa fa-circle-o"></i>Registrar empresa</a></li>
                     <li><a href="<?php echo Yii::app()->request->baseUrl?>/index.php/service/registerEntityService"><i class="fa fa-circle-o"></i>Registrar servicio</a></li>
                     <li><a href="<?php echo Yii::app()->request->baseUrl?>/index.php/person/registerPerson"><i class="fa fa-circle-o"></i>Registrar persona</a></li>
-                    <li><a href="<?php echo Yii::app()->request->baseUrl?>/index.php/entitydevice/registerObjectDevice"><i class="fa fa-circle-o"></i>Registrar objeto</a></li>
-                    <li>
-                      <a href="#"><i class="fa fa-circle-o"></i> Level Two
-                        <span class="pull-right-container">
-                          <i class="fa fa-angle-left pull-right"></i>
-                        </span>
-                      </a>
-                      <ul class="treeview-menu">
-                        <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
-                        <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
-                      </ul>
-                    </li>
+                    <li><a href="<?php echo Yii::app()->request->baseUrl?>/index.php/entitydevice/registerObjectDevice"><i class="fa fa-circle-o"></i>Registrar objeto</a></li>                    
                   </ul>
                 </li>
                 <li>
@@ -250,19 +239,8 @@
                     </span>
                   </a>
                   <ul class="treeview-menu">
-                    <li><a href="#"><i class="fa fa-circle-o"></i> Registrar dispositivo</a></li>
-                    <li><a href="#"><i class="fa fa-circle-o"></i> Dispositivos</a></li>
-                    <li>
-                      <a href="#"><i class="fa fa-circle-o"></i> Level Two
-                        <span class="pull-right-container">
-                          <i class="fa fa-angle-left pull-right"></i>
-                        </span>
-                      </a>
-                      <ul class="treeview-menu">
-                        <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
-                        <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
-                      </ul>
-                    </li>
+                    <li><a href="<?php echo Yii::app()->request->baseUrl?>/index.php/device/registerDevice"><i class="fa fa-circle-o"></i> Registrar dispositivo</a></li>
+                    <li><a href="<?php echo Yii::app()->request->baseUrl?>/index.php/sensor/registerSensor"><i class="fa fa-circle-o"></i> Registrar sensor</a></li>
                   </ul>
                 </li>
               </ul>

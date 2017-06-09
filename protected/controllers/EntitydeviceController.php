@@ -1,7 +1,7 @@
 <?php
 
 class EntitydeviceController extends Controller{
-     /**
+    /**
     * Acción que se ejecuta en segunda instancia para verificar si el usuario tiene sesión activa.
     * En caso contrario no podrá acceder a los módulos del aplicativo y generará error de acceso.
     */
