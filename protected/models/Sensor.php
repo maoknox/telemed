@@ -36,6 +36,7 @@ class Sensor extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('id_typesensor, id_sensor, sensor_name, sensor_brand', 'required'),
+                        array('serialid_sensor', 'required','on'=>'editSensor'),
 			array('id_typesensor, sensor_associated', 'numerical', 'integerOnly'=>true),
 			array('id_sensor', 'length', 'max'=>10),
 			array('sensor_name', 'length', 'max'=>100),
@@ -115,8 +116,16 @@ class Sensor extends CActiveRecord
 	 * @param string $className active record class name.
 	 * @return Sensor the static model class
 	 */
-	public static function model($className=__CLASS__)
-	{
+	public static function model($className=__CLASS__){
 		return parent::model($className);
 	}
+        public function searchSensorUnused(){
+            $conn=Yii::app()->db;
+            $sql="select * from sensor as sr left join type_sensor as ts on ts.id_typesensor=sr.id_typesensor where sr.sensor_associated=2";
+            $query=$conn->createCommand($sql);
+            $read=$query->query();
+            $res=$read->readAll();
+            $read->close();
+            return $res;
+        }
 }

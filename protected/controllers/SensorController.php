@@ -1,36 +1,49 @@
 <?php
 
-class SensorController extends Controller
-{
-	public function actionRegisterSensor()
-	{
-		$this->render('registerSensor');
-	}
+class SensorController extends Controller{
+     /**
+    * Acción que se ejecuta en segunda instancia para verificar si el usuario tiene sesión activa.
+    * En caso contrario no podrá acceder a los módulos del aplicativo y generará error de acceso.
+    */
+    public function filterEnforcelogin($filterChain){
+        if(Yii::app()->user->isGuest){
+            if(isset($_POST) && !empty($_POST)){
+                $response["status"]="nosession";
+                echo CJSON::encode($response);
+                exit();
+            }
+            else{
+                Yii::app()->user->returnUrl = array("site/login");                                                          
+                $this->redirect(Yii::app()->user->returnUrl);
+            }
+        }
+        $filterChain->run();
+    }
+    /**
+     * @return array action filters
+     */
+    public function filters(){
+        return array(
+                'enforcelogin',                      
+        );
+    }
+    public function actionRegisterSensor(){
+        $modelSensor=new Sensor();
+        $modelTypeSensor=new TypeSensor();
+        $typeSensor=$modelTypeSensor->findAll();
+        $modelFactorSensor=new FactorSensor();
+        $listSensors=$modelSensor->searchSensorUnused();
+        if(empty($_POST)){
+            $this->render('_registerSensor',array(
+                "modelSensor"=>$modelSensor,
+                "modelTypeSensor"=>$modelTypeSensor,
+                "typeSensor"=>$typeSensor,
+                "modelFactorSensor"=>$modelFactorSensor,
+                "listSensors"=>$listSensors
+            ));
+        }
+        else{
 
-	// Uncomment the following methods and override them if needed
-	/*
-	public function filters()
-	{
-		// return the filter configuration for this controller, e.g.:
-		return array(
-			'inlineFilterName',
-			array(
-				'class'=>'path.to.FilterClass',
-				'propertyName'=>'propertyValue',
-			),
-		);
-	}
-
-	public function actions()
-	{
-		// return external action classes, e.g.:
-		return array(
-			'action1'=>'path.to.ActionClass',
-			'action2'=>array(
-				'class'=>'path.to.AnotherActionClass',
-				'propertyName'=>'propertyValue',
-			),
-		);
-	}
-	*/
+        }
+    }
 }
