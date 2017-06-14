@@ -5,8 +5,9 @@
  *
  * The followings are the available columns in table 'type_sensor':
  * @property integer $id_typesensor
- * @property string $sensor_type
- * @property string $sensor_description
+ * @property string $typesensor_code
+ * @property string $typesensor_description
+ * @property string $typesensor_label
  *
  * The followings are the available model relations:
  * @property Sensor[] $sensors
@@ -29,12 +30,12 @@ class TypeSensor extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('sensor_type, sensor_description', 'required'),
-			array('sensor_type', 'length', 'max'=>50),
-			array('sensor_description', 'length', 'max'=>500),
+			array('typesensor_code, typesensor_description', 'required'),
+			array('typesensor_code, typesensor_label', 'length', 'max'=>50),
+			array('typesensor_description', 'length', 'max'=>500),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id_typesensor, sensor_type, sensor_description', 'safe', 'on'=>'search'),
+			array('id_typesensor, typesensor_code, typesensor_description, typesensor_label', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -57,8 +58,9 @@ class TypeSensor extends CActiveRecord
 	{
 		return array(
 			'id_typesensor' => 'Id Typesensor',
-			'sensor_type' => 'Sensor Type',
-			'sensor_description' => 'Sensor Description',
+			'typesensor_code' => 'Typesensor Code',
+			'typesensor_description' => 'Typesensor Description',
+			'typesensor_label' => 'Typesensor Label',
 		);
 	}
 
@@ -81,8 +83,9 @@ class TypeSensor extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id_typesensor',$this->id_typesensor);
-		$criteria->compare('sensor_type',$this->sensor_type,true);
-		$criteria->compare('sensor_description',$this->sensor_description,true);
+		$criteria->compare('typesensor_code',$this->typesensor_code,true);
+		$criteria->compare('typesensor_description',$this->typesensor_description,true);
+		$criteria->compare('typesensor_label',$this->typesensor_label,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
