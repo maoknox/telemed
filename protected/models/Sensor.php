@@ -38,7 +38,7 @@ class Sensor extends CActiveRecord
 			array('id_typesensor, id_sensor, sensor_name, sensor_brand', 'required'),
                         array('serialid_sensor', 'required','on'=>'editSensor'),
 			array('id_typesensor, sensor_associated', 'numerical', 'integerOnly'=>true),
-			array('id_sensor', 'length', 'max'=>10),
+			array('id_sensor', 'length', 'max'=>50),
 			array('sensor_name', 'length', 'max'=>100),
 			array('sensor_brand', 'length', 'max'=>500),
 			array('magnitude_min, magnitude_max', 'safe'),

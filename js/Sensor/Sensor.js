@@ -42,7 +42,7 @@ var Sensor = function(){
      */
     function setDefaults(){
         //Inicializa datatable
-        dataTableSensor=self.div.find("#dataTableSensor").DataTable({
+        dataTableSensorAct=self.div.find("#dataTableSensorActualiza").DataTable({
             oLanguage: Telemed.getDatatableLang(),
             scrollX: true
         });
@@ -51,8 +51,7 @@ var Sensor = function(){
             estadoGuarda=false;
         });
         self.div.find("#btnRegSensor").click(function(){
-//            self.registerSensor();
-            console.log("clic en registra");
+            self.registerSensor();
         });
         self.div.find("#btnEditaSensor").hide();
         self.div.find("#btnCancelaEdicion").hide();
@@ -78,7 +77,6 @@ var Sensor = function(){
         self.div.find("#btnCancelaEdicion").css("display","block");
         self.div.find("#sensor-form #Sensor_id_sensor").attr("readonly",true);
         $.each(self.arraySensor,function(key,value){
-            console.log(value.serialid_sensor+" "+idSensor+"---");
             if(value.serialid_sensor==idSensor){
                 self.div.find("#sensor-form #Sensor_serialid_sensor").val(value.serialid_sensor);
                 self.div.find("#sensor-form #Sensor_id_sensor").val(value.id_sensor);
@@ -141,7 +139,7 @@ var Sensor = function(){
                     typeMsg="success";
                     self.div.find("#sensor-form").trigger("reset");
                     estadoGuarda=true;
-                    self.loadDataSensor(response.data);
+                    self.loadDataSensorAct(response.data);
                 }
                 else{
                     if(response.status=="noexito"){
@@ -206,7 +204,7 @@ var Sensor = function(){
                     typeMsg="success";
                     self.cancelEdition();
                     estadoGuarda=true;
-                    self.loadDataSensor(response.data);
+                    self.loadDataSensorAct(response.data);
                 }
                 else{
                     if(response.status=="noexito"){
@@ -242,18 +240,20 @@ var Sensor = function(){
     * @param array data
     * @returns N.A
     */ 
-    self.loadDataSensor=function(data){
+    self.loadDataSensorAct=function(data){
         self.arraySensor=data;
-            dataTableAct.clear();
-            $.each(data,function(key,value){
-                dataTableAct.row.add([
-                    value.id_sensor,
-                    value.sensortype_label,
-                    value.sensor_name,
-                    value.statesensor_label,
-                    "<a href=javascript:Sensor.cargaSensorAForm('"+value.id_sensor+"');>Editar</a>"
-                ]).draw();
-            });
+        dataTableSensorAct.clear();
+        $.each(data,function(key,value){
+            dataTableSensorAct.row.add([
+                value.id_sensor,
+                value.typesensor_label,
+                value.sensor_name,
+                value.sensor_brand,
+                value.magnitude_min,
+                value.magnitude_max,
+                "<a href=javascript:Sensor.loadSensorToForm('"+value.serialid_sensor+"');>Editar</a>"
+            ]).draw();
+        });
     };
     /**************************************************************************/
     /******************************* DOM METHODS ******************************/

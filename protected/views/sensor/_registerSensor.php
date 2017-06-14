@@ -18,7 +18,7 @@
             <?php $formSensor=$this->beginWidget('CActiveForm', array(
                     'id'=>'sensor-form',
                     'enableClientValidation'=>true,
-                    'enableAjaxValidation'=>true,
+//                    'enableAjaxValidation'=>true,
                     'clientOptions'=>array(
                             'validateOnSubmit'=>true,
                     )
@@ -37,13 +37,13 @@
                     <?php echo $formSensor->error($modelSensor,'sensor_name'); ?>
                 </div>
                 <div class="form-group">
-                    <?php echo $formSensor->labelEx($modelTypeSensor,'id_typesensor'); ?>
-                    <?php echo $formSensor->dropDownList($modelTypeSensor,'id_typesensor',CHtml::listData($typeSensor,"id_typesensor", "typesensor_label"),array ('class' => 'form-control')); ?>
-                    <?php echo $formSensor->error($modelTypeSensor,'id_typesensor',array("class"=>"errorMessage")); ?>
+                    <?php echo $formSensor->labelEx($modelSensor,'id_typesensor'); ?>
+                    <?php echo $formSensor->dropDownList($modelSensor,'id_typesensor',CHtml::listData($typeSensor,"id_typesensor", "typesensor_label"),array ('class' => 'form-control','prompt'=>'Seleccione tipo de sensor')); ?>
+                    <?php echo $formSensor->error($modelSensor,'id_typesensor',array("class"=>"errorMessage")); ?>
                 </div>
                 <div class="form-group">
                     <?php echo $formSensor->labelEx($modelSensor,'sensor_brand'); ?>
-                    <?php echo $formSensor->textField($modelSensor,'sensor_brand', array ('class' => 'form-control','placeholder'=>'Digite la marca del dispositivo')); ?>
+                    <?php echo $formSensor->textField($modelSensor,'sensor_brand', array ('class' => 'form-control','placeholder'=>'Digite la marca del sensor')); ?>
                     <?php echo $formSensor->error($modelSensor,'sensor_brand'); ?>
                 </div>
                 <div class="form-group">
@@ -79,7 +79,7 @@
                   <h3 class="box-title">Sensores registrados</h3>
                 </div>
                 <div class="box-body">
-                    <table id="dataTableDevice" class="table table-bordered table-striped">
+                    <table id="dataTableSensorActualiza" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>Id Sensor</th>
