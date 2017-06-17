@@ -36,6 +36,7 @@ class EntitydeviceController extends Controller{
         $modelObject=new Object();
         $modelObjectUbication=new ObjectUbication();
         $modelMagnitudeEntDev=new MagnitudeEntdev();
+        $modelSensor=  Sensor::model();
         if(empty($_POST)){
             $magnitude=  Magnitude::model()->findAll();
             $meassSystem=  MeasurementSystem::model()->findAll();
@@ -43,6 +44,7 @@ class EntitydeviceController extends Controller{
             $state=  State::model()->findAll();
             $city=  City::model()->findAll();
             $service=  Service::model()->findAll();
+            $sensors=$modelSensor->searchSensorUnused();
             $this->render('_registerobjectdevice',array(
                 "modelEntityDevice"=>$modelEntityDevice,
                 "modelObject"=>$modelObject,
@@ -53,7 +55,8 @@ class EntitydeviceController extends Controller{
                 "country"=>$country,
                 "state"=>$state,
                 "city"=>$city,
-                "service"=>$service
+                "service"=>$service,
+                "sensors"=>$sensors
             ));
         }
         else{
@@ -98,29 +101,40 @@ class EntitydeviceController extends Controller{
         $modelMagnitude=new MagnitudeEntdev();
         $postMagnitude=Yii::app()->request->getPost("MagnitudeEntdev");
         $modelMagnitude->attributes=$postMagnitude;
+        $modelSensor=  Sensor::model();
         $response["data"]="";
         if($modelMagnitude->validate()){
             $position=$modelMagnitude->findByAttributes(array("id_entdev"=>$modelMagnitude->id_entdev,"position_dataframe"=>$modelMagnitude->position_dataframe));
-            if(!empty($position)){
+            $sensor=$modelMagnitude->findByAttributes(array("serialid_sensor"=>$modelMagnitude->serialid_sensor));
+            if(!empty($sensor)){
                 $response["status"]="noexito";
-                $response["msg"]="Esta posición ya tiene una magnitud, digite otra";
+                $response["msg"]="Este sensor ya ha sido asociado a una magnitud";
             }
             else{
-                $magnitude=$modelMagnitude->findByAttributes(array("id_entdev"=>$modelMagnitude->id_entdev,"id_magnitude"=>$modelMagnitude->id_magnitude));
-                if(!empty($magnitude)){
+                if(!empty($position)){
                     $response["status"]="noexito";
-                    $response["msg"]="Magnitud ya registrada para este objeto";
+                    $response["msg"]="Esta posición ya tiene una magnitud, digite otra";
                 }
                 else{
-                    if($modelMagnitude->save()){
-                        $response["status"]="exito";
-                        $response["msg"]="Magnitud asociada al objeto";
-                        $magnitudes=$modelMagnitude->searchMagnitudesByObject($modelMagnitude->id_entdev);
-                        $response["data"]=$magnitudes;
+                    $magnitude=$modelMagnitude->findByAttributes(array("id_entdev"=>$modelMagnitude->id_entdev,"id_magnitude"=>$modelMagnitude->id_magnitude));
+                    if(!empty($magnitude)){
+                        $response["status"]="noexito";
+                        $response["msg"]="Magnitud ya registrada para este objeto";
                     }
                     else{
-                        $response["status"]="noexito";
-                        $response["msg"]="No ha sido posible asociar la magnitud";
+                        if($modelMagnitude->save()){
+                            $response["status"]="exito";
+                            $response["msg"]="Magnitud asociada al objeto";
+                            $modelSensor->sensor_associated=1;
+                            $modelSensor->serialid_sensor=$modelMagnitude->serialid_sensor;
+                            $modelSensor->update(array('sensor_associated'));
+                            $magnitudes=$modelMagnitude->searchMagnitudesByObject($modelMagnitude->id_entdev);
+                            $response["data"]=$magnitudes;
+                        }
+                        else{
+                            $response["status"]="noexito";
+                            $response["msg"]="No ha sido posible asociar la magnitud";
+                        }
                     }
                 }
             }

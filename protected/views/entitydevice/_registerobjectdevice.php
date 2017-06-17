@@ -1,4 +1,5 @@
 <?php
+    Yii::app()->clientScript->registerCssFile(Yii::app()->baseUrl.'/plugins/datatables/dataTables.bootstrap.css');
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/plugins/datatables/jquery.dataTables.min.js",CClientScript::POS_END);
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/plugins/datatables/dataTables.bootstrap.min.js",CClientScript::POS_END);
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/js/Entitydevice/Entitydevice.js",CClientScript::POS_END);
@@ -6,7 +7,7 @@
 <section class="content" id="divEntityDevice">
     <div class="row">
         <!-- left column -->
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="box box-primary">
                 <div class="box-header with-border">
                   <h3 class="box-title">Registro de Objeto</h3>
@@ -93,6 +94,11 @@
                         <?php echo $formMagnitude->error($modelMagnitudeEntDev,'id_magnitude',array("class"=>"errorMessage")); ?>
                     </div>
                     <div class="form-group">
+                        <?php echo $formMagnitude->labelEx($modelMagnitudeEntDev,'serialid_sensor'); ?>
+                        <?php echo $formMagnitude->dropDownList($modelMagnitudeEntDev,'serialid_sensor',CHtml::listData($sensors, 'serialid_sensor', 'sensor_name'),array ('class' => 'form-control',"prompt"=>"Seleccione un sensor")); ?>
+                        <?php echo $formMagnitude->error($modelMagnitudeEntDev,'serialid_sensor',array("class"=>"errorMessage")); ?>
+                    </div>
+                    <div class="form-group">
                         <?php echo $formMagnitude->labelEx($modelMagnitudeEntDev,'id_meassystem'); ?>
                         <?php echo $formMagnitude->dropDownList($modelMagnitudeEntDev,'id_meassystem',CHtml::listData($meassSystem, 'id_meassystem', 'meassystem_spanish'),array ('class' => 'form-control',"prompt"=>"Seleccione sistema de medida")); ?>
                         <?php echo $formMagnitude->error($modelMagnitudeEntDev,'id_meassystem',array("class"=>"errorMessage")); ?>
@@ -117,7 +123,7 @@
                 <?php $this->endWidget(); ?>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-5">
             <div class="box box-primary">
                 <div class="box-header with-border">
                   <h3 class="box-title">Magnitudes</h3>
@@ -127,6 +133,7 @@
                         <thead>
                             <tr>
                                 <th>Posición en trama</th>
+                                <th>Sensor</th>
                                 <th>Magnitud</th>
                                 <th>Sistema de medida</th>
                                 <th>Mínimo</th>
@@ -138,6 +145,7 @@
                         <tfoot>
                             <tr>
                                 <th>Posición en trama</th>
+                                <th>Sensor</th>
                                 <th>Magnitud</th>
                                 <th>Sistema de medida</th>
                                 <th>Mínimo</th>
