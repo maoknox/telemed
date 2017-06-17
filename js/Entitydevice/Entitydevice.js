@@ -217,15 +217,23 @@ var Entitydevice = function(){
                     estadoGuarda=true;
                     self.div.find("#dataTableEntityMagnitude").DataTable().clear();
                     $.each(response.data,function(key,value){
-                    self.div.find("#dataTableEntityMagnitude").DataTable().row.add([
-                        value.position_dataframe,
-                        value.magnitude_name,
-                        value.meassystem_spanish,
-                        value.min_magnitude,
-                        value.max_magnitude
-                    ]).draw();
-                    self.div.find("#btnRegMagnitude").show();
-            });
+                        var sensor="";
+                        if(value.sensor_name.length!==0){
+                            sensor=value.sensor_name;
+                        }
+                        else{
+                            sensor="N.A";
+                        }
+                        self.div.find("#dataTableEntityMagnitude").DataTable().row.add([
+                            value.position_dataframe,
+                            sensor,
+                            value.magnitude_name,
+                            value.meassystem_spanish,
+                            value.min_magnitude,
+                            value.max_magnitude
+                        ]).draw();
+                        self.div.find("#btnRegMagnitude").show();
+                    });
                 }
                 else{
                     if(response.status=="noexito"){

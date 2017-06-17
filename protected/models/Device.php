@@ -123,11 +123,11 @@ class Device extends CActiveRecord
 	 */
         public function searchDevice($idService,$stateDev,$assoc){
             $conn=Yii::app()->db;
-            $sql="select id_device from device as dev "
-                    . "left join state_device as sd on sd.id_statedevice=dev.id_statedevice "
-                    . "where dev.id_service=:idService "
-                    . "and sd.statedevice_code=:code "
-                    . "and device_associated=:assoc ";
+            $sql="select dev.id_device "
+                    . "from device as dev "
+                    . "left join service_device as sd on sd.id_device=dev.id_device "
+                    . "left join state_device as std on std.id_statedevice=dev.id_statedevice "
+                    . "where sd.id_service=:idService and std.statedevice_code=:code and device_associated=:assoc ";
             $query=$conn->createCommand($sql);
             $query->bindParam(":idService",$idService);
             $query->bindParam(":code",$stateDev);

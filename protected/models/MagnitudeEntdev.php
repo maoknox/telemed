@@ -108,9 +108,11 @@ class MagnitudeEntdev extends CActiveRecord
 	}
         public function searchMagnitudesByObject($idEntDev){
             $conn=Yii::app()->db;
-            $sql="select me.position_dataframe,me.min_magnitude,me.max_magnitude,mag.magnitude_name,ms.meassystem_spanish from magnitude_entdev as me "
+            $sql="select me.position_dataframe,me.min_magnitude,me.max_magnitude,mag.magnitude_name,ms.meassystem_spanish, sensor_name "
+                    . "from magnitude_entdev as me "
                     . "left join magnitude as mag on mag.id_magnitude=me.id_magnitude "
-                    . "left join measurement_system as ms on ms.id_meassystem=me.id_meassystem "
+                    . "left join measurement_system as ms on ms.id_meassystem=me.id_meassystem  "
+                    . "left join sensor as sr on sr.serialid_sensor=me.serialid_sensor  "
                     . "where me.id_entdev=:idEntDev "
                     . "order by me.position_dataframe asc";
             $query=$conn->createCommand($sql);
