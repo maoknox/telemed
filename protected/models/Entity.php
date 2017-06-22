@@ -155,7 +155,7 @@ class Entity extends CActiveRecord
         *
         * @return $result array de títulos de grado
         */
-        public function buscarEntity($stringentity){
+        public function searchEntity($stringentity){
             $conect= Yii::app()->db;
             $entity=  strtolower($stringentity);
             $sql="SELECT * FROM entity WHERE (entity_number LIKE :param1)

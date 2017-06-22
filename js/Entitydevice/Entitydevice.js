@@ -41,7 +41,11 @@ var Entitydevice = function(){
      * @returns {undefined}
      */
     function setDefaults(){
-       self.div.find("#dataTableEntityMagnitude").DataTable({
+        self.div.find("#dataTableEntityMagnitude").DataTable({
+            oLanguage: Telemed.getDatatableLang(),
+            scrollX: true
+        });
+        self.div.find("#dataTableObject").DataTable({
             oLanguage: Telemed.getDatatableLang(),
             scrollX: true
         });
@@ -118,6 +122,7 @@ var Entitydevice = function(){
             $.notify(msg, typeMsg);
         });
     };
+    
     /**
      * Filtra por texto digitado las empresas creadas
      */
@@ -153,6 +158,7 @@ var Entitydevice = function(){
             }
         });
     };
+   
     /**
      * Consume webservice de consulta de servicios relacionados a empresa
      */

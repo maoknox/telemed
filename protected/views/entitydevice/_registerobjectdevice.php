@@ -20,10 +20,7 @@
                     'enableAjaxValidation'=>true,
                     'clientOptions'=>array(
                             'validateOnSubmit'=>true,
-                    ),
-//                    'htmlOptions'=>array(
-//                        'onChange'=>'js:estadoGuarda=false'
-//                    )
+                    )
             )); ?>
             <div class="box-body">
                 <?php echo  $formEntityService->errorSummary(array($modelEntityDevice,$modelObject),'','',array('style' => 'font-size:14px;color:#F00')); ?>
@@ -114,8 +111,6 @@
                         <?php echo $formMagnitude->error($modelMagnitudeEntDev,'max_magnitude'); ?>
                     </div>
                 </div>
-                 <!-- /.box-body -->
-
                 <div class="box-footer">
                     <?php echo $formMagnitude->hiddenField($modelMagnitudeEntDev,'id_entdev'); ?>
                     <?php echo CHtml::button('Registrar', array ('class' => 'btn btn-primary','id'=>'btnRegMagnitude')); ?>

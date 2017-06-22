@@ -30,7 +30,43 @@ class EntitydeviceController extends Controller{
     public function actionIndex(){
             $this->render('index');
     }
-
+    /**
+    * Carga datos de objetos y renderiza vista para cargar datos en datatable
+    */
+    public function actionLoadDataEntityService(){
+        $modelEntityDevice=  EntityDevice::model();
+        $objects=$modelEntityDevice->searchAllObjects();
+        $this->render("_loadobjectdevice",array("objects"=>$objects));
+    }
+    /**
+    * Carga datos de objetos y renderiza vista para cargar datos en datatable
+    */
+    public function actionEditObject(){
+        if(!empty($_GET)){
+            $idEntdev=$_GET["id_entdev"];
+            $this->render("_editobject",array("id_entdev"=>$idEntdev));
+        }
+        else{
+            throw new Exception("No se ha especificado id de objeto");
+        }
+    }
+    /**
+    * Carga datos de objetos y renderiza vista para modificar magnitudes de objeto
+    */
+    public function actionEditMagnitude(){
+        if(!empty($_GET)){
+            $idEntdev=Yii::app()->request->getPost("id_entdev");
+            $this->render("_editmagnitude",array("id_entdev"=>$idEntdev));
+        }
+        else{
+            throw new Exception("No se ha especificado id de objeto");
+        }
+    }
+    
+    /**
+    * Carga formulario de regsitro de objeto y si variable $_POST no está vacía registra objeto de acuerdo al cliente.
+    *
+    */
     public function actionRegisterObjectDevice(){
         $modelEntityDevice=new EntityDevice();
         $modelObject=new Object();
@@ -97,6 +133,13 @@ class EntitydeviceController extends Controller{
             }
         }
     }
+    /**
+    * Registra magnitud de objeto registrado.
+    *
+    * @param type array $postMagnitude captura el array del formulario de la magnitud.
+    *
+    * @return $response json del listado de dispositivos
+    */
     public function actionRegisterMagnitude(){
         $modelMagnitude=new MagnitudeEntdev();
         $postMagnitude=Yii::app()->request->getPost("MagnitudeEntdev");
@@ -144,18 +187,64 @@ class EntitydeviceController extends Controller{
             echo CActiveForm::validate($modelMagnitude);
         }
     }
+    /**
+    * Devuelve el listado de servicios según el la entidad.
+    *
+    * @param type string $idSEntity captura el id de la entidad
+    *
+    * @return $devices json del listado de dispositivos
+    */
     public function actionSearchService(){
         $idEntity=Yii::app()->request->getPost("idEntity");
         $modeloEntity= Entity::model();
         $services=$modeloEntity->searchService($idEntity);
         echo CJSON::encode($services);
     }
+    /**
+    * Devuelve el listado de dispositivos según el servicio.
+    *
+    * @param type string $idService captura el id del servicio
+    *
+    * @return $devices json del listado de dispositivos
+    */
     public function actionSearchDevice(){
         $idService=Yii::app()->request->getPost("idService");
         $modeloDevice= Device::model();
         $devices=$modeloDevice->searchDevice($idService,"OPERATIVO","2");
         echo CJSON::encode($devices);
     }
+    
+    /**
+    * Devuelve el listado de objetos creados hasta el momento.
+    *
+    * @param type $string captura el string digitado para realizar filtro por objetos
+    *
+    * @return $display_json Listado de objetos en formato json
+    */
+    public function actionSearchEntity(){
+        $json_arr=[];
+        $display_json=[];
+        $json_arr=[];
+        $modelEntityDevice= EntityDevice::model();
+        $string=Yii::app()->request->getPost("stringobject");
+        $objects=$modelEntityDevice->searchObject($string);
+        if(!empty($objects)){
+            foreach($objects as $object){
+                $json_arr["id"] = $entity["id_entity"];
+                $json_arr["value"] = $entity["entity_name"];
+                $json_arr["label"] = $entity["entity_name"];
+                array_push($display_json, $json_arr);
+            }
+        }
+        else{
+            $json_arr["id"] = "#";
+            $json_arr["value"] = "No hay resultados";
+            $json_arr["label"] = "No hay resultados";
+            array_push($display_json, $json_arr);
+        }
+        echo CJSON::encode($display_json);
+    }
+    
     /**
     * Valida los modelos.
     *
