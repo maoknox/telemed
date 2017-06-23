@@ -269,7 +269,7 @@ var Entitydevice = function(){
                     self.div.find("#dataTableEntityMagnitude").DataTable().clear();
                     $.each(response.data,function(key,value){
                         var sensor="";
-                        if(value.sensor_name.length!==0){
+                        if(value.sensor_name!=""){
                             sensor=value.sensor_name;
                         }
                         else{

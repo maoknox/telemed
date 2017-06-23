@@ -161,9 +161,12 @@ class EntitydeviceController extends Controller{
         $modelMagnitude->attributes=$postMagnitude;
         $modelSensor=  Sensor::model();
         $response["data"]="";
+        $sensor="";
         if($modelMagnitude->validate()){
             $position=$modelMagnitude->findByAttributes(array("id_entdev"=>$modelMagnitude->id_entdev,"position_dataframe"=>$modelMagnitude->position_dataframe));
-            $sensor=$modelMagnitude->findByAttributes(array("serialid_sensor"=>$modelMagnitude->serialid_sensor));
+            if(!empty($modelMagnitude->serialid_sensor)){    
+                $sensor=$modelMagnitude->findByAttributes(array("serialid_sensor"=>$modelMagnitude->serialid_sensor));
+            }
             if(!empty($sensor)){
                 $response["status"]="noexito";
                 $response["msg"]="Este sensor ya ha sido asociado a una magnitud";
