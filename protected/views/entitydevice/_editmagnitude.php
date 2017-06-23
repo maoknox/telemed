@@ -4,68 +4,9 @@
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/plugins/datatables/dataTables.bootstrap.min.js",CClientScript::POS_END);
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/js/Entitydevice/Entitydevice.js",CClientScript::POS_END);
 ?>
-<section class="content" id="divEntityDevice">
+<section class="content" id="divMagnitude">
     <div class="row">
-        <!-- left column -->
         <div class="col-md-4">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                  <h3 class="box-title">Registro de Objeto</h3>
-                </div>
-            <!-- /.box-header -->
-            <!-- form start -->
-            <?php $formEntityService=$this->beginWidget('CActiveForm', array(
-                    'id'=>'entitydevice-form',
-                    'enableClientValidation'=>true,
-                    'enableAjaxValidation'=>true,
-                    'clientOptions'=>array(
-                            'validateOnSubmit'=>true,
-                    )
-            )); ?>
-            <div class="box-body">
-                <?php echo  $formEntityService->errorSummary(array($modelEntityDevice,$modelObject),'','',array('style' => 'font-size:14px;color:#F00')); ?>
-                <div class="form-group" id="divEntity">
-                    <?php echo $formEntityService->labelEx($modelEntityDevice,'id_entity'); ?>
-                    <?php echo CHtml::textField('nameEntity', '',array('id'=>'nameEntity','class' => 'form-control','placeholder'=>'Digite nombre o identificación de la empresa')); ?>
-                    <?php echo $formEntityService->hiddenField($modelEntityDevice,'id_entity', array ('class' => 'form-control','placeholder'=>'Seleccione una empresa')); ?>
-                    <?php echo $formEntityService->error($modelEntityDevice,'id_entity'); ?>
-                </div>
-                <div class="form-group">
-                    <?php echo $formEntityService->labelEx($modelEntityDevice,'id_service'); ?>
-                    <?php echo $formEntityService->dropDownList($modelEntityDevice,'id_service',array(""=>"Seleccione empresa"),array ('class' => 'form-control')); ?>
-                    <?php echo $formEntityService->error($modelEntityDevice,'id_service',array("class"=>"errorMessage")); ?>
-                </div>
-                <div class="form-group">
-                    <?php echo $formEntityService->labelEx($modelEntityDevice,'id_device'); ?>
-                    <?php echo $formEntityService->dropDownList($modelEntityDevice,'id_device',array(""=>"Seleccione servicio"),array ('class' => 'form-control')); ?>
-                    <?php echo $formEntityService->error($modelEntityDevice,'id_device',array("class"=>"errorMessage")); ?>
-                </div>
-                <div class="form-group">
-                    <?php echo $formEntityService->labelEx($modelObject,'id_object'); ?>
-                    <?php echo $formEntityService->textField($modelObject,'id_object', array ('class' => 'form-control','placeholder'=>'Digite el identificador del objeto')); ?>
-                    <?php echo $formEntityService->error($modelObject,'id_object'); ?>
-                </div>
-                <div class="form-group">
-                    <?php echo $formEntityService->labelEx($modelObject,'object_name'); ?>
-                    <?php echo $formEntityService->textField($modelObject,'object_name', array ('class' => 'form-control','placeholder'=>'Digite el nombre del objeto')); ?>
-                    <?php echo $formEntityService->error($modelObject,'object_name'); ?>
-                </div>
-                <div class="form-group">
-                    <?php echo $formEntityService->labelEx($modelObject,'object_description'); ?>
-                    <?php echo $formEntityService->textArea($modelObject,'object_description', array ('class' => 'form-control','placeholder'=>'Digite una descripción del objeto')); ?>
-                    <?php echo $formEntityService->error($modelObject,'object_description'); ?>
-                </div>
-            </div>
-            <!-- /.box-body -->
-
-            <div class="box-footer">
-                <?php echo CHtml::button('Registrar', array ('class' => 'btn btn-primary','id'=>'btnRegEntityDevice')); ?>
-            </div>
-            <?php $this->endWidget(); ?>
-          </div>
-            
-        </div>
-        <div class="col-md-3">
             <div class="box box-primary">
                 <div class="box-header with-border">
                   <h3 class="box-title">Registro de magnitudes</h3>
@@ -87,7 +28,7 @@
                     </div>
                     <div class="form-group">
                         <?php echo $formMagnitude->labelEx($modelMagnitudeEntDev,'id_magnitude'); ?>
-                        <?php echo $formMagnitude->dropDownList($modelMagnitudeEntDev,'id_magnitude',CHtml::listData($magnitude, 'id_magnitude', 'magnitude_name'),array ('class' => 'form-control',"prompt"=>"Seleccione magnitud")); ?>
+                        <?php echo $formMagnitude->dropDownList($modelMagnitudeEntDev,'id_magnitude',CHtml::listData($typemagnitudes, 'id_magnitude', 'magnitude_name'),array ('class' => 'form-control',"prompt"=>"Seleccione magnitud")); ?>
                         <?php echo $formMagnitude->error($modelMagnitudeEntDev,'id_magnitude',array("class"=>"errorMessage")); ?>
                     </div>
                     <div class="form-group">
@@ -112,13 +53,19 @@
                     </div>
                 </div>
                 <div class="box-footer">
-                    <?php echo $formMagnitude->hiddenField($modelMagnitudeEntDev,'id_entdev'); ?>
-                    <?php echo CHtml::button('Registrar', array ('class' => 'btn btn-primary','id'=>'btnRegMagnitude')); ?>
+                    <div class="col-xs-2">
+                        <?php echo $formMagnitude->hiddenField($modelMagnitudeEntDev,'id_entdev',array("value"=> $id_entdev)); ?>
+                        <?php echo CHtml::button('Registrar', array ('class' => 'btn btn-primary','id'=>'btnRegMagnitude')); ?>
+                        <?php echo CHtml::button('Editar', array ('class' => 'btn btn-warning','id'=>'btnEditaMagnitude')); ?>
+                    </div>
+                    <div class="col-xs-2">
+                        <?php echo CHtml::button('Cancelar edición', array ('class' => 'btn btn-danger','id'=>'btnCancelaEdicion')); ?>
+                    </div>
                 </div>
                 <?php $this->endWidget(); ?>
             </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-8">
             <div class="box box-primary">
                 <div class="box-header with-border">
                   <h3 class="box-title">Magnitudes</h3>
@@ -133,9 +80,28 @@
                                 <th>Sistema de medida</th>
                                 <th>Mínimo</th>
                                 <th>Máximo</th>
+                                <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody>
+                            <?php if(!empty($magnitudes)):
+                                foreach($magnitudes as $magnitude):
+                                    $sensor="N.A";
+                                    if(!empty($magnitude["sensor_name"])){
+                                        $sensor=$magnitude["sensor_name"];
+                                    }
+                                ?>  
+                                    <tr>
+                                        <td><?php echo $magnitude["position_dataframe"]?></td>
+                                        <td><?php echo $sensor?></td>
+                                        <td><?php echo $magnitude["magnitude_name"]?></td>
+                                        <td><?php echo $magnitude["meassystem_spanish"]?></td>
+                                        <td><?php echo $magnitude["min_magnitude"]?></td>
+                                        <td><?php echo $magnitude["max_magnitude"]?></td>
+                                        <td><a href='javascript:Entitydevice.loadMagnitudeToForm("<?php echo $id_entdev?>","<?php echo $magnitude["id_magnitude"]?>");'>Editar</a></td>
+                                    </tr>
+                                <?php endforeach;
+                            endif;?>
                         </tbody>
                         <tfoot>
                             <tr>
@@ -145,6 +111,7 @@
                                 <th>Sistema de medida</th>
                                 <th>Mínimo</th>
                                 <th>Máximo</th>
+                                <th>Accion</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -153,3 +120,7 @@
         </div>
     </div>
 </section>
+ <?php 
+    Yii::app()->clientScript->registerScript('cargaMagnitudeAJs', '
+       Entitydevice.arrayMagnitude='.json_encode($magnitudes).';
+   ');

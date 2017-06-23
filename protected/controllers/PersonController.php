@@ -122,7 +122,7 @@ class PersonController extends Controller{
         $json_arr=[];
         $modelEntity= Entity::model();
         $string=Yii::app()->request->getPost("stringentity");
-        $entities=$modelEntity->buscarEntity($string);
+        $entities=$modelEntity->searchEntity($string);
         if(!empty($entities)){
             foreach($entities as $entity){
                 $json_arr["id"] = $entity["id_entity"];

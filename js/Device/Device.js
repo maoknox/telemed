@@ -77,7 +77,6 @@ var Device = function(){
         self.div.find("#btnCancelaEdicion").css("display","block");
         self.div.find("#device-form #Device_id_device").attr("readonly",true);
         $.each(self.arrayDevice,function(key,value){
-            
             if(value.id_device==idDevice){
                 self.div.find("#device-form #Device_id_device").val(value.id_device);
                 self.div.find("#device-form #Device_device_name").val(value.device_name);

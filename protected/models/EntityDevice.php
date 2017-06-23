@@ -124,4 +124,69 @@ class EntityDevice extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+        
+        /**
+        * Devuelve el listado de empresas.
+        *
+        * @param type $this->tituloCurso variable del modelo que guarda el string digitado en campo en vista beca.php
+        *
+        * @return $result array de títulos de grado
+        */
+        public function searchObject($stringObject){
+            $conect= Yii::app()->db;
+            $entity=  strtolower($stringentity);
+            $sql="SELECT * FROM entity WHERE (entity_number LIKE :param1)
+                or (lower(entity_number) LIKE :param2)
+                or (lower(entity_number) LIKE :param3)
+                or (lower(entity_number) LIKE :param4)
+                or (lower(entity_name) LIKE :param5)
+                or (lower(entity_name) LIKE :param6)
+                or (lower(entity_name) LIKE :param7)
+                or (lower(entity_name) LIKE :param8)order by entity_name asc";
+            $query=$conect->createCommand($sql);
+            $param1='%%'.$entity.'%%';
+            $param2='%%'.$entity;
+            $param3=$entity.'%%';
+            $query->bindParam(':param1',$param1,PDO::PARAM_STR);
+            $query->bindParam(':param2',$param2,PDO::PARAM_STR);
+            $query->bindParam(':param3',$param3,PDO::PARAM_STR);
+            $query->bindParam(':param4',$entity,PDO::PARAM_STR);
+            $query->bindParam(':param5',$param1,PDO::PARAM_STR);
+            $query->bindParam(':param6',$param2,PDO::PARAM_STR);
+            $query->bindParam(':param7',$param3,PDO::PARAM_STR);
+            $query->bindParam(':param8',$entity,PDO::PARAM_STR);
+            $read=$query->query();
+            $result=$read->readAll();
+            $read->close();			
+            return $result;
+        }
+        
+        public function searchAllObjects(){
+            $connect=Yii::app()->db;
+            $sql="select * from object as ob "
+            ."left join entity_device as ed on ed.serialid_object=ob.serialid_object "
+            ."left join device as dv on dv.id_device=ed.id_device "
+            ."left join service as sv on sv.id_service=ed.id_service "
+            ."left join entity as et on et.id_entity=ed.id_entity";
+            $query=$connect->createCommand($sql);
+            $read=$query->query();
+            $res=$read->readAll();
+            $read->close();
+            return $res;
+        }
+        public function searchObjectsById($idEntDev){
+            $connect=Yii::app()->db;
+            $sql="select * from object as ob "
+            ."left join entity_device as ed on ed.serialid_object=ob.serialid_object "
+            ."left join device as dv on dv.id_device=ed.id_device "
+            ."left join service as sv on sv.id_service=ed.id_service "
+            ."left join entity as et on et.id_entity=ed.id_entity "
+            . "where ed.id_entdev=:identdev";
+            $query=$connect->createCommand($sql);
+            $query->bindParam(":identdev",$idEntDev);
+            $read=$query->query();
+            $res=$read->readAll();
+            $read->close();
+            return $res;
+        }
 }

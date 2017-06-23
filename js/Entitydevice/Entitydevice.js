@@ -15,7 +15,7 @@ var Entitydevice = function(){
     /******************************* ATTRIBUTES *******************************/
     /**************************************************************************/
     var self = this;
-    
+    var arrayMagnitude="";
     //DOM attributes
     /**************************************************************************/
     /********************* CONFIGURATION AND CONSTRUCTOR **********************/
@@ -30,6 +30,7 @@ var Entitydevice = function(){
      */
     var Entitydevice = function() {
         self.div=$("#divEntityDevice");
+        self.divi=$("#divMagnitude");
         setDefaults();
     }();
      
@@ -41,7 +42,16 @@ var Entitydevice = function(){
      * @returns {undefined}
      */
     function setDefaults(){
-       self.div.find("#dataTableEntityMagnitude").DataTable({
+        self.div.find("#dataTableEntityMagnitude").DataTable({
+            oLanguage: Telemed.getDatatableLang(),
+            scrollX: true
+        });
+        self.divi.find("#dataTableEntityMagnitude").DataTable({
+            oLanguage: Telemed.getDatatableLang(),
+            scrollX: true
+        });
+        
+        self.div.find("#dataTableObject").DataTable({
             oLanguage: Telemed.getDatatableLang(),
             scrollX: true
         });
@@ -80,11 +90,50 @@ var Entitydevice = function(){
             estadoGuarda=false;
         });
         
+        self.divi.find("#btnEditaMagnitude").hide();
+        self.divi.find("#btnCancelaEdicion").hide();
+        
+        self.divi.find("#btnRegMagnitude").click(function(){
+            self.registerMagnitudei();
+        });
+        
+        self.divi.find("#btnEditaMagnitude").click(function(){
+            self.editMagnitude();
+        });
+        self.divi.find("#btnCancelaEdicion").click(function(){
+            self.cancelEdition();
+        });
     };    
     /**************************************************************************/
     /********************************** METHODS *******************************/
     /**************************************************************************/
-    
+    /**
+     * Carga datos del Dispositivo seleccionado en el formulario para editar
+     */
+    self.loadMagnitudeToForm=function(idMagnitude){
+        self.divi.find("#btnRegMagnitude").css("display","none");
+        self.divi.find("#btnEditaMagnitude").css("display","block");
+        self.divi.find("#btnCancelaEdicion").css("display","block");
+        $.each(self.arrayMagnitude,function(key,value){
+            if(value.id_magnitude==idMagnitude){
+                self.divi.find("#magnitude-form #MagnitudeEntdev_position_dataframe").val(value.position_dataframe);
+                self.divi.find("#magnitude-form #MagnitudeEntdev_id_magnitude").val(value.id_magnitude);
+                self.divi.find("#magnitude-form #MagnitudeEntdev_serialid_sensor").val(value.serialid_sensor);
+                self.divi.find("#magnitude-form #MagnitudeEntdev_id_meassystem").val(value.id_meassystem);
+                self.divi.find("#magnitude-form #MagnitudeEntdev_min_magnitude").val(value.min_magnitude);
+                self.divi.find("#magnitude-form #MagnitudeEntdev_max_magnitude").val(value.max_magnitude);
+            }
+        });
+    };
+    /**
+     * Cancela edición y limpia formulario
+     */
+    self.cancelEdition=function(){
+        self.divi.find("#btnRegMagnitude").css("display","block");
+        self.divi.find("#btnEditaMagnitude").css("display","none");
+        self.divi.find("#btnCancelaEdicion").css("display","none");
+        self.divi.find("#magnitude-form").trigger("reset");
+    };
     /**************************************************************************/
     /******************************* SYNC METHODS *****************************/
     /**************************************************************************/ 
@@ -118,6 +167,7 @@ var Entitydevice = function(){
             $.notify(msg, typeMsg);
         });
     };
+    
     /**
      * Filtra por texto digitado las empresas creadas
      */
@@ -153,6 +203,7 @@ var Entitydevice = function(){
             }
         });
     };
+   
     /**
      * Consume webservice de consulta de servicios relacionados a empresa
      */
@@ -264,7 +315,89 @@ var Entitydevice = function(){
             $.notify(msg, typeMsg);
         });
     };
-    
+    /**
+     * Consume webservice createEntityDevice para registrar dispositivo en formulario 2
+     */
+    self.registerMagnitudei=function(){
+        var msg="";
+        var typeMsg="";
+        var dataEntity=self.divi.find("#magnitude-form").serialize();
+//        //User.showLoading();
+        $.ajax({
+            type: "POST",
+            dataType:'json',
+            url: 'registerMagnitude',
+            data:dataEntity,
+            beforeSend: function() {
+                self.div.find("#magnitude-form #magnitude-form_es_").html("");                                                    
+		self.div.find("#magnitude-form #magnitude-form_es_").hide();
+                self.div.find(".errorMessage").html("");                                                    
+		self.div.find(".errorMessage").hide();
+                self.div.find("#btnRegMagnitude").hide();
+            }
+        }).done(function(response) {
+            if(response.status=="nosession"){
+                $.notify("La sesión ha caducado, debe hacer login de nuevo", "warn");
+                setTimeout(function(){document.location.href="site/login";}, 3000);
+                return;
+            }
+            else{
+                if(response.status=="exito"){
+                    msg=response.msg;
+                    typeMsg="success";
+                    self.divi.find("#magnitude-form").trigger("reset");  
+                    self.divi.find("#magnitude-form #EntityService_id_entity").val("");  
+                    estadoGuarda=true;
+                    self.divi.find("#dataTableEntityMagnitude").DataTable().clear();
+                    $.each(response.data,function(key,value){
+                        var sensor="";
+                        if(value.sensor_name!=""){
+                            sensor=value.sensor_name;
+                        }
+                        else{
+                            sensor="N.A";
+                        }
+                        self.divi.find("#dataTableEntityMagnitude").DataTable().row.add([
+                            value.position_dataframe,
+                            sensor,
+                            value.magnitude_name,
+                            value.meassystem_spanish,
+                            value.min_magnitude,
+                            value.max_magnitude,
+                            "<a href='javascript:Entitydevice.loadMagnitudeToForm("+self.divi.find("#magnitude-form #MagnitudeEntdev_id_entdev").val()+","+value.magnitude_name+");'>Editar</a>"
+                        ]).draw();
+                        self.div.find("#btnRegMagnitude").show();
+                    });
+                }
+                else{
+                    if(response.status=="noexito"){
+                         msg=response.msg;
+                        typeMsg="warn";
+                    }
+                    else{    
+                        msg="Revise la validación del formuario";
+                        typeMsg="warn";
+                        var errores="Revise lo siguiente<br/><ul>";
+                        $.each(response, function(key, val) {
+                            errores+="<li>"+val+"</li>";
+                            $("#magnitude-form #"+key+"_em_").text(val);                                                    
+                            $("#magnitude-form #"+key+"_em_").show();                                                
+                        });
+                        errores+="</ul>";
+                        self.divi.find("#magnitude-form #magnitude-form_es_").html(errores);                                                    
+                        self.divi.find("#magnitude-form #magnitude-form_es_").show(); 
+                    }  
+                    self.divi.find("#btnRegMagnitude").show(); 
+                }
+            }
+        }).fail(function(error, textStatus, xhr) {
+            msg="Error al asociar la magnitud, el código del error es: "+error.status+" "+xhr;
+            typeMsg="error"; 
+            self.div.find("#btnRegMagnitude").show();
+        }).always(function(){
+            $.notify(msg, typeMsg);
+        });
+    };
     
     /**
      * Consume webservice createEntityDevice para registrar dispositivo
@@ -330,13 +463,30 @@ var Entitydevice = function(){
         }).always(function(){
             $.notify(msg, typeMsg);
         });
-         
     };
+    
     
     /**************************************************************************/
     /******************************* DOM METHODS ******************************/
     /**************************************************************************/
-    
+    /*
+    * Carga datos de dispositivo seleccionado al datatable
+    * @param array data
+    * @returns N.A
+    */ 
+    self.loadDataDevice=function(data){
+        self.arrayDevice=data;
+            dataTableAct.clear();
+            $.each(data,function(key,value){
+                dataTableAct.row.add([
+                    value.id_device,
+                    value.devicetype_label,
+                    value.device_name,
+                    value.statedevice_label,
+                    "<a href=javascript:Device.cargaDeviceAForm('"+value.id_device+"');>Editar</a>"
+                ]).draw();
+            });
+    };
     /**************************************************************************/
     /****************************** OTHER METHODS *****************************/
     /**************************************************************************/
