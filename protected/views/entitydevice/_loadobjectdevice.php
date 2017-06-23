@@ -4,7 +4,7 @@
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/plugins/datatables/dataTables.bootstrap.min.js",CClientScript::POS_END);
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/js/Entitydevice/Entitydevice.js",CClientScript::POS_END);
 ?>
-<section class="content" id="divEntityDevice">
+<section class="content" id="divLoadObj">
     <div class="row">
         <!-- left column -->
         <div class="col-md-12">
@@ -37,8 +37,8 @@
                                             <td><?php echo $object["id_object"]?></td>
                                             <td><?php echo $object["object_name"]?></td>
                                             <td><?php echo $object["object_description"]?></td>
-                                            <td><?php echo CHtml::link('editar',array('editObject','id_entdev'=>$object["id_entdev"])); ?></td>
-                                            <td><?php echo CHtml::link('editar',array('editMagnitude','id_entdev'=>$object["id_entdev"])); ?></td>
+                                            <td><?php echo CHtml::link('editar',array('editObject'), array('submit'=>array('editObject'),'params'=>array('id_entdev'=>$object["id_entdev"]))); ?></td>
+                                            <td><?php echo CHtml::link('editar',array('editMagnitude'), array('submit'=>array('editMagnitude'),'params'=>array('id_entdev'=>$object["id_entdev"]))); ?></td>
                                         </tr>
                                     <?php  endforeach;
                                 endif;

@@ -174,4 +174,19 @@ class EntityDevice extends CActiveRecord
             $read->close();
             return $res;
         }
+        public function searchObjectsById($idEntDev){
+            $connect=Yii::app()->db;
+            $sql="select * from object as ob "
+            ."left join entity_device as ed on ed.serialid_object=ob.serialid_object "
+            ."left join device as dv on dv.id_device=ed.id_device "
+            ."left join service as sv on sv.id_service=ed.id_service "
+            ."left join entity as et on et.id_entity=ed.id_entity "
+            . "where ed.id_entdev=:identdev";
+            $query=$connect->createCommand($sql);
+            $query->bindParam(":identdev",$idEntDev);
+            $read=$query->query();
+            $res=$read->readAll();
+            $read->close();
+            return $res;
+        }
 }

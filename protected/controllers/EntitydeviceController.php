@@ -42,8 +42,8 @@ class EntitydeviceController extends Controller{
     * Carga datos de objetos y renderiza vista para cargar datos en datatable
     */
     public function actionEditObject(){
-        if(!empty($_GET)){
-            $idEntdev=$_GET["id_entdev"];
+        if(!empty($_POST)){
+            $idEntdev=Yii::app()->request->getPost("id_entdev");
             $this->render("_editobject",array("id_entdev"=>$idEntdev));
         }
         else{
@@ -54,12 +54,27 @@ class EntitydeviceController extends Controller{
     * Carga datos de objetos y renderiza vista para modificar magnitudes de objeto
     */
     public function actionEditMagnitude(){
-        if(!empty($_GET)){
+        if(!empty($_POST)){
             $idEntdev=Yii::app()->request->getPost("id_entdev");
-            $this->render("_editmagnitude",array("id_entdev"=>$idEntdev));
+            $modelMagnitudeEntdev= MagnitudeEntdev::model();
+            $typemagnitudes=  Magnitude::model()->findAll();
+            $modelSensor=Sensor::model();
+            $sensors=$modelSensor->searchSensorUnused();
+            $meassSystem=  MeasurementSystem::model()->findAll();
+            $magnitudes=$modelMagnitudeEntdev->searchMagnitudesByObject($idEntdev);
+            $this->render("_editmagnitude",array(
+                "id_entdev"=>$idEntdev,
+                "magnitudes"=>$magnitudes,
+                "modelMagnitudeEntDev"=>$modelMagnitudeEntdev,
+                "typemagnitudes"=>$typemagnitudes,
+                "sensors"=>$sensors,
+                "meassSystem"=>$meassSystem
+            ));
         }
         else{
-            throw new Exception("No se ha especificado id de objeto");
+            $modelEntityDevice=  EntityDevice::model();
+            $objects=$modelEntityDevice->searchAllObjects();
+            $this->render("_loadobjectdevice",array("objects"=>$objects));
         }
     }
     
