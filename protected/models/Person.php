@@ -9,6 +9,7 @@
  * @property string $person_numberid
  * @property string $person_name
  * @property string $person_lastname
+ * @property string $person_email
  *
  * The followings are the available model relations:
  * @property Entity[] $entities
@@ -33,14 +34,26 @@ class Person extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('id_typedocument, person_numberid, person_name, person_lastname', 'required'),
+			array('id_typedocument, person_numberid, person_name, person_lastname, person_email', 'required'),
 			array('id_typedocument', 'numerical', 'integerOnly'=>true),
-			array('person_numberid, person_name, person_lastname', 'length', 'max'=>50),
+			array('person_numberid, person_name, person_lastname, person_email', 'length', 'max'=>50),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id_person, id_typedocument, person_numberid, person_name, person_lastname', 'safe', 'on'=>'search'),
+			array('id_person, id_typedocument, person_numberid, person_name, person_lastname, person_email', 'safe', 'on'=>'search'),
+                        array('person_email', 'UniqueAttributesValidator'),
 		);
 	}
+        
+        /*
+         * Validar correo único
+         */
+        public function UniqueAttributesValidator($attribute,$params){
+            $email=$this->findByAttributes(array('person_email'=>$this->person_email));
+            if(!empty($email)){
+            $this->addError($attribute, 'El email ya se encuentra registrado');
+            
+            }
+        }
 
 	/**
 	 * @return array relational rules.
@@ -67,6 +80,7 @@ class Person extends CActiveRecord
 			'person_numberid' => 'Person Numberid',
 			'person_name' => 'Person Name',
 			'person_lastname' => 'Person Lastname',
+			'person_email' => 'Person Email',
 		);
 	}
 
@@ -93,6 +107,7 @@ class Person extends CActiveRecord
 		$criteria->compare('person_numberid',$this->person_numberid,true);
 		$criteria->compare('person_name',$this->person_name,true);
 		$criteria->compare('person_lastname',$this->person_lastname,true);
+		$criteria->compare('person_email',$this->person_email,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

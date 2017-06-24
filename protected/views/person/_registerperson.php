@@ -49,6 +49,11 @@
                     <?php echo $formPerson->textField($modelPerson,'person_lastname', array ('class' => 'form-control','placeholder'=>'Digite el apellido de la persona')); ?>
                     <?php echo $formPerson->error($modelPerson,'person_lastname'); ?>
                 </div>
+                <div class="form-group">
+                    <?php echo $formPerson->labelEx($modelPerson,'person_email'); ?>
+                    <?php echo $formPerson->textField($modelPerson,'person_email', array ('class' => 'form-control','placeholder'=>'Digite el correo electrónico')); ?>
+                    <?php echo $formPerson->error($modelPerson,'person_email'); ?>
+                </div>
                 <div class="form-group" id="divEntity">
                     <?php echo $formPerson->labelEx($modelEntityPerson,'id_entity'); ?>
                     <?php echo CHtml::textField('nameEntity', '',array('id'=>'nameEntity','class' => 'form-control','placeholder'=>'Digite nombre o identificación de la empresa')); ?>

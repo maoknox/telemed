@@ -61,7 +61,7 @@ class PersonController extends Controller{
             if(empty($datePerson)){
                 $modelUser->attributes=Yii::app()->request->getPost("User");
                 $modelUser->id_person=0;
-                $modelUser->user_active=1;
+                $modelUser->user_active=2;
                 $modelUser->username="aux";
                 $modelUser->password="aux";
                 $dataRole=  Role::model()->findByPk($modelUser->id_role);
@@ -83,14 +83,33 @@ class PersonController extends Controller{
                     try{
                         $modelPerson->save();
                         $modelUser->id_person=$modelPerson->id_person;
+                        $modelUser->username=$modelPerson->person_email;
                         $modelUser->save();
                         if($dataRole->role_name!="SUPERADMIN"){
                                 $modelEntityPerson->id_person=$modelPerson->id_person;
                                 $modelEntityPerson->save();
                         }
-                        $transaction->commit();
+                        
                         $response["status"]="exito";
                         $response["msg"]="Persona registrada satisfactoriamete";
+                        /*Envía correo*/
+                        Yii::import('application.extensions.yii-mail-master.YiiMailMessage');
+                        $message = new YiiMailMessage;
+                        //this points to the file test.php inside the view path
+                        $message->view = "registraPassword";
+                        $params              = array(
+                            'person_name'=>$modelPerson->person_name,
+                            'person_lastname'=>$modelPerson->person_lastname,
+                            'url'=>'http://192.168.0.4/telemed/index.php/site/registerPlatform',
+                            'person_email'=>$modelPerson->person_email,
+                            'message'=>'Bienvenido a la plataforma telemed, a continuación debe copiar o hacer clic en el siguiente link para registrar datos básicos y activar su cuenta'
+                        );
+                        $message->subject    = 'Registro a plataforma';
+                        $message->setBody($params, 'text/html');                
+                        $message->addTo($modelPerson->person_email);
+                        $message->from = "soportecentroforjar@gmail.com";
+                        Yii::app()->mail->send($message);
+                        $transaction->commit();  
                         echo CJSON::encode($response);
                     }
                     catch(ErrorException $e){

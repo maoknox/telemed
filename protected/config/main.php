@@ -29,6 +29,7 @@ return array(
 		),
 		
 	),
+        
 
 	// application components
 	'components'=>array(
@@ -94,6 +95,24 @@ return array(
                         )
                     ),
                 ),
+                'mail' => array(
+			'class' => 'application.extensions.yii-mail-master.YiiMail',
+			'transportType'=>'smtp',
+			'transportOptions'=>array(
+				'host'=>'smtp.gmail.com',				
+				'username'=>'soportecentroforjar@gmail.com',
+				'password'=>'SDIS_&%_1',
+				'port'=>'465',
+				'encryption'=>'tls',
+			),
+				'viewPath' => 'application.views.mail',
+				'logging' => true,
+				'dryRun' => false
+			),
+			'user'=>array(
+			// enable cookie-based authentication
+			'allowAutoLogin'=>true,
+		),
 	),
 
 	// application-level parameters that can be accessed
