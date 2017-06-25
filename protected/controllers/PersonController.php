@@ -68,6 +68,7 @@ class PersonController extends Controller{
                 $postEntity=Yii::app()->request->getPost("EntityPerson");
                 $nameForm="person-form";
                 $this->performAjaxValidation(array($modelPerson,$modelUser),$nameForm);
+                $modelCodeRegister=new CodeRegister();
                 if($modelPerson->validate()&&$modelUser->validate()){
                     if($dataRole->role_name!="SUPERADMIN"){
                         $modelEntityPerson->id_person=0;
@@ -85,11 +86,20 @@ class PersonController extends Controller{
                         $modelUser->id_person=$modelPerson->id_person;
                         $modelUser->username=$modelPerson->person_email;
                         $modelUser->save();
+                        $modelCodeRegister->id_user=$modelUser->id_user;
+                        $modelCodeRegister->id_coderegister=$modelPerson->person_email;
+                        $opciones = [
+                            'cost' => 11,
+                            'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
+                        ];
+                        $modelCodeRegister->code_register=password_hash($modelPerson->person_email, PASSWORD_BCRYPT, $opciones);
+                        if($modelCodeRegister->validate()){
+                            $modelCodeRegister->save();
+                        }
                         if($dataRole->role_name!="SUPERADMIN"){
                                 $modelEntityPerson->id_person=$modelPerson->id_person;
                                 $modelEntityPerson->save();
                         }
-                        
                         $response["status"]="exito";
                         $response["msg"]="Persona registrada satisfactoriamete";
                         /*Envía correo*/
@@ -100,8 +110,8 @@ class PersonController extends Controller{
                         $params              = array(
                             'person_name'=>$modelPerson->person_name,
                             'person_lastname'=>$modelPerson->person_lastname,
-                            'url'=>'http://192.168.0.4/telemed/index.php/site/registerPlatform',
-                            'person_email'=>$modelPerson->person_email,
+                            'url'=>Yii::app()->getBaseUrl(true).'/index.php/site/registerPlatform',
+                            'cdrs'=>$modelCodeRegister->code_register,
                             'message'=>'Bienvenido a la plataforma telemed, a continuación debe copiar o hacer clic en el siguiente link para registrar datos básicos y activar su cuenta'
                         );
                         $message->subject    = 'Registro a plataforma';

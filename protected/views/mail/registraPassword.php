@@ -6,6 +6,6 @@
              echo $person_name." ".$person_lastname;
              ?>
                 <br>
-                <?php echo  $message .": ".$url."?person_email=".$person_email; ?>
+                <?php echo  $message .": ".$url."?cdrs=".$cdrs; ?>
         </body>
        </html>

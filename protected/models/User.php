@@ -24,6 +24,7 @@ class User extends CActiveRecord
 	/**
 	 * @return string the associated database table name
 	 */
+        public $confirmPassword;
 	public function tableName()
 	{
 		return 'user';
@@ -44,8 +45,48 @@ class User extends CActiveRecord
 			array('user_time_start, user_time_end', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id_user, id_person, id_role, username, password, user_active, user_allowed_ip, user_time_start, user_time_end', 'safe', 'on'=>'search'),
-		);
+			array('id_user, id_person, id_role, username, password, user_active, user_allowed_ip, user_time_start, user_time_end, confirmPassword', 'safe', 'on'=>'search'),
+                        array('password','confirmPassword'),
+                        array('username','confirmUsername'),
+                    
+                );
+	}
+        /**
+	 * 	al momento de registrar el usuario en el sistema, éste verifica si la clave digitada coincide con el campo de verificación de clave.
+	 */
+	public function confirmUsername(){
+		if(Yii::app()->controller->action->id=="registerplatform"){
+                    $paramsUser=Yii::app()->request->getPost("User");
+                    if(isset($paramsUser["username"])){
+                        $modelUser=  User::model()->findByAttributes(array("username"=>$paramsUser["username"]));
+                        if(!empty($modelUser)){
+                                $this->addError('username',"El nombre de usuario digitado ya se encuentra registrado, intente otro.");
+                        }
+                    }	
+		}
+	}
+        /**
+	 * 	al momento de registrar el usuario en el sistema, éste verifica si la clave digitada coincide con el campo de verificación de clave.
+	 */
+	public function confirmPassword(){
+		if(Yii::app()->controller->action->id=="registerplatform"){
+                    $paramsUser=Yii::app()->request->getPost("User");
+			if(isset($paramsUser["password"])){
+                            if($this->password!=$paramsUser["confirmPassword"]){
+                                    $this->addError('password',"El password no coincide con la confirmación");
+                            }elseif(strlen($this->password) < 6){
+				  $this->addError('password',"La clave debe tener al menso seis carácteres");
+			   }elseif(strlen($this->password) > 16){
+				  $this->addError('password',"La clave no puede tener mas de 16 carácteres");
+			   }elseif (!preg_match('`[a-z]`',$this->password)){
+				  $this->addError('password',"La clave debe tener al menos una letra minúscula");
+			   }elseif (!preg_match('`[A-Z]`',$this->password)){
+				  $this->addError('password',"La clave debe tener al menos una letra mayúscula");
+			   }elseif (!preg_match('`[0-9]`',$this->password)){
+				  $this->addError('password',"La clave debe tener al menos un caracter numérico");
+			   }
+			}	
+		}
 	}
 
 	/**
@@ -77,6 +118,7 @@ class User extends CActiveRecord
 			'user_allowed_ip' => 'User Allowed Ip',
 			'user_time_start' => 'User Time Start',
 			'user_time_end' => 'User Time End',
+                        'confirmPassword'=>'Confirm password'
 		);
 	}
 
