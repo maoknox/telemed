@@ -138,15 +138,12 @@ class ServiceController extends Controller{
             $criteria->limit = 20;
             $criteria->params = array(':identdev' => $params);
             $dataFrames=$modelDataFrame->findAll($criteria);
-            $magnitudes=array();
+            $magnitudes=array();  
             foreach($dataFrames as $pk=>$dataFrame){
                 $dataFramesArr= explode(",", $dataFrame->dataframe);
                 foreach($positionsDF as $pki=>$position){
-                    $magnitudes[$pk]=array();
-                    if(is_array($position)){
-                        $pos=3+(int)$position["position_dataframe"];
-                        $magnitudes[$pk][$pki]=$dataFramesArr[$pos];
-                    }
+                    $pos=3+$position["position_dataframe"];
+                    $magnitudes[$pk][$pki]=$dataFramesArr[$pos];
                 }
             }
             $object=  Object::model()->findByPk($modelEntdev->serialid_object);
@@ -175,15 +172,12 @@ class ServiceController extends Controller{
             $criteria->params = array(':identdev' => $params);
             $modelDataFrame=  Dataframe::model();
             $dataFrames=$modelDataFrame->findAll($criteria);
-             $magnitudes=array();
+            $magnitudes=array();
             foreach($dataFrames as $pk=>$dataFrame){
                 $dataFramesArr= explode(",", $dataFrame->dataframe);
                 foreach($positionsDF as $pki=>$position){
-                    $magnitudes[$pk]=array();
-                    if(is_array($position)){
-                        $pos=3+(int)$position["position_dataframe"];
-                        $magnitudes[$pk][$pki]=$dataFramesArr[$pos];
-                    }
+                    $pos=3+$position["position_dataframe"];
+                    $magnitudes[$pk][$pki]=$dataFramesArr[$pos];
                 }
             }
             $response["status"]="exito";
