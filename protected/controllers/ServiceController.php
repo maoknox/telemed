@@ -142,7 +142,9 @@ class ServiceController extends Controller{
             foreach($dataFrames as $pk=>$dataFrame){
                 $dataFramesArr= explode(",", $dataFrame->dataframe);
                 foreach($positionsDF as $pki=>$position){
-                    $magnitudes[$pk][$pki]=$dataFramesArr[3+$position["position_dataframe"]];
+                    if(is_array($position)){
+                        $magnitudes[$pk][$pki]=$dataFramesArr[3+$position["position_dataframe"]];
+                    }
                 }
                 
             }
