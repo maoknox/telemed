@@ -138,12 +138,13 @@ class ServiceController extends Controller{
             $criteria->limit = 20;
             $criteria->params = array(':identdev' => $params);
             $dataFrames=$modelDataFrame->findAll($criteria);
-            $magnitudes=array();  
             foreach($dataFrames as $pk=>$dataFrame){
                 $dataFramesArr= explode(",", $dataFrame->dataframe);
+                $dataObjects[$pk]["time"]=$dataFrame->dataframe_date;
                 foreach($positionsDF as $pki=>$position){
-                    $pos=3+$position["position_dataframe"];
-                    $magnitudes[$pk][$pki]=$dataFramesArr[$pos];
+                    if(is_array($position)){
+                        $dataObjects[$pk]["data"][$pki]=$dataFramesArr[3+$position["position_dataframe"]];
+                    }
                 }
             }
             $object=  Object::model()->findByPk($modelEntdev->serialid_object);
@@ -151,7 +152,7 @@ class ServiceController extends Controller{
                 "object"=>$object,
                 "dataFrames"=>$dataFrames,
                 "positionsDF"=>$positionsDF,
-                "magnitudes"=>$magnitudes,
+                "dataObjects"=>$dataObjects,
                 "identdev"=>$params
             ));
         }
@@ -172,16 +173,17 @@ class ServiceController extends Controller{
             $criteria->params = array(':identdev' => $params);
             $modelDataFrame=  Dataframe::model();
             $dataFrames=$modelDataFrame->findAll($criteria);
-            $magnitudes=array();
             foreach($dataFrames as $pk=>$dataFrame){
                 $dataFramesArr= explode(",", $dataFrame->dataframe);
+                $dataObjects[$pk]["time"]=$dataFrame->dataframe_date;
                 foreach($positionsDF as $pki=>$position){
-                    $pos=3+$position["position_dataframe"];
-                    $magnitudes[$pk][$pki]=$dataFramesArr[$pos];
+                    if(is_array($position)){
+                        $dataObjects[$pk]["data"][$pki]=$dataFramesArr[3+$position["position_dataframe"]];
+                    }
                 }
             }
             $response["status"]="exito";
-            $response["data"]=$magnitudes;
+            $response["data"]=$dataObjects;
             echo CJSON::encode($response);
         }
     }
