@@ -85,4 +85,106 @@ class ServiceController extends Controller{
             Yii::app()->end();
         }
     } 
+    public function actionAvl(){
+        $modelEntityDevice=  EntityDevice::model();
+        $modelObject=  Object::model();
+        $modelMagnitudeEntDev=  MagnitudeEntdev::model();
+        $modelDevice=  Device::model();
+        $modelDataFrame=  Dataframe::model();
+        $modelService=  Service::model();
+        $service=$modelService->findByAttributes(array("service_code"=>"AVL"));
+        $devices=$modelEntityDevice->findAllByAttributes(array("id_service"=>$service->id_service));
+        $this->render("_loadavl",array(
+            'modelEntityDevice'=>$modelEntityDevice,
+            'modelObject'=>$modelObject,
+            'modelMagnitudeEntDev'=>$modelMagnitudeEntDev,
+            'modelDevice'=>$modelDevice,
+            'modelDataFrame'=>$modelDataFrame,
+            'modelService'=>$modelService,
+            'modelDataFrame'=>$modelDataFrame,
+            'devices'=>$devices
+        ));
+    }
+    public function actionTelemedicion(){
+        $modelEntityDevice=  EntityDevice::model();
+        $modelObject=  Object::model();
+        $modelMagnitudeEntDev=  MagnitudeEntdev::model();
+        $modelDevice=  Device::model();
+        $modelDataFrame=  Dataframe::model();
+        $modelService=  Service::model();
+        $service=$modelService->findByAttributes(array("service_code"=>"TELEMEDICION"));
+        $devices=$modelEntityDevice->findAllByAttributes(array("id_service"=>$service->id_service));
+        $this->render("_loadtelemed",array(
+            'modelEntityDevice'=>$modelEntityDevice,
+            'modelObject'=>$modelObject,
+            'modelMagnitudeEntDev'=>$modelMagnitudeEntDev,
+            'modelDevice'=>$modelDevice,
+            'modelDataFrame'=>$modelDataFrame,
+            'modelService'=>$modelService,
+            'modelDataFrame'=>$modelDataFrame,
+            'devices'=>$devices
+        ));
+    }
+    public function actionShowDataObjectTelemed(){
+        if(isset($_POST)&&!empty($_POST)){
+            $params=Yii::app()->request->getPost("id_entdev");
+            $modelDataFrame=  Dataframe::model();
+            $modelMagnitudeEntDev=  MagnitudeEntdev::model();
+            $modelEntdev=  EntityDevice::model()->findByPk($params);
+            $positionsDF=$modelMagnitudeEntDev->searchPositionMagnitude($params);
+            $criteria = new CDbCriteria;
+            $criteria->condition = 'id_entdev=:identdev';
+            $criteria->order='dataframe_date DESC';
+            $criteria->limit = 20;
+            $criteria->params = array(':identdev' => $params);
+            $dataFrames=$modelDataFrame->findAll($criteria);
+            $magnitudes="";
+            foreach($dataFrames as $pk=>$dataFrame){
+                $dataFramesArr= explode(",", $dataFrame->dataframe);
+                foreach($positionsDF as $pki=>$position){
+                    $magnitudes[$pk][$pki]=$dataFramesArr[3+$position["position_dataframe"]];
+                }
+                
+            }
+            $object=  Object::model()->findByPk($modelEntdev->serialid_object);
+            $this->render("_showobjectelemed",array(
+                "object"=>$object,
+                "dataFrames"=>$dataFrames,
+                "positionsDF"=>$positionsDF,
+                "magnitudes"=>$magnitudes,
+                "identdev"=>$params
+            ));
+        }
+        else{
+            $this->actionTelemedicion();
+        }
+    }
+    
+    public function actionSearchDataTelemed(){
+        if(isset($_POST)&&!empty($_POST)){
+            $params=Yii::app()->request->getPost("identdev");
+            $modelMagnitudeEntDev=  MagnitudeEntdev::model();
+            $positionsDF=$modelMagnitudeEntDev->searchPositionMagnitude($params);
+            $criteria = new CDbCriteria;
+            $criteria->condition = 'id_entdev=:identdev';
+            $criteria->order='dataframe_date DESC';
+            $criteria->limit = 20;
+            $criteria->params = array(':identdev' => $params);
+            $modelDataFrame=  Dataframe::model();
+            $dataFrames=$modelDataFrame->findAll($criteria);
+            $magnitudes="";
+            foreach($dataFrames as $pk=>$dataFrame){
+                $dataFramesArr= explode(",", $dataFrame->dataframe);
+                foreach($positionsDF as $pki=>$position){
+                    $magnitudes[$pk][$pki]=$dataFramesArr[3+$position["position_dataframe"]];
+                }
+            }
+            $response["status"]="exito";
+            $response["data"]=$magnitudes;
+            echo CJSON::encode($response);
+        }
+    }
+    public function actionTelecontrol(){
+        $this->render("_loadtelecontrol");
+    }
 }

@@ -1,5 +1,4 @@
 <?php
-
 class SiteController extends Controller
 {
     /**
@@ -23,7 +22,7 @@ class SiteController extends Controller
      */
     public function filters(){
         return array(
-                'enforcelogin -login -index -logout -contact',                      
+                'enforcelogin -login -index -logout -contact -registerPlatform',                      
         );
     }
 	/**
@@ -49,14 +48,15 @@ class SiteController extends Controller
 	 * This is the default 'index' action that is invoked
 	 * when an action is not explicitly requested by users.
 	 */
-	public function actionIndex()
-	{
+	public function actionIndex(){
             if(Yii::app()->user->isGuest){
                 Yii::app()->user->returnUrl = array("site/login");                                                          
                 $this->redirect(Yii::app()->user->returnUrl);
             }
             else{
-                 $this->render('index');
+                $modelEntity=  Entity::model();
+                $modelEntityPerson=  EntityPerson::model();
+                $this->render('index');
             }
 	}
 
@@ -138,7 +138,59 @@ class SiteController extends Controller
 	 */
 	public function actionLogout(){
             Yii::app()->user->logout();
-             Yii::app()->user->returnUrl = array("site/login");                                                          
-                            $this->redirect(Yii::app()->user->returnUrl);
+            Yii::app()->user->returnUrl = array("site/login");                                                          
+            $this->redirect(Yii::app()->user->returnUrl);
 	}
+        public function actionRegisterPlatform(){
+            if(empty($_POST)){
+                $cdrs=$_GET["cdrs"];
+                $modelCodeRegister=  CodeRegister::model()->findByAttributes(array('code_register'=>$cdrs));
+                $personRegister=false;
+                $modelUser=  User::model();
+                if(!empty($modelCodeRegister)){
+                    $personRegister=true;
+                }
+                $this->render('_registerplatform',array(
+                    "cdrs"=>$cdrs,
+                    'model'=>$modelUser,
+                    'modelCodeRegister'=>$modelCodeRegister,
+                    'personRegister'=>$personRegister
+                ));
+            }
+            else{
+                $personRegister=true;
+                $modelUser=User::model();
+                $modelUser->attributes=Yii::app()->request->getPost("User");
+                $cdrs=$_GET["cdrs"];
+                $modelCodeRegister=  CodeRegister::model()->findByAttributes(array('code_register'=>$cdrs));
+                if(!empty($modelCodeRegister)){
+                    $modelUserReg=  User::model()->findByPk($modelCodeRegister->id_user);
+                }
+                $modelUser->id_user=$modelUserReg->id_user;
+                $modelUser->id_person=$modelUserReg->id_person;
+                $modelUser->id_role=$modelUserReg->id_role;
+                $modelUser->user_active=1;
+                 // if it is ajax validation request
+                if(isset($_POST['ajax']) && $_POST['ajax']==='register-form')
+                {
+                        echo CActiveForm::validate($modelUser);
+                        Yii::app()->end();
+                }
+                
+                if($modelUser->validate()){
+                    $modelUser->password=md5($modelUser->password);
+                    if($modelUser->updateByPk($modelUser->id_user,array("password"=>$modelUser->password,"username"=>$modelUser->username,"user_active"=>$modelUser->user_active))){
+                        $modelCodeRegister->deleteByPk($modelCodeRegister->id_coderegister);
+                        Yii::app()->user->setFlash('success', "Su usuario ha sido activado");
+                    }
+                }
+                
+                $this->render('_registerplatform',array(
+                    "cdrs"=>$cdrs,
+                    'model'=>$modelUser,
+                    'modelCodeRegister'=>$modelCodeRegister,
+                    'personRegister'=>$personRegister
+                ));
+            }
+        }
 }

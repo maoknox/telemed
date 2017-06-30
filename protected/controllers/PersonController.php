@@ -61,13 +61,14 @@ class PersonController extends Controller{
             if(empty($datePerson)){
                 $modelUser->attributes=Yii::app()->request->getPost("User");
                 $modelUser->id_person=0;
-                $modelUser->user_active=1;
+                $modelUser->user_active=2;
                 $modelUser->username="aux";
                 $modelUser->password="aux";
                 $dataRole=  Role::model()->findByPk($modelUser->id_role);
                 $postEntity=Yii::app()->request->getPost("EntityPerson");
                 $nameForm="person-form";
                 $this->performAjaxValidation(array($modelPerson,$modelUser),$nameForm);
+                $modelCodeRegister=new CodeRegister();
                 if($modelPerson->validate()&&$modelUser->validate()){
                     if($dataRole->role_name!="SUPERADMIN"){
                         $modelEntityPerson->id_person=0;
@@ -83,14 +84,42 @@ class PersonController extends Controller{
                     try{
                         $modelPerson->save();
                         $modelUser->id_person=$modelPerson->id_person;
+                        $modelUser->username=$modelPerson->person_email;
                         $modelUser->save();
+                        $modelCodeRegister->id_user=$modelUser->id_user;
+                        $modelCodeRegister->id_coderegister=$modelPerson->person_email;
+                        $opciones = [
+                            'cost' => 11,
+                            'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
+                        ];
+                        $modelCodeRegister->code_register=password_hash($modelPerson->person_email, PASSWORD_BCRYPT, $opciones);
+                        if($modelCodeRegister->validate()){
+                            $modelCodeRegister->save();
+                        }
                         if($dataRole->role_name!="SUPERADMIN"){
                                 $modelEntityPerson->id_person=$modelPerson->id_person;
                                 $modelEntityPerson->save();
                         }
-                        $transaction->commit();
                         $response["status"]="exito";
                         $response["msg"]="Persona registrada satisfactoriamete";
+                        /*Envía correo*/
+                        Yii::import('application.extensions.yii-mail-master.YiiMailMessage');
+                        $message = new YiiMailMessage;
+                        //this points to the file test.php inside the view path
+                        $message->view = "registraPassword";
+                        $params              = array(
+                            'person_name'=>$modelPerson->person_name,
+                            'person_lastname'=>$modelPerson->person_lastname,
+                            'url'=>Yii::app()->getBaseUrl(true).'/index.php/site/registerPlatform',
+                            'cdrs'=>$modelCodeRegister->code_register,
+                            'message'=>'Bienvenido a la plataforma telemed, a continuación debe copiar o hacer clic en el siguiente link para registrar datos básicos y activar su cuenta'
+                        );
+                        $message->subject    = 'Registro a plataforma';
+                        $message->setBody($params, 'text/html');                
+                        $message->addTo($modelPerson->person_email);
+                        $message->from = "soportecentroforjar@gmail.com";
+                        Yii::app()->mail->send($message);
+                        $transaction->commit();  
                         echo CJSON::encode($response);
                     }
                     catch(ErrorException $e){

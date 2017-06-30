@@ -91,4 +91,27 @@ class EntityPerson extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+        
+        /**
+	 * Returns an array with entity's services from id_user variable.
+	 * @param string $idPerson .
+	 * @return $res aray
+	 */
+        public function searchServiceByEntity(){
+            $conn=Yii::app()->db;
+            $sql="select sr.id_service,sr.service_name,sr.service_code from public.user as us "
+                    . "left join entity_person as ep on ep.id_person=us.id_person "
+                    . "left join entity as et on et.id_entity=ep.id_entity "
+                    . "left join entity_service as se on se.id_entity=et.id_entity "
+                    . "left join service as sr on sr.id_service=se.id_service "
+                    . "where us.username=:username";
+            $query=$conn->createCommand($sql);
+            $username=Yii::app()->user->getId();
+            $query->bindParam(":username",$username);
+            $read=$query->query();
+            $res=$read->readAll();
+            $read->close();
+            return $res;
+        }
+        
 }

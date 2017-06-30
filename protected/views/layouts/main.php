@@ -255,6 +255,34 @@
                 </li>
               </ul>
             </li>
+         <?php elseif(Yii::app()->user->getState('nombreRole')=="CLIENTEPRINCIPAL"):?>
+            <?php
+                $modelEntityPerson=  EntityPerson::model();
+                $services=$modelEntityPerson->searchServiceByEntity();
+                //echo Yii::app()->user->getId();
+            ?>
+            <li class="treeview">
+                <a href="#">
+                  <i class="fa fa-edit"></i> <span>Servicios</span>
+                  <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </span>
+                </a>
+                <ul class="treeview-menu">
+                    <?php foreach($services as $service):
+                        $serviceUrl="";
+                        if($service["service_code"]=="AVL"):
+                            $serviceUrl="avl";
+                        elseif($service["service_code"]=="TELEMEDICION"):
+                            $serviceUrl="telemedicion";
+                        elseif($service["service_code"]=="TELECONTROL"):
+                            $serviceUrl="telecontrol";
+                        endif;
+                    ?>
+                        <li><a href="<?php echo Yii::app()->request->baseUrl?>/index.php/service/<?php echo $serviceUrl?>"><i class="fa fa-circle-o"></i><?php echo $service["service_name"]?></a></li>
+                   <?php  endforeach;?>
+              </ul>
+            </li>
          <?php endif;?> 
       </ul>
     </section>
