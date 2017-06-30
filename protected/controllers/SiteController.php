@@ -1,5 +1,4 @@
 <?php
-
 class SiteController extends Controller
 {
     /**
@@ -49,14 +48,15 @@ class SiteController extends Controller
 	 * This is the default 'index' action that is invoked
 	 * when an action is not explicitly requested by users.
 	 */
-	public function actionIndex()
-	{
+	public function actionIndex(){
             if(Yii::app()->user->isGuest){
                 Yii::app()->user->returnUrl = array("site/login");                                                          
                 $this->redirect(Yii::app()->user->returnUrl);
             }
             else{
-                 $this->render('index');
+                $modelEntity=  Entity::model();
+                $modelEntityPerson=  EntityPerson::model();
+                $this->render('index');
             }
 	}
 
