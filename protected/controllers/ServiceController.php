@@ -129,6 +129,7 @@ class ServiceController extends Controller{
         if(isset($_POST)&&!empty($_POST)){
             $params=Yii::app()->request->getPost("id_entdev");
             $modelDataFrame=  Dataframe::model();
+            $modelDataFrame->dataframe_date;
             $modelMagnitudeEntDev=  MagnitudeEntdev::model();
             $modelEntdev=  EntityDevice::model()->findByPk($params);
             $positionsDF=$modelMagnitudeEntDev->searchPositionMagnitude($params);
@@ -138,22 +139,21 @@ class ServiceController extends Controller{
             $criteria->limit = 20;
             $criteria->params = array(':identdev' => $params);
             $dataFrames=$modelDataFrame->findAll($criteria);
-            $magnitudes="";
             foreach($dataFrames as $pk=>$dataFrame){
                 $dataFramesArr= explode(",", $dataFrame->dataframe);
+                $dataObjects[$pk]["time"]=$dataFrame->dataframe_date;
                 foreach($positionsDF as $pki=>$position){
                     if(is_array($position)){
-                        $magnitudes[$pk][$pki]=$dataFramesArr[3+$position["position_dataframe"]];
+                        $dataObjects[$pk]["data"][$pki]=$dataFramesArr[3+$position["position_dataframe"]];
                     }
                 }
-                
             }
             $object=  Object::model()->findByPk($modelEntdev->serialid_object);
             $this->render("_showobjectelemed",array(
                 "object"=>$object,
                 "dataFrames"=>$dataFrames,
                 "positionsDF"=>$positionsDF,
-                "magnitudes"=>$magnitudes,
+                "dataObjects"=>$dataObjects,
                 "identdev"=>$params
             ));
         }
@@ -174,15 +174,17 @@ class ServiceController extends Controller{
             $criteria->params = array(':identdev' => $params);
             $modelDataFrame=  Dataframe::model();
             $dataFrames=$modelDataFrame->findAll($criteria);
-            $magnitudes="";
             foreach($dataFrames as $pk=>$dataFrame){
                 $dataFramesArr= explode(",", $dataFrame->dataframe);
+                $dataObjects[$pk]["time"]=$dataFrame->dataframe_date;
                 foreach($positionsDF as $pki=>$position){
-                    $magnitudes[$pk][$pki]=$dataFramesArr[3+$position["position_dataframe"]];
+                    if(is_array($position)){
+                        $dataObjects[$pk]["data"][$pki]=$dataFramesArr[3+$position["position_dataframe"]];
+                    }
                 }
             }
             $response["status"]="exito";
-            $response["data"]=$magnitudes;
+            $response["data"]=$dataObjects;
             echo CJSON::encode($response);
         }
     }

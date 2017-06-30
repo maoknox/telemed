@@ -33,6 +33,7 @@
                     <table id="dataTableObject" class="table table-bordered table-striped">
                         <thead>
                             <tr>
+                                <td>Fecha-hora</td>
                             <?php 
                                 foreach($positionsDF as $position):?>
                                 <td><?php echo $position["magnitude_name"]?></td>
@@ -42,9 +43,10 @@
                         </thead>
                         <tbody>
                             <?php 
-                                foreach($magnitudes as $magnitud):?>
+                                foreach($dataObjects as $dataObject):?>
                                     <tr>
-                                   <?php foreach($magnitud as $data):?>
+                                        <td><?php echo $dataObject["time"]?></td>
+                                   <?php foreach($dataObject["data"] as $data):?>
                                         <td><?php echo $data?></td>
                                     <?php endforeach;?>
                                     </tr>
@@ -53,6 +55,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
+                                <td>Fecha-hora</td>
                             <?php 
                                 foreach($positionsDF as $position):?>
                                 <td><?php echo $position["magnitude_name"]?></td>
