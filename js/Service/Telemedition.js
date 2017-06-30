@@ -50,7 +50,8 @@ var Telemedition = function(){
         });
         dataTableObject=self.div.find("#dataTableObject").DataTable({
             oLanguage: Telemed.getDatatableLang(),
-            scrollX: true
+            scrollX: true,
+            order: [[ 0, "desc" ]]
         });
        
     };    
@@ -120,7 +121,8 @@ var Telemedition = function(){
             dataTableObject.clear();
             $.each(data,function(key,value){
                 var row=[];
-                $.each(value,function(keyi,valuei){
+                row.push(value.time);
+                $.each(value.data,function(keyi,valuei){
                     row.push(valuei);
                 });
                 dataTableObject.row.add(row).draw();
