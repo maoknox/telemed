@@ -42,7 +42,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php 
+                            <?php if(isset($dataObjects) && !empty($dataObjects)):
                                 foreach($dataObjects as $dataObject):?>
                                     <tr>
                                         <td><?php echo $dataObject["time"]?></td>
@@ -50,7 +50,7 @@
                                         <td><?php echo $data?></td>
                                     <?php endforeach;?>
                                     </tr>
-                                 <?php endforeach;
+                                 <?php endforeach;endif;
                             ?>
                         </tbody>
                         <tfoot>
