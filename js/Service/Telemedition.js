@@ -66,7 +66,7 @@ var Telemedition = function(){
     /******************************* SYNC METHODS *****************************/
     /**************************************************************************/ 
     self.searchDataTelemedWs=function(){
-        /**
+    /**
      * Consume webservice registerDevice registrar dispositivo
      */
     
@@ -97,13 +97,6 @@ var Telemedition = function(){
                     
                 }
             }
-        }).fail(function(error, textStatus, xhr) {
-            msg="Error al crear el dispositivo, el código del error es: "+error.status+" "+xhr;
-            typeMsg="error";
-            self.div.find("#btnRegDevice").show();
-        }).always(function(){
-            self.div.find("#btnRegDevice").show();
-            $.notify(msg, typeMsg);
         });
         self.searchDataTelemed();
     };

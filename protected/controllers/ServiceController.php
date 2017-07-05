@@ -139,6 +139,7 @@ class ServiceController extends Controller{
             $criteria->limit = 20;
             $criteria->params = array(':identdev' => $params);
             $dataFrames=$modelDataFrame->findAll($criteria);
+            $dataObjects=array();
             foreach($dataFrames as $pk=>$dataFrame){
                 $dataFramesArr= explode(",", $dataFrame->dataframe);
                 $dataObjects[$pk]["time"]=$dataFrame->dataframe_date;
@@ -174,6 +175,7 @@ class ServiceController extends Controller{
             $criteria->params = array(':identdev' => $params);
             $modelDataFrame=  Dataframe::model();
             $dataFrames=$modelDataFrame->findAll($criteria);
+            $dataObjects=array();
             foreach($dataFrames as $pk=>$dataFrame){
                 $dataFramesArr= explode(",", $dataFrame->dataframe);
                 $dataObjects[$pk]["time"]=$dataFrame->dataframe_date;
