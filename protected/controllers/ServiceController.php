@@ -105,6 +105,88 @@ class ServiceController extends Controller{
             'devices'=>$devices
         ));
     }
+    public function actionShowDataObjectAvl(){
+        if(isset($_POST)&&!empty($_POST)){
+            $params=Yii::app()->request->getPost("id_entdev");
+            $modelDataFrame=  Dataframe::model();
+            $modelMagnitudeEntDev=  MagnitudeEntdev::model();
+            $modelEntdev=  EntityDevice::model()->findByPk($params);
+            $positionsDF=$modelMagnitudeEntDev->searchPositionMagnitude($params);
+            $latitude=$modelDataFrame->searchGeoposition($positionsDF,"LAT",$params);
+            $longitude=$modelDataFrame->searchGeoposition($positionsDF,"LONG",$params);
+//            echo $modelDataFrame->time;exit();
+            $criteria = new CDbCriteria;
+            $criteria->condition = 'id_entdev=:identdev';
+            $criteria->order='dataframe_date DESC';
+            $criteria->limit = 20;
+            $criteria->params = array(':identdev' => $params);
+            $dataFrames=$modelDataFrame->findAll($criteria);
+            $dataObjects=array();
+            foreach($dataFrames as $pk=>$dataFrame){
+                $dataFramesArr= explode(",", $dataFrame->dataframe);
+                $dataObjects[$pk]["time"]=$dataFrame->dataframe_date;
+                foreach($positionsDF as $pki=>$position){
+                    if(is_array($position)){
+                        $dataObjects[$pk]["data"][$pki]=$dataFramesArr[3+$position["position_dataframe"]];
+                    }
+                }
+            }
+            $object=  Object::model()->findByPk($modelEntdev->serialid_object);
+            $this->render("_showobjectavl",array(
+                "object"=>$object,
+                "dataFrames"=>$dataFrames,
+                "positionsDF"=>$positionsDF,
+                "dataObjects"=>$dataObjects,
+                "identdev"=>$params,
+                "latitude"=>$latitude,
+                "longitude"=>$longitude,
+                "time"=>$modelDataFrame->time
+            ));
+        }
+        else{
+            $this->actionAvl();
+        }
+    }
+    public function actionShowPoint(){
+        $idEntDev=Yii::app()->request->getPost("idEntDev");
+        $modelDataFrame=  Dataframe::model();
+        $modelMagnitudeEntDev=  MagnitudeEntdev::model();
+        $modelEntdev=  EntityDevice::model()->findByPk($idEntDev);
+        $positionsDF=$modelMagnitudeEntDev->searchPositionMagnitude($idEntDev);
+        $response["latitude"]=$modelDataFrame->searchGeoposition($positionsDF,"LAT",$idEntDev);
+        $response["longitude"]=$modelDataFrame->searchGeoposition($positionsDF,"LONG",$idEntDev);
+        $response["time"]=$modelDataFrame->time;
+        $response["status"]="exito";
+        echo CJSON::encode($response);
+        
+    }
+    public function actionSearchDataAvl(){
+        if(isset($_POST)&&!empty($_POST)){
+            $params=Yii::app()->request->getPost("identdev");
+            $modelMagnitudeEntDev=  MagnitudeEntdev::model();
+            $positionsDF=$modelMagnitudeEntDev->searchPositionMagnitude($params);
+            $criteria = new CDbCriteria;
+            $criteria->condition = 'id_entdev=:identdev';
+            $criteria->order='dataframe_date DESC';
+            $criteria->limit = 20;
+            $criteria->params = array(':identdev' => $params);
+            $modelDataFrame=  Dataframe::model();
+            $dataFrames=$modelDataFrame->findAll($criteria);
+            $dataObjects=array();
+            foreach($dataFrames as $pk=>$dataFrame){
+                $dataFramesArr= explode(",", $dataFrame->dataframe);
+                $dataObjects[$pk]["time"]=$dataFrame->dataframe_date;
+                foreach($positionsDF as $pki=>$position){
+                    if(is_array($position)){
+                        $dataObjects[$pk]["data"][$pki]=$dataFramesArr[3+$position["position_dataframe"]];
+                    }
+                }
+            }
+            $response["status"]="exito";
+            $response["data"]=$dataObjects;
+            echo CJSON::encode($response);
+        }
+    }
     public function actionTelemedicion(){
         $modelEntityDevice=  EntityDevice::model();
         $modelObject=  Object::model();
@@ -163,6 +245,7 @@ class ServiceController extends Controller{
         }
     }
     
+    
     public function actionSearchDataTelemed(){
         if(isset($_POST)&&!empty($_POST)){
             $params=Yii::app()->request->getPost("identdev");
@@ -190,6 +273,7 @@ class ServiceController extends Controller{
             echo CJSON::encode($response);
         }
     }
+    
     public function actionTelecontrol(){
         $this->render("_loadtelecontrol");
     }
