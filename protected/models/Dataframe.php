@@ -17,6 +17,7 @@ class Dataframe extends CActiveRecord
 	/**
 	 * @return string the associated database table name
 	 */
+        public $time="";
 	public function tableName()
 	{
 		return 'dataframe';
@@ -101,4 +102,26 @@ class Dataframe extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+        
+        public function searchGeoposition($positionDF,$geoLatLong,$idEntDev){
+            $latLong="";
+            $positionMag="";
+            if(!empty($positionDF)){
+                foreach($positionDF as $position){
+                    if($position["magnitude_code"]==$geoLatLong){
+                        $positionMag=$position["position_dataframe"];
+                    }
+                }
+                $criteria = new CDbCriteria;
+                $criteria->condition = 'id_entdev=:identdev';
+                $criteria->order='dataframe_date DESC';
+                $criteria->limit = 1;
+                $criteria->params = array(':identdev' => $idEntDev);
+                $dataFrame=$this->find($criteria);
+                $dataFramesArr= explode(",", $dataFrame->dataframe);
+                $this->time=$dataFrame->dataframe_date;
+                $latLong=$dataFramesArr[3+$positionMag];
+            }
+            return $latLong;
+        }
 }

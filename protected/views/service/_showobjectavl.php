@@ -1,17 +1,24 @@
 <?php
     Yii::app()->clientScript->registerCssFile(Yii::app()->baseUrl.'/plugins/datatables/dataTables.bootstrap.css');
+    Yii::app()->clientScript->registerCssFile('http://api.tiles.mapbox.com/mapbox.js/v2.2.4/mapbox.css');
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/plugins/datatables/jquery.dataTables.min.js",CClientScript::POS_END);
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/plugins/datatables/dataTables.bootstrap.min.js",CClientScript::POS_END);
-    Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/js/Service/Telemedition.js",CClientScript::POS_END);
+    Yii::app()->clientScript->registerScriptFile("http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js",CClientScript::POS_END);
+    Yii::app()->clientScript->registerScriptFile("http://api.tiles.mapbox.com/mapbox.js/v2.2.4/mapbox.js",CClientScript::POS_END);
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/js/Service/Avl.js",CClientScript::POS_END);
+    
 /* 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 ?>
-<section class="content" id="divTelemed">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+<section class="content" id="divAvl">
+          <!-- Main row -->
+      <div class="row">
+        <!-- Left col -->
+        <section class="col-lg-5 connectedSortable">
+          <!-- Custom tabs (Charts with tabs)-->
             <div class="box box-primary">
                 <div class="box-header with-border">
                   <h3 class="box-title">Identificación de objeto</h3>
@@ -20,14 +27,10 @@
                     <p>Nombre de objeto: <?php echo $object->object_name?></p>
                 </div>
             </div>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+          <!-- /.nav-tabs-custom -->
             <div class="box box-primary">
                 <div class="box-header with-border">
-                  <h3 class="box-title">Magnitudes </h3>
+                  <h3 class="box-title">Dispositivos registrados</h3>
                 </div>
                 <div class="box-body">
                     <table id="dataTableObject" class="table table-bordered table-striped">
@@ -66,11 +69,29 @@
                     </table>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
+        </section>
+        <!-- /.Left col -->
+        <!-- right col (We are only adding the ID to make the widgets sortable)-->
+        <section class="col-lg-7 connectedSortable">
+            <div class="box box-primary">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">Ubicación del vehículo</h3>
+                    </div>
+                    <div class="box-body">
+                        <div id="map" style="width: 100%; height: 50em; float:left; display: inline"></div>
+                </div>
+            </div>
+          
+
+        </section>
+        <!-- right col -->
+      </div>
+      <!-- /.row (main row) -->
+      </section>
+    
  <?php 
  Yii::app()->clientScript->registerScript('cargaDataObject', '
-     Telemedition.idEntdev='.$identdev.'
-    Telemedition.searchDataTelemed();
+    Avl.idEntdev='.$identdev.'
+    Avl.searchDataAvl();
+    Avl.iniMap("'.$latitude.'","'.$longitude.'","'.$time.'");
 ');
