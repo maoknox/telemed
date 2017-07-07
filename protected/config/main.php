@@ -101,7 +101,7 @@ return array(
 			'transportOptions'=>array(
 				'host'=>'smtp.gmail.com',				
 				'username'=>'soportecentroforjar@gmail.com',
-				'password'=>'SDIS_&%_1',
+				'password'=>"SDIS_&%_1",
 				'port'=>'465',
 				'encryption'=>'tls',
 			),
