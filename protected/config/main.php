@@ -108,10 +108,10 @@ return array(
 				'viewPath' => 'application.views.mail',
 				'logging' => true,
 				'dryRun' => false
-			),
-			'user'=>array(
-			// enable cookie-based authentication
-			'allowAutoLogin'=>true,
+                    ),
+                    'user'=>array(
+                    // enable cookie-based authentication
+                    'allowAutoLogin'=>true,
 		),
 	),
 

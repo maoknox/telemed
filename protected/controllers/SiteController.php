@@ -178,7 +178,7 @@ class SiteController extends Controller
                 }
                 
                 if($modelUser->validate()){
-                    $modelUser->password=md5($modelUser->password);
+                    $modelUser->password=$this->cryptPassword($modelUser->password);
                     if($modelUser->updateByPk($modelUser->id_user,array("password"=>$modelUser->password,"username"=>$modelUser->username,"user_active"=>$modelUser->user_active))){
                         $modelCodeRegister->deleteByPk($modelCodeRegister->id_coderegister);
                         Yii::app()->user->setFlash('success', "Su usuario ha sido activado");
@@ -192,5 +192,13 @@ class SiteController extends Controller
                     'personRegister'=>$personRegister
                 ));
             }
+        }
+        private function cryptPassword($prePassword){
+            $opciones = [
+                'cost' => 9,
+                'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
+            ];
+            $password=password_hash($prePassword, PASSWORD_BCRYPT, $opciones);
+            return $password;
         }
 }

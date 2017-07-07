@@ -114,7 +114,7 @@ class PersonController extends Controller{
                             'cdrs'=>$modelCodeRegister->code_register,
                             'message'=>'Bienvenido a la plataforma telemed, a continuación debe copiar o hacer clic en el siguiente link para registrar datos básicos y activar su cuenta'
                         );
-                        $message->subject    = 'Registro a plataforma';
+                        $message->subject    = 'Registro a plataforma INGETRONIK';
                         $message->setBody($params, 'text/html');                
                         $message->addTo($modelPerson->person_email);
                         $message->from = "soportecentroforjar@gmail.com";

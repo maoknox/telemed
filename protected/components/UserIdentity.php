@@ -25,8 +25,8 @@ class UserIdentity extends CUserIdentity
                 $this->errorCode=self::ERROR_USERNAME_INVALID;
         }
         else{
-            //$decryptPsw=$this->decryptPassword($userFromDb->password);
-            if($userFromDb->password!== md5($this->password)){
+            $verifyPass=$this->verifyPassword($userFromDb->password,$this->password);
+            if(!$verifyPass){
                 $this->errorCode=self::ERROR_PASSWORD_INVALID;
             }
             else{
@@ -41,6 +41,14 @@ class UserIdentity extends CUserIdentity
         }
         
         return !$this->errorCode;
+    }
+    
+    private function verifyPassword($passHash,$passwordForm){
+        if (password_verify($passwordForm, $passHash)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 //    private function cryptPassword($password){
 //        $td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
