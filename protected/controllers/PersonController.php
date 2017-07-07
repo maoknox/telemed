@@ -89,8 +89,8 @@ class PersonController extends Controller{
                         $modelCodeRegister->id_user=$modelUser->id_user;
                         $modelCodeRegister->id_coderegister=$modelPerson->person_email;
                         $opciones = [
-                            'cost' => 11,
-                            'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
+                            'cost' => 9,
+                            'salt' => openssl_random_pseudo_bytes(22,$crypt),
                         ];
                         $modelCodeRegister->code_register=password_hash($modelPerson->person_email, PASSWORD_BCRYPT, $opciones);
                         if($modelCodeRegister->validate()){
