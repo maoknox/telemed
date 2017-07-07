@@ -195,8 +195,7 @@ class SiteController extends Controller
         }
         private function cryptPassword($prePassword){
             $opciones = [
-                'cost' => 9,
-                'salt' => openssl_random_pseudo_bytes(22,$crypt),
+                'cost' => 9
             ];
             $password=password_hash($prePassword, PASSWORD_BCRYPT, $opciones);
             return $password;
