@@ -120,7 +120,7 @@ class Dataframe extends CActiveRecord
                 $dataFrame=$this->find($criteria);
                 $dataFramesArr= explode(",", $dataFrame->dataframe);
                 $this->time=$dataFrame->dataframe_date;
-                $latLong=$dataFramesArr[3+$positionMag];
+                $latLong=$dataFramesArr[-1+$positionMag];
             }
             return $latLong;
         }

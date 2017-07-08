@@ -244,8 +244,7 @@ class ServiceController extends Controller{
             $this->actionTelemedicion();
         }
     }
-    
-    
+       
     public function actionSearchDataTelemed(){
         if(isset($_POST)&&!empty($_POST)){
             $params=Yii::app()->request->getPost("identdev");
