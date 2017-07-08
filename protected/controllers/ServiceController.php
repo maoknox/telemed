@@ -127,7 +127,7 @@ class ServiceController extends Controller{
                 $dataObjects[$pk]["time"]=$dataFrame->dataframe_date;
                 foreach($positionsDF as $pki=>$position){
                     if(is_array($position)){
-                        $dataObjects[$pk]["data"][$pki]=$dataFramesArr[3+$position["position_dataframe"]];
+                        $dataObjects[$pk]["data"][$pki]=$dataFramesArr[-1+$position["position_dataframe"]];
                     }
                 }
             }
@@ -178,7 +178,7 @@ class ServiceController extends Controller{
                 $dataObjects[$pk]["time"]=$dataFrame->dataframe_date;
                 foreach($positionsDF as $pki=>$position){
                     if(is_array($position)){
-                        $dataObjects[$pk]["data"][$pki]=$dataFramesArr[3+$position["position_dataframe"]];
+                        $dataObjects[$pk]["data"][$pki]=$dataFramesArr[-1+$position["position_dataframe"]];
                     }
                 }
             }
@@ -226,7 +226,7 @@ class ServiceController extends Controller{
                 $dataObjects[$pk]["time"]=$dataFrame->dataframe_date;
                 foreach($positionsDF as $pki=>$position){
                     if(is_array($position)){
-                        $dataObjects[$pk]["data"][$pki]=$dataFramesArr[3+$position["position_dataframe"]];
+                        $dataObjects[$pk]["data"][$pki]=$dataFramesArr[-1+$position["position_dataframe"]];
                     }
                 }
             }
@@ -263,7 +263,7 @@ class ServiceController extends Controller{
                 $dataObjects[$pk]["time"]=$dataFrame->dataframe_date;
                 foreach($positionsDF as $pki=>$position){
                     if(is_array($position)){
-                        $dataObjects[$pk]["data"][$pki]=$dataFramesArr[3+$position["position_dataframe"]];
+                        $dataObjects[$pk]["data"][$pki]=$dataFramesArr[-1+$position["position_dataframe"]];
                     }
                 }
             }
