@@ -105,10 +105,13 @@ var Avl = function(){
                     return;
                 }
                 else{
+                    self.map.setView([response.latitude, response.longitude], 13);
                     punto=[response.latitude, response.longitude];
                     self.map.removeLayer(self.puntoUbication);	
                     self.puntoUbication=L.marker(punto);
                     self.puntoUbication.addTo(self.map).bindPopup("<b>Fecha - Hora: "+response.time+" </b><br />Última posición.");//.openPopup();
+                    self.map.panTo(new L.LatLng(response.latitude, response.longitude));
+                    self.popUp=L.popup();
                 }
             },
             error: function(xhr, ajaxOptions, thrownError) {
