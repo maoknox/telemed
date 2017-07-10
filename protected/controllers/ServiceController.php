@@ -93,7 +93,10 @@ class ServiceController extends Controller{
         $modelDataFrame=  Dataframe::model();
         $modelService=  Service::model();
         $service=$modelService->findByAttributes(array("service_code"=>"AVL"));
-        $devices=$modelEntityDevice->findAllByAttributes(array("id_service"=>$service->id_service));
+        $modelUser=  User::model()->findByAttributes(array("username"=>Yii::app()->user->name));
+        $modelPerson= Person::model()->findByAttributes(array("id_person"=>$modelUser->id_person));
+        $modelEntityPerson=  EntityDevice::model()->findByAttributes(array("id_perons"=>$modelPerson->id_person));
+        $devices=$modelEntityDevice->findAllByAttributes(array("id_service"=>$service->id_service,"id_entity"=>$modelEntityPerson->id_entity));
         $this->render("_loadavl",array(
             'modelEntityDevice'=>$modelEntityDevice,
             'modelObject'=>$modelObject,
@@ -195,7 +198,10 @@ class ServiceController extends Controller{
         $modelDataFrame=  Dataframe::model();
         $modelService=  Service::model();
         $service=$modelService->findByAttributes(array("service_code"=>"TELEMEDICION"));
-        $devices=$modelEntityDevice->findAllByAttributes(array("id_service"=>$service->id_service));
+        $modelUser=  User::model()->findByAttributes(array("username"=>Yii::app()->user->name));
+        $modelPerson= Person::model()->findByAttributes(array("id_person"=>$modelUser->id_person));
+        $modelEntityPerson=  EntityDevice::model()->findByAttributes(array("id_perons"=>$modelPerson->id_person));
+        $devices=$modelEntityDevice->findAllByAttributes(array("id_service"=>$service->id_service,"id_entity"=>$modelEntityPerson->id_entity));
         $this->render("_loadtelemed",array(
             'modelEntityDevice'=>$modelEntityDevice,
             'modelObject'=>$modelObject,
