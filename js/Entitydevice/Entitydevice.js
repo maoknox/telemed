@@ -349,6 +349,7 @@ var Entitydevice = function(){
                     self.divi.find("#magnitude-form #EntityService_id_entity").val("");  
                     estadoGuarda=true;
                     self.divi.find("#dataTableEntityMagnitude").DataTable().clear();
+                    self.arrayMagnitude=response.data;
                     $.each(response.data,function(key,value){
                         var sensor="";
                         if(value.sensor_name!=""){
@@ -364,7 +365,7 @@ var Entitydevice = function(){
                             value.meassystem_spanish,
                             value.min_magnitude,
                             value.max_magnitude,
-                            "<a href='javascript:Entitydevice.loadMagnitudeToForm("+self.divi.find("#magnitude-form #MagnitudeEntdev_id_entdev").val()+","+value.magnitude_name+");'>Editar</a>"
+                            "<a href='javascript:Entitydevice.loadMagnitudeToForm("+self.divi.find("#magnitude-form #MagnitudeEntdev_id_entdev").val()+","+value.id_magnitude+");'>Editar</a>"
                         ]).draw();
                         self.div.find("#btnRegMagnitude").show();
                     });
@@ -432,6 +433,7 @@ var Entitydevice = function(){
                     self.divi.find("#magnitude-form #EntityService_id_entity").val("");  
                     estadoGuarda=true;
                     self.divi.find("#dataTableEntityMagnitude").DataTable().clear();
+                    self.arrayMagnitude=response.data;
                     $.each(response.data,function(key,value){
                         var sensor="";
                         if(value.sensor_name!=""){
@@ -447,7 +449,7 @@ var Entitydevice = function(){
                             value.meassystem_spanish,
                             value.min_magnitude,
                             value.max_magnitude,
-                            "<a href='javascript:Entitydevice.loadMagnitudeToForm("+self.divi.find("#magnitude-form #MagnitudeEntdev_id_entdev").val()+","+value.magnitude_name+");'>Editar</a>"
+                            "<a href='javascript:Entitydevice.loadMagnitudeToForm("+self.divi.find("#magnitude-form #MagnitudeEntdev_id_entdev").val()+","+value.id_magnitude+");'>Editar</a>"
                         ]).draw();
                         self.cancelEdition();
                     });
