@@ -14,7 +14,7 @@
                 <?php $formMagnitude=$this->beginWidget('CActiveForm', array(
                     'id'=>'magnitude-form',
                     'enableClientValidation'=>true,
-                    'enableAjaxValidation'=>true,
+                    'enableAjaxValidation'=>false,
                     'clientOptions'=>array(
                             'validateOnSubmit'=>true,
                     ),

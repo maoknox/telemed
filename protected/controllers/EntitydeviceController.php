@@ -78,6 +78,38 @@ class EntitydeviceController extends Controller{
         }
     }
     
+    /*
+     * Edit Magnitude
+     */
+    public function actionEditMagnitudeDb(){
+        $modelMagnitude=MagnitudeEntdev::model();
+        $postMagnitude=Yii::app()->request->getPost("MagnitudeEntdev");
+        $modelMagnitude->attributes=$postMagnitude;
+//        print_r($modelMagnitude->attributes);exit();
+        if($modelMagnitude->validate()){
+            $position=$modelMagnitude->findByAttributes(array("id_entdev"=>$modelMagnitude->id_entdev,"position_dataframe"=>$modelMagnitude->position_dataframe)); 
+            if($position->id_entdev!=$modelMagnitude->id_entdev){
+                $response["status"]="noexito";
+                $response["msg"]="Esta posición ya tiene una magnitud, digite otra";
+            }
+            else{
+                if($modelMagnitude->save()){
+                    $response["status"]="exito";
+                    $response["msg"]="Magnitud editada";
+                    $magnitudes=$modelMagnitude->searchMagnitudesByObject($modelMagnitude->id_entdev);
+                    $response["data"]=$magnitudes;
+                }
+                else{
+                    $response["status"]="noexito";
+                    $response["msg"]="No ha sido modificar la magnitud";
+                }
+            }
+            echo CJSON::encode($response);
+        }
+        else{
+            echo CActiveForm::validate(array($modelMagnitude));
+        }                  
+    }
     /**
     * Carga formulario de regsitro de objeto y si variable $_POST no está vacía registra objeto de acuerdo al cliente.
     *
@@ -162,6 +194,8 @@ class EntitydeviceController extends Controller{
         $modelSensor=  Sensor::model();
         $response["data"]="";
         $sensor="";
+        $nameForm="magnitude-form";
+        $this->performAjaxValidation($modelMagnitude,$nameForm);
         if($modelMagnitude->validate()){
             $position=$modelMagnitude->findByAttributes(array("id_entdev"=>$modelMagnitude->id_entdev,"position_dataframe"=>$modelMagnitude->position_dataframe));
             if(!empty($modelMagnitude->serialid_sensor)){    

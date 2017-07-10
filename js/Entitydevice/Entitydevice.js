@@ -110,7 +110,7 @@ var Entitydevice = function(){
     /**
      * Carga datos del Dispositivo seleccionado en el formulario para editar
      */
-    self.loadMagnitudeToForm=function(idMagnitude){
+    self.loadMagnitudeToForm=function(idEntDev,idMagnitude){
         self.divi.find("#btnRegMagnitude").css("display","none");
         self.divi.find("#btnEditaMagnitude").css("display","block");
         self.divi.find("#btnCancelaEdicion").css("display","block");
@@ -399,6 +399,87 @@ var Entitydevice = function(){
         });
     };
     
+    /**
+     * Consume webservice createEntityDevice para registrar dispositivo en formulario 2
+     */
+    self.editMagnitude=function(){
+        var msg="";
+        var typeMsg="";
+        var dataEntity=self.divi.find("#magnitude-form").serialize();
+//        //User.showLoading();
+        $.ajax({
+            type: "POST",
+            dataType:'json',
+            url: 'editMagnitudeDb',
+            data:dataEntity,
+            beforeSend: function() {
+                self.div.find("#magnitude-form #magnitude-form_es_").html("");                                                    
+		self.div.find("#magnitude-form #magnitude-form_es_").hide();
+                self.div.find(".errorMessage").html("");                                                    
+		self.div.find(".errorMessage").hide();
+            }
+        }).done(function(response) {
+            if(response.status=="nosession"){
+                $.notify("La sesión ha caducado, debe hacer login de nuevo", "warn");
+                setTimeout(function(){document.location.href="site/login";}, 3000);
+                return;
+            }
+            else{
+                if(response.status=="exito"){
+                    msg=response.msg;
+                    typeMsg="success";
+                    self.divi.find("#magnitude-form").trigger("reset");  
+                    self.divi.find("#magnitude-form #EntityService_id_entity").val("");  
+                    estadoGuarda=true;
+                    self.divi.find("#dataTableEntityMagnitude").DataTable().clear();
+                    $.each(response.data,function(key,value){
+                        var sensor="";
+                        if(value.sensor_name!=""){
+                            sensor=value.sensor_name;
+                        }
+                        else{
+                            sensor="N.A";
+                        }
+                        self.divi.find("#dataTableEntityMagnitude").DataTable().row.add([
+                            value.position_dataframe,
+                            sensor,
+                            value.magnitude_name,
+                            value.meassystem_spanish,
+                            value.min_magnitude,
+                            value.max_magnitude,
+                            "<a href='javascript:Entitydevice.loadMagnitudeToForm("+self.divi.find("#magnitude-form #MagnitudeEntdev_id_entdev").val()+","+value.magnitude_name+");'>Editar</a>"
+                        ]).draw();
+                        self.cancelEdition();
+                    });
+                }
+                else{
+                    if(response.status=="noexito"){
+                         msg=response.msg;
+                        typeMsg="warn";
+                    }
+                    else{    
+                        msg="Revise la validación del formuario";
+                        typeMsg="warn";
+                        var errores="Revise lo siguiente<br/><ul>";
+                        $.each(response, function(key, val) {
+                            errores+="<li>"+val+"</li>";
+                            $("#magnitude-form #"+key+"_em_").text(val);                                                    
+                            $("#magnitude-form #"+key+"_em_").show();                                                
+                        });
+                        errores+="</ul>";
+                        self.divi.find("#magnitude-form #magnitude-form_es_").html(errores);                                                    
+                        self.divi.find("#magnitude-form #magnitude-form_es_").show(); 
+                    } 
+                }
+            }
+        }).fail(function(error, textStatus, xhr) {
+            msg="Error al asociar la magnitud, el código del error es: "+error.status+" "+xhr;
+            typeMsg="error"; 
+            self.div.find("#btnRegMagnitude").show();
+        }).always(function(){
+            $.notify(msg, typeMsg);
+        });
+    };
     /**
      * Consume webservice createEntityDevice para registrar dispositivo
      */
