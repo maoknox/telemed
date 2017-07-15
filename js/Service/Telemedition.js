@@ -61,7 +61,61 @@ var Telemedition = function(){
     self.searchDataTelemed= function(){
         setTimeout("Telemedition.searchDataTelemedWs()", 5000);
     };
-    
+    self.iniMap=function(ubications){
+        var latlongs=[];
+        $.each(ubications,function(key,value){
+            latlongs.push([value.lat, value.long]);
+        });
+        L.Map = L.Map.extend({
+            openPopup: function(popup) {
+                this._popup = popup;
+                return this.addLayer(popup).fire('popupopen', {
+                    popup: this._popup
+                });
+            }
+        });
+        self.map = L.map('map').setView([latlongs[0][0], latlongs[0][1]],20);
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFva25veCIsImEiOiJmcGJNR09jIn0.d8dHV-Ucm_dxJRbt50d1wA', {
+                maxZoom: 18,
+                attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+                        '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                        'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+                id: 'mapbox.streets'
+        }).addTo(self.map);
+        var markers=[];
+//        fruits.push("Kiwi"); 
+        $.each(ubications,function(key,value){
+            self.puntoUbication=L.marker([value.lat, value.long]);
+            self.puntoUbication.bindPopup("<b>Nombre del objeto: "+value.nameobj);
+            self.puntoUbication.on("click",function(){
+                $.redirect("showDataObjectTelemed",{
+                  id_entdev: value.id_entdev 
+                },"POST");
+            });
+            markers.push(self.puntoUbication);
+            self.puntoUbication.on('mouseover', function (e) {
+                this.openPopup();
+            });
+            self.puntoUbication.on('mouseout', function (e) {
+                this.closePopup();
+            });
+        });
+        
+        var markerGroup = L.featureGroup(markers).addTo(self.map);
+        markerGroup.eachLayer(function(layer) {
+          layer.openPopup();
+        });
+        var bounds = new L.LatLngBounds(latlongs);
+        self.map.fitBounds(bounds);
+//
+//        self.popUp=L.popup();
+//        self.map.on('click', self.onMapClick);
+    };
+    self.onMapClick=function(e){
+        self.popUp.setLatLng(e.latlng)
+            .setContent("Longitud y latitud en la cual hizo click " + e.latlng.toString())
+            .openOn(self.map);
+    };
     /**************************************************************************/
     /******************************* SYNC METHODS *****************************/
     /**************************************************************************/ 

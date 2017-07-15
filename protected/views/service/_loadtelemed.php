@@ -1,20 +1,15 @@
 <?php
     Yii::app()->clientScript->registerCssFile(Yii::app()->baseUrl.'/plugins/datatables/dataTables.bootstrap.css');
+    Yii::app()->clientScript->registerCssFile('http://api.tiles.mapbox.com/mapbox.js/v2.2.4/mapbox.css');
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/plugins/datatables/jquery.dataTables.min.js",CClientScript::POS_END);
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/plugins/datatables/dataTables.bootstrap.min.js",CClientScript::POS_END);
+    Yii::app()->clientScript->registerScriptFile("http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js",CClientScript::POS_END);
+    Yii::app()->clientScript->registerScriptFile("http://api.tiles.mapbox.com/mapbox.js/v2.2.4/mapbox.js",CClientScript::POS_END);
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/js/Service/Telemedition.js",CClientScript::POS_END);
-
-
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 ?>
 <section class="content" id="divTelemed">
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+        <div class="col-md-5">
             <div class="box box-primary">
                 <div class="box-header with-border">
                   <h3 class="box-title">Dispositivos registrados</h3>
@@ -32,9 +27,15 @@
                         <tbody>
                             <?php
                                 if(!empty($devices)){
-                                    foreach($devices as $device):
-                                        $object="";
+                                    foreach($devices as $pk=>$device):
                                         $object=$modelObject->findByPk($device->serialid_object);
+                                        $modelObjectUbication=  ObjectUbication::model();
+                                        $resModel=$modelObjectUbication->findByAttributes(array("serialid_object"=>$device->serialid_object));
+                                        $ubications[$pk]["lat"]=$resModel->ubication_lat;
+                                        $ubications[$pk]["long"]=$resModel->ubication_long;
+                                        $ubications[$pk]["nameobj"]=$object->object_name;
+                                        $ubications[$pk]["id_entdev"]=$device["id_entdev"];
+                                        
                                     ?>
                                         <tr>
                                             <td><?php echo $device->id_device."-".$device->id_entdev?></td>
@@ -58,5 +59,18 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-7">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Ubicación de objetos</h3>
+                </div>
+                <div class="box-body">
+                    <div id="map" style="width: 100%; height: 50em; float:left; display: inline"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
+ <?php 
+ Yii::app()->clientScript->registerScript('cargaDataObject', '
+    Telemedition.iniMap('.CJSON::encode($ubications).');');

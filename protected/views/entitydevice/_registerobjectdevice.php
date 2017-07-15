@@ -23,7 +23,7 @@
                     )
             )); ?>
             <div class="box-body">
-                <?php echo  $formEntityService->errorSummary(array($modelEntityDevice,$modelObject),'','',array('style' => 'font-size:14px;color:#F00')); ?>
+                <?php echo  $formEntityService->errorSummary(array($modelEntityDevice,$modelObject,$modelObjectUbication),'','',array('style' => 'font-size:14px;color:#F00')); ?>
                 <div class="form-group" id="divEntity">
                     <?php echo $formEntityService->labelEx($modelEntityDevice,'id_entity'); ?>
                     <?php echo CHtml::textField('nameEntity', '',array('id'=>'nameEntity','class' => 'form-control','placeholder'=>'Digite nombre o identificación de la empresa')); ?>
@@ -55,6 +55,40 @@
                     <?php echo $formEntityService->textArea($modelObject,'object_description', array ('class' => 'form-control','placeholder'=>'Digite una descripción del objeto')); ?>
                     <?php echo $formEntityService->error($modelObject,'object_description'); ?>
                 </div>
+                <div class="form-group locationCl">
+                    <?php echo $formEntityService->labelEx($modelObjectUbication,'ubication_lat'); ?>
+                    <?php echo $formEntityService->textField($modelObjectUbication,'ubication_lat', array ('class' => 'form-control','placeholder'=>'Seleccione latitud')); ?>
+                    <?php echo $formEntityService->error($modelObjectUbication,'ubication_lat'); ?>
+                </div>
+                <div class="form-group locationCl">
+                    <?php echo $formEntityService->labelEx($modelObjectUbication,'ubication_long'); ?>
+                    <?php echo $formEntityService->textField($modelObjectUbication,'ubication_long', array ('class' => 'form-control','placeholder'=>'Seleccione longitud')); ?>
+                    <?php echo $formEntityService->error($modelObjectUbication,'ubication_long'); ?>
+                    <?php echo CHtml::link('open dialog', '#', array(
+   'onclick'=>'$("#mydialog").dialog("open"); return false;',
+));?>
+                </div>
+                <?php
+                $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
+    'id'=>'mydialog',
+    // additional javascript options for the dialog plugin
+    'options'=>array(
+        'title'=>'Dialog box 1',
+        'autoOpen'=>false,
+        'width'=>'40%',
+         'height'=>'auto',
+        'htmlOptions' => array( 'style' => ' z-index: 1000' ),
+
+    ),
+));
+
+    $this->renderPartial("_selectcoords");
+
+$this->endWidget('zii.widgets.jui.CJuiDialog');
+
+// the link that may open the dialog
+
+                ?>
             </div>
             <!-- /.box-body -->
 
@@ -116,6 +150,7 @@
                     <?php echo CHtml::button('Registrar', array ('class' => 'btn btn-primary','id'=>'btnRegMagnitude')); ?>
                 </div>
                 <?php $this->endWidget(); ?>
+                
             </div>
         </div>
         <div class="col-md-5">
