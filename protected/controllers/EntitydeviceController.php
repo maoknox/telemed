@@ -146,8 +146,17 @@ class EntitydeviceController extends Controller{
             $modelObject->attributes=Yii::app()->request->getPost("Object");
             $modelEntityDevice->attributes=Yii::app()->request->getPost("EntityDevice");
             $modelEntityDevice->serialid_object=0;
+            $modelService=  Service::model()->findByPk($modelEntityDevice->id_service);
+            if($modelService->service_code=="AVL"){
+                $modelObjectUbication->serialid_object=0;
+                $modelObjectUbication->ubication_lat="0.0";
+                $modelObjectUbication->ubication_long="0.0";
+            }
+            else{
+                $modelObjectUbication->attributes=Yii::app()->request->getPost("ObjectUbication");
+            }
             $nameForm="entitydevice-form";
-            $this->performAjaxValidation(array($modelObject,$modelEntityDevice),$nameForm);
+            $this->performAjaxValidation(array($modelObject,$modelEntityDevice,$modelObjectUbication),$nameForm);
             if($modelObject->validate()&&$modelEntityDevice->validate()){
                 $device=  Device::model()->findByAttributes(array("id_device"=>$modelEntityDevice->id_device,"device_associated"=>1));
                 if(empty($device)){
@@ -159,6 +168,10 @@ class EntitydeviceController extends Controller{
                         $modelDevice = Device::model()->findByPk($modelEntityDevice->id_device);
                         $modelDevice->device_associated=1;
                         $modelDevice->update(array('device_associated'));
+                        if($modelService->service_code!="AVL"){
+                            $modelObjectUbication->serialid_object=$modelObject->serialid_object;
+                            $modelObjectUbication->save();
+                        }
                         $transaction->commit();
                         $response["status"]="exito";
                         $response["msg"]="Objeto registrado satisfactoriamete";
@@ -176,7 +189,7 @@ class EntitydeviceController extends Controller{
                 echo CJSON::encode($response);
             }
             else{
-                echo CActiveForm::validate(array($modelObject,$modelEntityDevice));
+                echo CActiveForm::validate(array($modelObject,$modelEntityDevice,$modelObjectUbication));
             }
         }
     }
@@ -262,7 +275,9 @@ class EntitydeviceController extends Controller{
     public function actionSearchDevice(){
         $idService=Yii::app()->request->getPost("idService");
         $modeloDevice= Device::model();
-        $devices=$modeloDevice->searchDevice($idService,"OPERATIVO","2");
+        $devices["devices"]=$modeloDevice->searchDevice($idService,"OPERATIVO","2");
+        $modelService=  Service::model()->findByPk($idService);
+        $devices["service_code"]=$modelService->service_code;
         echo CJSON::encode($devices);
     }
     

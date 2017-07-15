@@ -72,6 +72,7 @@ var Entitydevice = function(){
         self.div.find("#EntityDevice_id_service").change(function (){
             if(self.div.find("#entitydevice-form #EntityDevice_id_service").val()==0){
                 self.div.find("#EntityDevice_id_device").html("<option value=''>Seleccione Servicio</option>");
+                self.div.find("#entitydevice-form .locationCl").show();
             }
             else{
                 self.searchDevice(self.div.find("#entitydevice-form #EntityDevice_id_service").val());
@@ -151,11 +152,17 @@ var Entitydevice = function(){
             url: 'searchDevice',
             data:{idService:idService}
         }).done(function(response) {
-            if(response.length>0){
+            console.log(JSON.stringify(response));
+            if(response.devices.length>0){
                 self.div.find("#EntityDevice_id_device").append("<option value=''>Seleccione un dispositivo</option>");
-                $.each(response,function(key, value){
+                $.each(response.devices,function(key, value){
                     self.div.find("#EntityDevice_id_device").append("<option value='"+value.id_device+"'>"+value.id_device+"</option>");
                 });
+                if(response.service_code=='AVL'){
+                    self.div.find("#entitydevice-form .locationCl").hide();
+                }
+                else{
+                    self.div.find("#entitydevice-form .locationCl").show();}
             }
             else{
                 $.notify("No hay dispositovos libres o registrados para este servicio", "warn");

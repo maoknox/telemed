@@ -619,6 +619,7 @@
 <script src="<?php echo Yii::app()->request->baseUrl; ?>/dist/js/demo.js"></script>
 <!-- NotifY -->
 <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/notify.js"></script>
+<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.redirect.js"></script>
 <!-- Configuración general -->
 <?php 
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/js/Telemed.js");
