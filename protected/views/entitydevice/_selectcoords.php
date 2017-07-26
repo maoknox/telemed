@@ -1,5 +1,5 @@
 
-    <script src="http://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDT9BgFSTCCAxMtteEZAavsw3NPfgxdjRc&callback"></script>
     <script>
 
 	var map;
