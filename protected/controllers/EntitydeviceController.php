@@ -82,9 +82,11 @@ class EntitydeviceController extends Controller{
      * Edit Magnitude
      */
     public function actionEditMagnitudeDb(){
+//        print_r(Yii::app()->request->getPost("MagnitudeEntdev"));exit();
         $modelMagnitude=MagnitudeEntdev::model();
         $postMagnitude=Yii::app()->request->getPost("MagnitudeEntdev");
         $modelMagnitude->attributes=$postMagnitude;
+//        print_r($modelMagnitude->attributes);echo "---";exit();
 //        print_r($modelMagnitude->attributes);exit();
         if($modelMagnitude->validate()){
             $position=$modelMagnitude->findByAttributes(array("id_entdev"=>$modelMagnitude->id_entdev,"position_dataframe"=>$modelMagnitude->position_dataframe)); 
@@ -93,7 +95,8 @@ class EntitydeviceController extends Controller{
                 $response["msg"]="Esta posición ya tiene una magnitud, digite otra";
             }
             else{
-                if($modelMagnitude->save()){
+                $oldMagnitude=$position->id_magnitude;
+                if($modelMagnitude->updateByPk(array("id_entdev"=>$modelMagnitude->id_entdev,"id_magnitude"=>$oldMagnitude), $modelMagnitude->attributes)){
                     $response["status"]="exito";
                     $response["msg"]="Magnitud editada";
                     $magnitudes=$modelMagnitude->searchMagnitudesByObject($modelMagnitude->id_entdev);

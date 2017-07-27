@@ -46,6 +46,6 @@ function autoRotate() {
 google.maps.event.addDomListener(window, 'load', initialize);
 
 </script>
-<input type="button" value="Auto Rotate" onclick="autoRotate();">
+<!--<input type="button" value="Auto Rotate" onclick="autoRotate();">-->
 <div id="map-canvas" style="height: 600px; margin: 0px; padding: 0px; border:1px solid #006"></div>
  
