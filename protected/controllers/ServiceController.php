@@ -222,26 +222,28 @@ class ServiceController extends Controller{
             $criteria = new CDbCriteria;
             $criteria->condition = 'id_entdev=:identdev';
             $criteria->order='dataframe_date DESC';
-            $criteria->limit = 20;
+            $criteria->limit = 1;
             $criteria->params = array(':identdev' => $params);
-            $dataFrames=$modelDataFrame->findAll($criteria);
+            $dataFrame=$modelDataFrame->find($criteria);
             $dataObjects=array();
-            foreach($dataFrames as $pk=>$dataFrame){
+            $time=$dataFrame->dataframe_date;
+//            foreach($dataFrames as $pk=>$dataFrame){
                 $dataFramesArr= explode(",", $dataFrame->dataframe);
-                $dataObjects[$pk]["time"]=$dataFrame->dataframe_date;
+                $dataObjects["time"]=$dataFrame->dataframe_date;
                 foreach($positionsDF as $pki=>$position){
                     if(is_array($position)){
-                        $dataObjects[$pk]["data"][$pki]=$dataFramesArr[-1+$position["position_dataframe"]];
+                        $dataObjects["data"][$pki]=$dataFramesArr[-1+$position["position_dataframe"]];
                     }
                 }
-            }
+//            }
             $object=  Object::model()->findByPk($modelEntdev->serialid_object);
             $this->render("_showobjectelemed",array(
                 "object"=>$object,
-                "dataFrames"=>$dataFrames,
+                "dataFrames"=>$dataFrame,
                 "positionsDF"=>$positionsDF,
                 "dataObjects"=>$dataObjects,
-                "identdev"=>$params
+                "identdev"=>$params,
+                "time"=>$time
             ));
         }
         else{
@@ -257,20 +259,20 @@ class ServiceController extends Controller{
             $criteria = new CDbCriteria;
             $criteria->condition = 'id_entdev=:identdev';
             $criteria->order='dataframe_date DESC';
-            $criteria->limit = 20;
+            $criteria->limit = 1;
             $criteria->params = array(':identdev' => $params);
             $modelDataFrame=  Dataframe::model();
-            $dataFrames=$modelDataFrame->findAll($criteria);
+            $dataFrame=$modelDataFrame->find($criteria);
             $dataObjects=array();
-            foreach($dataFrames as $pk=>$dataFrame){
+//            foreach($dataFrames as $pk=>$dataFrame){
                 $dataFramesArr= explode(",", $dataFrame->dataframe);
-                $dataObjects[$pk]["time"]=$dataFrame->dataframe_date;
+                $dataObjects["time"]=$dataFrame->dataframe_date;
                 foreach($positionsDF as $pki=>$position){
                     if(is_array($position)){
-                        $dataObjects[$pk]["data"][$pki]=$dataFramesArr[-1+$position["position_dataframe"]];
+                        $dataObjects["data"][$pki]=$dataFramesArr[-1+$position["position_dataframe"]];
                     }
                 }
-            }
+//            }
             $response["status"]="exito";
             $response["data"]=$dataObjects;
             echo CJSON::encode($response);
@@ -279,5 +281,27 @@ class ServiceController extends Controller{
     
     public function actionTelecontrol(){
         $this->render("_loadtelecontrol");
+    }
+    public function actionMuestrahistorico(){
+        $post=Yii::app()->request->getPost("ConsHist");
+        $modelDataFrame=  Dataframe::model();
+        $dataFrame=$modelDataFrame->searcHistoricData($post["id_entdev"],$post["fecha_inicial"],$post["fecha_final"]);
+        usort($dataFrame,array($this, "ordenaFechaAsc"));
+        foreach($dataFrame as $pk=>$datosFecha){
+            $magnitudeBr=  explode(",", $datosFecha["dataframe"]);
+            $magnitude=$magnitudeBr[$post["variablesSelect"]-1];
+//            print_r($magnitude);exit();
+            $time=strtotime( $datosFecha["dataframe_date"] )*1000;                             
+            $data[$pk]=array("magnitud"=>(double)$magnitude,"time"=>$time,"tempbd"=>$datosFecha["dataframe_date"]);
+        }
+        echo CJSON::encode(array("datos"=>$data));
+    }
+     private function ordenaFechaAsc($date1,$date2){
+        $date1 = strtotime($date1["dataframe_date"]);
+        $date2 = strtotime($date2["dataframe_date"]);
+        if($date1 == $date2) {
+            return 0;
+        }
+        return $date1 < $date2 ? -1 : 1 ;
     }
 }

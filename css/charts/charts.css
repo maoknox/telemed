@@ -1,0 +1,43 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 10/09/2016, 01:53:53 PM
+    Author     : mauricio
+*/
+.subcontainerText{
+    border: 1px solid #888888;
+    padding: 5px 5px 5px 5px;
+    min-height: 50px;
+}
+.subcontiner{
+    border: 1px solid #888888;
+    padding: 5px 5px 5px 5px;
+
+}
+.subsubcontiner{
+    border: 1px solid #888888;
+    padding: 0px;
+}
+.sistemariego{
+   padding: 0px;
+   margin: 0px;
+}
+.subcontainerGraphic{
+    max-height: 250px;
+     margin: 0 auto;
+}
+#compass {
+  width: 190px;
+  height: 190px;
+  background-image:url('http://i.imgur.com/44nyA.jpg');
+  position: relative;
+}
+.subcontiner #root{
+    max-width: 275px;
+    width:auto;
+    height:225px;
+    text-align: center;
+}

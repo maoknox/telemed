@@ -53,6 +53,7 @@ var Telemedition = function(){
             scrollX: true,
             order: [[ 0, "desc" ]]
         });
+//       self.searchDataTelemed();
        
     };    
     /**************************************************************************/
@@ -120,6 +121,7 @@ var Telemedition = function(){
     /******************************* SYNC METHODS *****************************/
     /**************************************************************************/ 
     self.searchDataTelemedWs=function(){
+        
     /**
      * Consume webservice registerDevice registrar dispositivo
      */
@@ -141,7 +143,7 @@ var Telemedition = function(){
             else{
                 if(response.status=="exito"){
                     
-                    self.loadDataTelemed(response.data);
+                    self.loadDataTelemedToDivs(response.data);
                 }
                 else{
                     if(response.status=="noexito"){
@@ -175,6 +177,14 @@ var Telemedition = function(){
                 dataTableObject.row.add(row).draw();
             });
             
+    };
+    
+    self.loadDataTelemedToDivs=function(data){
+        self.div.find("#timelecture").text(data.time);
+        $.each(data.data,function(key,value){
+//            console.log(key+"=>"+value);
+                self.div.find("#magnitude"+key).text(value);
+        });
     };
     /**************************************************************************/
     /****************************** OTHER METHODS *****************************/

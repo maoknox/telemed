@@ -124,4 +124,16 @@ class Dataframe extends CActiveRecord
             }
             return $latLong;
         }
+        public function searcHistoricData($idEntDev,$startDate,$endDate){
+           $conn=Yii::app()->db;
+           $sql="SELECT * FROM dataframe where id_entdev=:entdev and dataframe_date>=:fechaini and dataframe_date<=:fechafin";
+           $query=$conn->createCommand($sql);
+           $query->bindParam(":entdev", $idEntDev);
+           $query->bindParam(":fechaini", $startDate);
+           $query->bindParam(":fechafin", $endDate);
+           $read=$query->query();
+           $res=$read->readAll();
+           $read->close();
+           return $res;
+        }
 }
