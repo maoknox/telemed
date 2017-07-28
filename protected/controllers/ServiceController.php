@@ -226,16 +226,19 @@ class ServiceController extends Controller{
             $criteria->params = array(':identdev' => $params);
             $dataFrame=$modelDataFrame->find($criteria);
             $dataObjects=array();
-            $time=$dataFrame->dataframe_date;
-//            foreach($dataFrames as $pk=>$dataFrame){
-                $dataFramesArr= explode(",", $dataFrame->dataframe);
-                $dataObjects["time"]=$dataFrame->dataframe_date;
-                foreach($positionsDF as $pki=>$position){
-                    if(is_array($position)){
-                        $dataObjects["data"][$pki]=$dataFramesArr[-1+$position["position_dataframe"]];
+            $time=null;
+            if(!empty($dataFrame)){
+                $time=$dataFrame->dataframe_date;
+    //            foreach($dataFrames as $pk=>$dataFrame){
+                    $dataFramesArr= explode(",", $dataFrame->dataframe);
+                    $dataObjects["time"]=$dataFrame->dataframe_date;
+                    foreach($positionsDF as $pki=>$position){
+                        if(is_array($position)){
+                            $dataObjects["data"][$pki]=$dataFramesArr[-1+$position["position_dataframe"]];
+                        }
                     }
-                }
-//            }
+    //            }
+            }
             $object=  Object::model()->findByPk($modelEntdev->serialid_object);
             $this->render("_showobjectelemed",array(
                 "object"=>$object,
