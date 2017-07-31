@@ -120,8 +120,55 @@ var Telemedition = function(){
     /**************************************************************************/
     /******************************* SYNC METHODS *****************************/
     /**************************************************************************/ 
-    self.searchDataTelemedWs=function(){
+     /*
+    * 
+    * @type String
+    */
+    self.anchorage=function(identdev){
+        var anchor=self.div.find("#"+identdev).val();
+        $.ajax({
+            type: "POST",
+            dataType:'json',
+            url: 'objectAnchor',
+            data:{"Anchorage[identdev]":identdev,"Anchorage[anchor]":anchor}
+        }).done(function(response) {
+            var msg="";
+            var typeMsg="";
+            if(response.status=="nosession"){
+                $.notify("La sesión ha caducado, debe hacer login de nuevo", "warn");
+                setTimeout(function(){document.location.href="site/login";}, 3000);
+                return;
+            }
+            else{
+                if(response.status=="exito"){
+                    if(anchor==1){
+                        anchor=2;
+                        msg="Objeto anclado del inicio";
+                    }
+                    else{
+                        anchor=1;
+                        msg="Objeto desanclado del inicio";
+                    }
+                    self.div.find("#"+identdev).val(anchor);
+                    typeMsg="success";
+                }
+                else{
+                    if(response.status=="noexito"){
+                         msg="error al anclar/desanclar el objeto al inicio";
+                        typeMsg="warn";
+                    }
+                    
+                }
+                $.notify(msg, typeMsg);
+            }
+        });
         
+        
+        self.div.find("#"+identdev).val(anchor);
+    };
+    self.searchDataTelemedWs=function(){
+    
+       
     /**
      * Consume webservice registerDevice registrar dispositivo
      */

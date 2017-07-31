@@ -307,4 +307,19 @@ class ServiceController extends Controller{
         }
         return $date1 < $date2 ? -1 : 1 ;
     }
+    /*
+     *  cambio de estado entdev_anchorage, para anclar al inicio y mostrar el objeto cuando se inicia sesión
+     */
+    public function actionObjectAnchor(){
+        $post=Yii::app()->request->getPost("Anchorage");
+        $modelEntdev=  EntityDevice::model();
+        if($modelEntdev->updateByPk($post["identdev"], array('entdev_anchorage'=>$post["anchor"]))){
+            $response["status"]="exito";
+        }
+        else{
+            $response["status"]="noexito";
+        }
+        echo CJSON::encode($response);
+        
+    }
 }
