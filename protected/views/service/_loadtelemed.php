@@ -21,6 +21,7 @@
                                 <th>Id Dispositivo</th>
                                 <th>Nombre Objeto</th>
                                 <th>Descripción del objeto</th>
+                                <th>Anclado al inicio</th>
                                 <th>Acción</th>
                             </tr>
                         </thead>
@@ -35,12 +36,25 @@
                                         $ubications[$pk]["long"]=$resModel->ubication_long;
                                         $ubications[$pk]["nameobj"]=$object->object_name;
                                         $ubications[$pk]["id_entdev"]=$device["id_entdev"];
-                                        
                                     ?>
                                         <tr>
                                             <td><?php echo $device->id_device."-".$device->id_entdev?></td>
                                             <td><?php echo $object->object_name?></td>
                                             <td><?php echo $object->object_description?></td>
+                                            <td>
+                                                <?php 
+                                                    
+                                                    if(empty($device->entdev_anchorage) || $device->entdev_anchorage==2){
+                                                        $checked=false;
+                                                        $value=1;
+                                                    }
+                                                    elseif($device->entdev_anchorage==1){
+                                                        $checked=true;
+                                                        $value=2;
+                                                    }
+                                                ?>
+                                                <?php echo CHtml::CheckBox('entdev_anchorage',$checked, array ('id'=>$device->id_entdev,'value'=>$value,'onClick'=>"js:Telemedition.anchorage('".$device->id_entdev."');")); ?> 
+                                            </td>
                                             <td><?php echo CHtml::link('consultar',array('showDataObjectTelemed'), array('submit'=>array('showDataObjectTelemed'),'params'=>array('id_entdev'=>$device["id_entdev"]))); ?></td>                              
                                         </tr>
                                     <?php endforeach;

@@ -233,7 +233,7 @@ class ServiceController extends Controller{
                     $dataObjects["time"]=$dataFrame->dataframe_date;
                     foreach($positionsDF as $pki=>$position){
                         if(is_array($position)){
-                            $dataObjects["data"][$pki]=$dataFramesArr[-1+$position["position_dataframe"]];
+                            $dataObjects["data"][$pki]=$dataFramesArr[$position["position_dataframe"]-1];
                         }
                     }
     //            }
@@ -305,5 +305,20 @@ class ServiceController extends Controller{
             return 0;
         }
         return $date1 < $date2 ? -1 : 1 ;
+    }
+    /*
+     *  cambio de estado entdev_anchorage, para anclar al inicio y mostrar el objeto cuando se inicia sesión
+     */
+    public function actionObjectAnchor(){
+        $post=Yii::app()->request->getPost("Anchorage");
+        $modelEntdev=  EntityDevice::model();
+        if($modelEntdev->updateByPk($post["identdev"], array('entdev_anchorage'=>$post["anchor"]))){
+            $response["status"]="exito";
+        }
+        else{
+            $response["status"]="noexito";
+        }
+        echo CJSON::encode($response);
+        
     }
 }

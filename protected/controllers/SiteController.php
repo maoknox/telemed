@@ -54,9 +54,11 @@ class SiteController extends Controller
                 $this->redirect(Yii::app()->user->returnUrl);
             }
             else{
+                $user=Yii::app()->user->name;
+                $service=  Service::model()->searchServiceByUsername($user);
                 $modelEntity=  Entity::model();
                 $modelEntityPerson=  EntityPerson::model();
-                $this->render('index');
+                $this->render('index',array("services"=>$service));
             }
 	}
 

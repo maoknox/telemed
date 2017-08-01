@@ -10,6 +10,7 @@
  * @property integer $id_service
  * @property integer $id_entity
  * @property integer $serialid_object
+ * @property integer $entdev_anchorage
  *
  * The followings are the available model relations:
  * @property Command[] $commands
@@ -20,7 +21,7 @@
  * @property City $idCity
  * @property Entity $idEntity
  * @property Service $idService
- * @property MagnitudeEntdev[] $magnitudeEntdevs
+ * @property Magnitude[] $magnitudes
  */
 class EntityDevice extends CActiveRecord
 {
@@ -41,11 +42,11 @@ class EntityDevice extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('id_device, id_entity, serialid_object', 'required'),
-			array('id_city, id_service, id_entity, serialid_object', 'numerical', 'integerOnly'=>true),
+			array('id_city, id_service, id_entity, serialid_object, entdev_anchorage', 'numerical', 'integerOnly'=>true),
 			array('id_device', 'length', 'max'=>50),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id_entdev, id_device, id_city, id_service, id_entity, serialid_object', 'safe', 'on'=>'search'),
+			array('id_entdev, id_device, id_city, id_service, id_entity, serialid_object, entdev_anchorage', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -65,7 +66,7 @@ class EntityDevice extends CActiveRecord
 			'idCity' => array(self::BELONGS_TO, 'City', 'id_city'),
 			'idEntity' => array(self::BELONGS_TO, 'Entity', 'id_entity'),
 			'idService' => array(self::BELONGS_TO, 'Service', 'id_service'),
-			'magnitudeEntdevs' => array(self::HAS_MANY, 'MagnitudeEntdev', 'id_entdev'),
+			'magnitudes' => array(self::MANY_MANY, 'Magnitude', 'magnitude_entdev(id_entdev, id_magnitude)'),
 		);
 	}
 
@@ -81,6 +82,7 @@ class EntityDevice extends CActiveRecord
 			'id_service' => 'Id Service',
 			'id_entity' => 'Id Entity',
 			'serialid_object' => 'Serialid Object',
+			'entdev_anchorage' => 'Entdev Anchorage',
 		);
 	}
 
@@ -108,6 +110,7 @@ class EntityDevice extends CActiveRecord
 		$criteria->compare('id_service',$this->id_service);
 		$criteria->compare('id_entity',$this->id_entity);
 		$criteria->compare('serialid_object',$this->serialid_object);
+		$criteria->compare('entdev_anchorage',$this->entdev_anchorage);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -188,5 +191,49 @@ class EntityDevice extends CActiveRecord
             $res=$read->readAll();
             $read->close();
             return $res;
+        }
+        
+        public function searchObjectAnchorage($idservice){
+            $username=Yii::app()->user->name;
+            $conn=Yii::app()->db;
+            $sql="select ed.id_entdev,ed.id_device,ed.serialid_object,obj.object_name from public.user as usr "
+                    . "left join person as pr on pr.id_person=usr.id_person "
+                    . "left join entity_person as ep on ep.id_person=pr.id_person "
+                    . "left join entity_device as ed on ed.id_entity=ep.id_entity "
+                    . "left join object as obj on obj.serialid_object=ed.serialid_object "
+                    . "where ed.id_service=:idservice and username=:username and ed.entdev_anchorage=1;";
+            $query=$conn->createCommand($sql);
+            $query->bindParam(":idservice", $idservice);
+            $query->bindParam(":username", $username);
+            $read=$query->query();
+            $resObjAnchorage=$read->readAll();
+            $read->close();
+            if(!empty($resObjAnchorage)){
+                $modelMagnitudeEntDev=  MagnitudeEntdev::model();
+                $modelDataFrame=  Dataframe::model();
+                foreach($resObjAnchorage as $pk=>$object){
+                    $resObjAnchorage[$pk]["positions"]=$modelMagnitudeEntDev->searchPositionMagnitude($object["id_entdev"]);
+                    $dataFrame=$this->searchData($object["id_entdev"],$modelDataFrame);
+                    if(!empty($dataFrame)){
+                        $resObjAnchorage[$pk]["time"]=$dataFrame->dataframe_date;
+                        if(!empty($dataFrame->dataframe)){
+                            $dataFrameArray=  explode(",", $dataFrame->dataframe);
+                            foreach($resObjAnchorage[$pk]["positions"] as $pkdata=>$position){
+                                $resObjAnchorage[$pk]["data"][$pkdata]=$dataFrameArray[$position["position_dataframe"]-1];
+                            }
+                        }
+                    }
+                }
+            }
+            return $resObjAnchorage;
+        }
+        public function searchData($idEntdev,$modelDataFrame){
+            $criteria = new CDbCriteria;
+            $criteria->condition = 'id_entdev=:identdev';
+            $criteria->order='dataframe_date DESC';
+            $criteria->limit = 1;
+            $criteria->params = array(':identdev' => $idEntdev);
+            $dataFrame=$modelDataFrame->find($criteria);
+            return $dataFrame;
         }
 }
