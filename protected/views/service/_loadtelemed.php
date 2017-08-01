@@ -44,11 +44,11 @@
                                             <td>
                                                 <?php 
                                                     
-                                                    if(empty($devices->entdev_anchorage) || $devices->entdev_anchorage==2){
+                                                    if(empty($device->entdev_anchorage) || $device->entdev_anchorage==2){
                                                         $checked=false;
                                                         $value=1;
                                                     }
-                                                    elseif($devices->entdev_anchorage==2){
+                                                    elseif($device->entdev_anchorage==1){
                                                         $checked=true;
                                                         $value=2;
                                                     }

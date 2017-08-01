@@ -192,4 +192,48 @@ class EntityDevice extends CActiveRecord
             $read->close();
             return $res;
         }
+        
+        public function searchObjectAnchorage($idservice){
+            $username=Yii::app()->user->name;
+            $conn=Yii::app()->db;
+            $sql="select ed.id_entdev,ed.id_device,ed.serialid_object,obj.object_name from public.user as usr "
+                    . "left join person as pr on pr.id_person=usr.id_person "
+                    . "left join entity_person as ep on ep.id_person=pr.id_person "
+                    . "left join entity_device as ed on ed.id_entity=ep.id_entity "
+                    . "left join object as obj on obj.serialid_object=ed.serialid_object "
+                    . "where ed.id_service=:idservice and username=:username and ed.entdev_anchorage=1;";
+            $query=$conn->createCommand($sql);
+            $query->bindParam(":idservice", $idservice);
+            $query->bindParam(":username", $username);
+            $read=$query->query();
+            $resObjAnchorage=$read->readAll();
+            $read->close();
+            if(!empty($resObjAnchorage)){
+                $modelMagnitudeEntDev=  MagnitudeEntdev::model();
+                $modelDataFrame=  Dataframe::model();
+                foreach($resObjAnchorage as $pk=>$object){
+                    $resObjAnchorage[$pk]["positions"]=$modelMagnitudeEntDev->searchPositionMagnitude($object["id_entdev"]);
+                    $dataFrame=$this->searchData($object["id_entdev"],$modelDataFrame);
+                    if(!empty($dataFrame)){
+                        $resObjAnchorage[$pk]["time"]=$dataFrame->dataframe_date;
+                        if(!empty($dataFrame->dataframe)){
+                            $dataFrameArray=  explode(",", $dataFrame->dataframe);
+                            foreach($resObjAnchorage[$pk]["positions"] as $pkdata=>$position){
+                                $resObjAnchorage[$pk]["data"][$pkdata]=$dataFrameArray[$position["position_dataframe"]-1];
+                            }
+                        }
+                    }
+                }
+            }
+            return $resObjAnchorage;
+        }
+        public function searchData($idEntdev,$modelDataFrame){
+            $criteria = new CDbCriteria;
+            $criteria->condition = 'id_entdev=:identdev';
+            $criteria->order='dataframe_date DESC';
+            $criteria->limit = 1;
+            $criteria->params = array(':identdev' => $idEntdev);
+            $dataFrame=$modelDataFrame->find($criteria);
+            return $dataFrame;
+        }
 }

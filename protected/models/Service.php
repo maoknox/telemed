@@ -104,4 +104,19 @@ class Service extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+        public function searchServiceByUsername($username){
+            $conn=Yii::app()->db;
+            $sql="select sr.id_service,sr.service_name,sr.service_code from public.user as usr "
+                    . "left join person as pr on pr.id_person=usr.id_person "
+                    . "left join entity_person as ep on ep.id_person=pr.id_person "
+                    . "left join entity_service as es on es.id_entity=ep.id_entity "
+                    . "left join service as sr on sr.id_service=es.id_service "
+                    . "where username=:username;";
+            $query=$conn->createCommand($sql);
+            $query->bindParam(":username", $username);
+            $read=$query->query();
+            $res=$read->readAll();
+            $read->close();
+            return $res;
+        }
 }

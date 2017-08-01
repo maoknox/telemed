@@ -215,7 +215,6 @@ class ServiceController extends Controller{
         if(isset($_POST)&&!empty($_POST)){
             $params=Yii::app()->request->getPost("id_entdev");
             $modelDataFrame=  Dataframe::model();
-            $modelDataFrame->dataframe_date;
             $modelMagnitudeEntDev=  MagnitudeEntdev::model();
             $modelEntdev=  EntityDevice::model()->findByPk($params);
             $positionsDF=$modelMagnitudeEntDev->searchPositionMagnitude($params);
@@ -234,7 +233,7 @@ class ServiceController extends Controller{
                     $dataObjects["time"]=$dataFrame->dataframe_date;
                     foreach($positionsDF as $pki=>$position){
                         if(is_array($position)){
-                            $dataObjects["data"][$pki]=$dataFramesArr[-1+$position["position_dataframe"]];
+                            $dataObjects["data"][$pki]=$dataFramesArr[$position["position_dataframe"]-1];
                         }
                     }
     //            }
