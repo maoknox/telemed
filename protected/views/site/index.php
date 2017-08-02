@@ -1,4 +1,9 @@
-<section class="content"> 
+<?php
+
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/js/DataForAnch.js",CClientScript::POS_END);
+//    print_r($services);
+?>
+<section class="content" id="sectionIndex"> 
     <h1>Bienvenido a <i><?php echo CHtml::encode(Yii::app()->name); ?></i></h1>
 <?php
 /* @var $this SiteController */
@@ -20,11 +25,13 @@ if(!empty($services)):
                     </div>
                     <div class="box-body">
                         <?php
+                        $anch=1;
                             $objectAnchoraged=  EntityDevice::model()->searchObjectAnchorage($service["id_service"]);
                             if(empty($objectAnchoraged)):
                                 echo "No hay objetos anclado para este servicio";
+                            $anch=2;
                             else: foreach($objectAnchoraged as $object):?>
-                                    <div class="col-md-4" id="<?= $object["id_entdev"]?>">
+                                    <div class="col-md-4" id="service<?= $object["id_entdev"]?>">
                                         <div class="box box-primary">
                                             <div class="box-header ui-sortable-handle" style="cursor: move;">
                                                 <h3 class="box-title">Objeto: <?= $object["object_name"]?></h3><br>
@@ -48,7 +55,7 @@ if(!empty($services)):
                                                                 <?php foreach($object["positions"] as $pkpos=>$position):?>
                                                                 <tr>
                                                                     <td><?php echo $position["magnitude_name"]?></td>
-                                                                    <td><?php echo $object["data"][$pkpos]?></td>
+                                                                    <td id="<?= $position["magnitude_code"]?>"><?php echo $object["data"][$pkpos]?></td>
                                                                 </tr>
 
                                                                 <?php endforeach;?>
@@ -75,12 +82,14 @@ if(!empty($services)):
                     </div>
                 </div>
             </div>
-            
+            <input type="hidden" class="<?php echo $service["service_code"]?>" value="<?php echo $anch?>">
         </div>
     <?php endforeach;
 endif;
 ?>
-
-
-
-</section>   
+</section> 
+<?php 
+//$oauthToken="sadfasdfasd";
+//    Yii::app()->clientScript->registerScript('cargaMagnitudeAJs', '
+//       localStorage.setItem("lastname", "'.$oauthToken.'");
+//   ');

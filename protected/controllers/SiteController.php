@@ -7,9 +7,15 @@ class SiteController extends Controller
     */
     public function filterEnforcelogin($filterChain){
         if(Yii::app()->user->isGuest){
+            if(isset($_POST) && !empty($_POST)){
+                $response["status"]="nosession";
+                echo CJSON::encode($response);
+                exit();
+            }
+            else{
                 Yii::app()->user->returnUrl = array("site/login");                                                          
                 $this->redirect(Yii::app()->user->returnUrl);
-            
+            }
         }
         else{
             Yii::app()->user->returnUrl = array("site/index");          
@@ -22,7 +28,7 @@ class SiteController extends Controller
      */
     public function filters(){
         return array(
-                'enforcelogin -login -index -logout -contact -registerPlatform',                      
+                'enforcelogin -login -index -logout -contact -registerPlatform -searchservices',                      
         );
     }
 	/**
@@ -56,11 +62,36 @@ class SiteController extends Controller
             else{
                 $user=Yii::app()->user->name;
                 $service=  Service::model()->searchServiceByUsername($user);
-                $modelEntity=  Entity::model();
-                $modelEntityPerson=  EntityPerson::model();
+//                $modelEntity=  Entity::model();
+//                $modelEntityPerson=  EntityPerson::model();
                 $this->render('index',array("services"=>$service));
             }
 	}
+        
+        public function actionSearchservices(){
+//            $headers=getallheaders();
+//            print_r($headers["oauthtoken"]);
+            $user=Yii::app()->user->name;
+            $services=  Service::model()->searchServiceByUsername($user);
+            if(!empty($services)){
+                foreach($services as $pk=>$service){
+                    $objectAnchoraged=  EntityDevice::model()->searchObjectAnchorage($service["id_service"]);
+                    if(empty($objectAnchoraged)){
+                        $services[$pk]["anchorage"]=2;
+                    }
+                    else{
+                        $services[$pk]["anchorage"]=1;
+                        foreach($objectAnchoraged as $pkobj=>$object){
+                            $services[$pk]["objects"][$pkobj]=$object;
+                            if(empty($object["data"])){
+                                $services[$pk]["objects"][$pkobj]["data"]="null";
+                            }
+                        }
+                    }
+                }
+            }
+            echo CJSON::encode($services);
+        }
 
 	/**
 	 * This is the action to handle external exceptions.
