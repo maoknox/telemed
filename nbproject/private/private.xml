@@ -4,13 +4,18 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/var/www/html/telemed/js/Service/Telemedition.js</file>
-            <file>file:/var/www/html/telemed/protected/views/service/_loadtelemed.php</file>
-            <file>file:/var/www/html/telemed/protected/views/service/_showobjectavl.php</file>
-            <file>file:/var/www/html/telemed/js/Entitydevice/Entitydevice.js</file>
-            <file>file:/var/www/html/telemed/js/Service/Avl.js</file>
-            <file>file:/var/www/html/telemed/protected/views/entitydevice/_registerobjectdevice.php</file>
+            <file>file:/var/www/html/telemed/protected/models/Service.php</file>
+            <file>file:/var/www/html/telemed/protected/views/service/_showobjectelemed.php</file>
+            <file>file:/var/www/html/telemed/protected/models/EntityDevice.php</file>
+            <file>file:/var/www/html/telemed/protected/views/site/index.php</file>
             <file>file:/var/www/html/telemed/protected/controllers/EntitydeviceController.php</file>
-            <file>file:/var/www/html/telemed/protected/views/entitydevice/_selectcoords.php</file>
+            <file>file:/var/www/html/telemed/protected/config/main.php</file>
+            <file>file:/var/www/html/telemed/protected/views/service/_loadtelemed.php</file>
+            <file>file:/var/www/html/telemed/protected/controllers/SiteController.php</file>
+            <file>file:/var/www/html/telemed/js/DataForAnch.js</file>
+            <file>file:/var/www/html/telemed/js/Person/Person.js</file>
+            <file>file:/var/www/html/telemed/protected/controllers/ServiceController.php</file>
+            <file>file:/var/www/html/telemed/protected/views/entitydevice/_loadobjectdevice.php</file>
         </group>
     </open-files>
 </project-private>
