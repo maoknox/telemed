@@ -167,8 +167,6 @@ var Telemedition = function(){
         self.div.find("#"+identdev).val(anchor);
     };
     self.searchDataTelemedWs=function(){
-    
-       
     /**
      * Consume webservice registerDevice registrar dispositivo
      */
@@ -229,8 +227,10 @@ var Telemedition = function(){
     self.loadDataTelemedToDivs=function(data){
         self.div.find("#timelecture").text(data.time);
         $.each(data.data,function(key,value){
-//            console.log(key+"=>"+value);
-                self.div.find("#magnitude"+key).text(value);
+            var id="gr"+key;
+            var gaugeAux=document.gauges.get(id);
+            gaugeAux.value=value;
+            self.div.find("#magnitude"+key).text(value);
         });
     };
     /**************************************************************************/

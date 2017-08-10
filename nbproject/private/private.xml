@@ -10,12 +10,13 @@
             <file>file:/var/www/html/telemed/protected/views/site/index.php</file>
             <file>file:/var/www/html/telemed/protected/controllers/EntitydeviceController.php</file>
             <file>file:/var/www/html/telemed/protected/config/main.php</file>
+            <file>file:/var/www/html/telemed/protected/views/layouts/main.php</file>
             <file>file:/var/www/html/telemed/protected/views/service/_loadtelemed.php</file>
             <file>file:/var/www/html/telemed/protected/controllers/SiteController.php</file>
-            <file>file:/var/www/html/telemed/js/DataForAnch.js</file>
             <file>file:/var/www/html/telemed/js/Person/Person.js</file>
+            <file>file:/var/www/html/telemed/protected/views/entitydevice/_editmagnitude.php</file>
             <file>file:/var/www/html/telemed/protected/controllers/ServiceController.php</file>
-            <file>file:/var/www/html/telemed/protected/views/entitydevice/_loadobjectdevice.php</file>
+            <file>file:/var/www/html/telemed/protected/models/MagnitudeEntdev.php</file>
         </group>
     </open-files>
 </project-private>

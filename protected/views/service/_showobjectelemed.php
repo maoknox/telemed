@@ -3,6 +3,8 @@
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/plugins/datatables/jquery.dataTables.min.js",CClientScript::POS_END);
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/plugins/datatables/dataTables.bootstrap.min.js",CClientScript::POS_END);
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/js/Service/Telemedition.js",CClientScript::POS_END);
+    Yii::app()->clientScript->registerScriptFile("//cdn.rawgit.com/Mikhus/canvas-gauges/gh-pages/download/2.1.4/all/gauge.min.js",CClientScript::POS_BEGIN);
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/js/Graphics.js",CClientScript::POS_END);
 /* 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -20,8 +22,11 @@
                     </div>
                     <div class="box-body">
                         <p>Nombre de objeto: <?php echo $object->object_name?></p>
-                        <p>Hora última medición: <div id="timelecture"><?php echo $time?></div></p>
+                        <p>Hora última medición: <div id="timelecture"><?php echo $time;?></div></p>
+                    <p><?php echo CHtml::link('Consultar gráfica', '#', array('onclick'=>''
+                            . '$("#historicChart").dialog("open"); return false;'));?></p>
                     </div>
+                    
                 </div>
             </div>
         </div>
@@ -29,28 +34,26 @@
         <div class="row">
             <?php if(isset($positionsDF) && !empty($positionsDF)):?>
                  <?php foreach($positionsDF as $pk=>$position):?>
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <div class="box box-primary">
                             <div class="box-header with-border">
                               <h3 class="box-title">Magnitud: <?php echo $position["magnitude_name"]?> </h3>
                             </div>
-                            <div class="box-body" id="magnitude<?=$pk?>">
-                                <?php 
-                                    //$idMagnitude="";
-                                    echo $dataObjects["data"][$pk];
-                                    $idMagnitude=$dataObjects["data"][$pk];
-                                ?>
+                            <div class="box-body" >
+                                <div id="magnitude<?=$pk?>">
+                                    <?php 
+                                        //$idMagnitude="";
+                                        echo $dataObjects["data"][$pk];
+                                        $idMagnitude=$dataObjects["data"][$pk];
+                                    ?>
+                                </div>
+                                <canvas id="gr<?=$pk?>" ></canvas>
                             </div>
 
                         </div>
                     </div>
             <?php endforeach;    endif;?>
-            <div class="col-md-2">
-                <div class="box box-primary">
-                    <div class="box-body" >
-                        <?php echo CHtml::link('Consultar gráfica', '#', array('onclick'=>''
-                            . '$("#historicChart").dialog("open"); return false;'));?>
-                        <?php
+            <?php
                         $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
                             'id'=>'historicChart',
                             'options'=>array(
@@ -64,9 +67,6 @@
                         $this->renderPartial("_graficostl",array("identdev"=>$dataFrames->id_entdev,"positiondf"=>$positionsDF));          
                         $this->endWidget('zii.widgets.jui.CJuiDialog');
                         ?>
-                    </div>
-                </div>
-            </div>
         </div>
             <?php else:?>
              <div class="row">
@@ -85,6 +85,7 @@
 </section>
  <?php 
  Yii::app()->clientScript->registerScript('cargaDataObject', '
-     Telemedition.idEntdev='.$identdev.'
+    Telemedition.idEntdev='.$identdev.'
     Telemedition.searchDataTelemed();
+    Graphics.showGauges('.CJSON::encode($positionsDF).','.CJSON::encode($dataObjects["data"]).');
 ');
