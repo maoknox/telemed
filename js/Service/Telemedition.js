@@ -212,16 +212,15 @@ var Telemedition = function(){
     */ 
     self.loadDataTelemed=function(data){
         self.arrayDevice=data;
-            dataTableObject.clear();
-            $.each(data,function(key,value){
-                var row=[];
-                row.push(value.time);
-                $.each(value.data,function(keyi,valuei){
-                    row.push(valuei);
-                });
-                dataTableObject.row.add(row).draw();
+        dataTableObject.clear();
+        $.each(data,function(key,value){
+            var row=[];
+            row.push(value.time);
+            $.each(value.data,function(keyi,valuei){
+                row.push(valuei);
             });
-            
+            dataTableObject.row.add(row).draw();
+        });
     };
     
     self.loadDataTelemedToDivs=function(data){

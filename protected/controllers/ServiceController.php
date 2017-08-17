@@ -321,4 +321,37 @@ class ServiceController extends Controller{
         echo CJSON::encode($response);
         
     }
+    public function actionRecordDataMace(){
+        if(!empty($_GET)){
+           $post=$_GET;
+        }
+        elseif($_POST){
+            $post=$_POST;
+        }
+        $conn=Yii::app()->db;
+        $username=Yii::app()->user->name;
+        $sql="select ep.id_entity from public.user as usr left join entity_person as ep on ep.id_person=usr.id_person where username=:username ;";
+        $query=$conn->createCommand($sql);
+        $query->bindParam(":username", $username);
+        $res=$query->query();
+        $read=$res->read();
+        $res->close();
+        if(!empty($read)){
+            $sqli="insert into data_mace (id_entity,datamace) values (:identity,:datamace)";
+            $query=$conn->createCommand($sqli);
+            $data=json_encode($post);
+            $query->bindParam(":identity", $read["id_entity"]);
+            $query->bindParam(":datamace", $data);
+            $query->execute();
+        }
+    }
+    public function actionShowDataMace(){
+        $conn=Yii::app()->db;
+        $sql="select * from data_mace";
+        $query=$conn->createCommand($sql);
+        $res=$query->query();
+        $read=$res->readAll();
+        $res->close();
+        $this->render("_showdatamace",array("datamace"=>$read));
+    }
 }

@@ -111,7 +111,7 @@ class MagnitudeEntdev extends CActiveRecord
          */
         public function searchMagnitudesByObject($idEntDev){
             $conn=Yii::app()->db;
-            $sql="select me.id_magnitude,me.position_dataframe,me.min_magnitude,me.max_magnitude,mag.magnitude_name,ms.meassystem_spanish,ms.id_meassystem, sensor_name, gr.graphic_code "
+            $sql="select me.id_magnitude,me.position_dataframe,me.min_magnitude,me.max_magnitude,mag.magnitude_name,ms.meassystem_spanish,ms.id_meassystem, sensor_name, gr.graphic_code,me.min_magnitude,me.max_magnitude "
                     . "from magnitude_entdev as me "
                     . "left join magnitude as mag on mag.id_magnitude=me.id_magnitude "
 		    . "left join magnitude_graphic as mgr on mgr.id_magnitude=mg.id_magnitude "
@@ -132,7 +132,7 @@ class MagnitudeEntdev extends CActiveRecord
          */
         public function searchPositionMagnitude($params){
             $conn=Yii::app()->db;
-            $sql="select me.position_dataframe,mg.magnitude_code,mg.magnitude_name, ms.meassystem_spanish, gr.graphic_code from entity_device as ed "
+            $sql="select me.position_dataframe,mg.magnitude_code,mg.magnitude_name, ms.meassystem_spanish, gr.graphic_code,me.min_magnitude,me.max_magnitude from entity_device as ed "
                     . "left join magnitude_entdev as me on me.id_entdev=ed.id_entdev "
                     . "left join magnitude as mg on mg.id_magnitude=me.id_magnitude "
 		    . "left join magnitude_graphic as mgr on mgr.id_magnitude=mg.id_magnitude "

@@ -251,6 +251,7 @@
                   <ul class="treeview-menu">
                     <li><a href="<?php echo Yii::app()->request->baseUrl?>/index.php/device/registerDevice"><i class="fa fa-circle-o"></i> Registrar dispositivo</a></li>
                     <li><a href="<?php echo Yii::app()->request->baseUrl?>/index.php/sensor/registerSensor"><i class="fa fa-circle-o"></i> Registrar sensor</a></li>
+                    <li><a href="<?php echo Yii::app()->request->baseUrl?>/index.php/service/showDataMace"><i class="fa fa-circle-o"></i> Ver data post</a></li>
                   </ul>
                 </li>
               </ul>
