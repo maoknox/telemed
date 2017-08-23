@@ -44,6 +44,11 @@ var Chartstl = function(){
      * @returns {undefined}
      */
     function setDefaults(){
+//        Highcharts.setOptions({
+//            global: {
+//                    useUTC: false
+//            }
+//        });
        self.div.find("#formularioHist").validate({
             rules: {
                 "ConsHist[variablesSelect]": "required",
@@ -336,7 +341,7 @@ var Chartstl = function(){
             }); 
         }
         
-    }
+    };
     
     /**************************************************************************/
     /******************************* DOM METHODS ******************************/

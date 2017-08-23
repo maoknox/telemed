@@ -37,7 +37,7 @@
                     <div class="col-md-4">
                         <div class="box box-primary">
                             <div class="box-header with-border">
-                              <h3 class="box-title">Magnitud: <?php echo $position["magnitude_name"]?> </h3>
+                              <h3 class="box-title">Magnitud: <?php echo $position["magnitude_name"]." - ".$position["measscale_name"]." - ".$position["measscale_unity"]?> </h3>
                             </div>
                             <div class="box-body" >
                                 <div id="magnitude<?=$pk?>">

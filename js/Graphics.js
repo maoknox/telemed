@@ -48,47 +48,70 @@ var Graphics = function(){
     /********************************** METHODS *******************************/
     /**************************************************************************/
     self.showGauges=function(graphics,data){
-        console.log(data);
+//        console.log(graphics);
         $.each(graphics,function(key,value){
-            console.log(key+" "+value.graphic_code);
+//            console.log(key+" "+value.graphic_code);
             var maxVal;
             var units;
-            var minTicks=20;
-            if(value.magnitude_code=="BARP"){
-                maxVal=760;
-                minTicks=76;
-            }
-            else if(value.magnitude_code=="WSPE" || value.magnitude_code=="MWSP"){
-                maxVal=100;
-                units="km/h";
-            }
-            else if(value.magnitude_code=="RINF" || value.magnitude_code=="RIND"){
-                maxVal=100;
-                units="mm";
-            }
-            else if(value.magnitude_code=="TEMP"){
-                maxVal=100;
-                units="°C";
-            }
-            else if(value.magnitude_code=="HM"){
-                maxVal=100;
-                units="%";
-            }
-            majTicks=self.calcMajorTicks(maxVal,minTicks);
+            var units=value.measscale_unity;
+            var minVal=value.min_magnitude;
+            var maxVal=value.max_magnitude;
+            var minValwr=value.min_magnitude_wr;
+            var maxValwr=value.max_magnitude_wr;
+            var minTicks=maxVal/5;
+            var mintick=maxVal/5;
+//            console.log(maxVal);
+//            console.log(mintick);
             
+//            if(value.magnitude_code=="BARP"){
+//                maxVal=760;
+//                minTicks=76;
+//            }
+//            else if(value.magnitude_code=="WSPE" || value.magnitude_code=="MWSP"){
+//                maxVal=100;
+//                units="km/h";
+//            }
+//            else if(value.magnitude_code=="RINF" || value.magnitude_code=="RIND"){
+//                maxVal=100;
+//                units="mm";
+//            }
+//            else if(value.magnitude_code=="TEMP"){
+//                maxVal=100;
+//                units="°C";
+//            }
+//            else if(value.magnitude_code=="HM"){
+//                maxVal=100;
+//                units="%";
+//            }
+                if(maxVal!=null){
+                    majTicks=self.calcMajorTicks(maxVal,minTicks);
+                }
+                var highLights=[];
+                if(maxValwr!=null && minValwr!=null){
+                    highLights.push({"from":minVal,"to":minValwr,"color":"rgba(200, 50, 50, .75)"});
+                    highLights.push({"from":maxValwr,"to":maxVal,"color":"rgba(200, 50, 50, .75)"});
+//                    console.log(highLights);
+                }
+                else{
+                    
+                }
             rendTo="gr"+key;
             switch(value.graphic_code) {
                 case "COMPASS":
                     self.showCompassGauge(rendTo,data[key]);
                     break;
                 case "RADIAL": 
-                    self.showRadialGauge(rendTo,data[key],units,majTicks,maxVal);
+                    minTicks=30;
+                    self.showRadialGauge(rendTo,data[key],units,majTicks,maxVal,minVal,minTicks,highLights);
                     break;
                 case "LINEAR": 
-                    self.showLinearGauge(rendTo,data[key],units,majTicks,maxVal,minTicks);
+                    minTicks=10;
+                    self.showLinearGauge(rendTo,data[key],units,majTicks,maxVal,minTicks,minVal,highLights);
                     break;
                 case "RADIALMIDLE": 
-                    self.showMiddleRadGauge(rendTo,data[key],units,majTicks,maxVal);
+                     
+                    minTicks=5;
+                    self.showMiddleRadGauge(rendTo,data[key],units,majTicks,maxVal,minVal,minTicks,highLights);
                     break; 
             } 
         });
@@ -96,14 +119,14 @@ var Graphics = function(){
     self.calcMajorTicks=function(maxVal,minTicks){
         var majTicksAux=[];
         var range=minTicks;//=maxVal/2;
-        
+//        console.log(minTicks+"-");
         for(i=0;i<=maxVal;i++){
             majTicksAux.push(i);
             i+=range-1;
         }
         
         
-        console.log(majTicksAux);
+//        console.log(majTicksAux);
         return majTicksAux;
     };
     /**************************************************************************/
@@ -120,7 +143,7 @@ var Graphics = function(){
      * Crea gauge radial para magnitudes como velocidad
      * 
      */
-    self.showRadialGauge=function(rendTo,value,units,majTicks,maxVal){
+    self.showRadialGauge=function(rendTo,value,units,majTicks,maxVal,minVal,minTicks,highLights){
        new RadialGauge({
             renderTo: rendTo,
             width: 150,
@@ -128,18 +151,18 @@ var Graphics = function(){
             units: units,
             title: false,
             value: value,
-            minValue: 0,
-            maxValue: 100,
+            minValue: minVal,
+            maxValue: maxVal,
             majorTicks:majTicks ,
-            minorTicks: 10,
-            strokeTicks: true,
+            minorTicks: minTicks,
+            strokeTicks: false,
 //            highlights:hl ,
             borderInnerWidth: 0,
             borderMiddleWidth: 0,
             borderOuterWidth: 1,
             colorCircleInner: "#000",
             colorNeedleCircleOuter: "#000",
-                colorBorderOuter: "#ccc",
+            colorBorderOuter: "#ccc",
             colorBorderOuterEnd: "#ccc",
                 borders: true,
             /*colorPlate: '#222',
@@ -148,6 +171,7 @@ var Graphics = function(){
             colorTitle: '#fff',
             colorUnits: '#ccc',
             colorNumbers: '#eee',*/
+            highlights:highLights,
             colorNeedle: 'rgba(240, 128, 128, 1)',
             colorNeedleEnd: 'rgba(255, 160, 122, .9)',
             valueBox: true
@@ -159,7 +183,8 @@ var Graphics = function(){
      * Muestra gauge linear para magnitudes como temperatura
      * 
      */
-    self.showLinearGauge=function(rendTo,val,units,majTicks,maxVal,minTicks){
+    self.showLinearGauge=function(rendTo,val,units,majTicks,maxVal,minTicks,minVal,highLights){
+        minorTic=maxVal/10;
         new LinearGauge({
             renderTo: rendTo,
             type:"linear-gauge",
@@ -168,6 +193,7 @@ var Graphics = function(){
             borders:0,
             barStrokeWidth:5,
             maxValue:maxVal,
+            minValue:minVal,
             minorTicks:minTicks,
             majorTicks:majTicks,
 //            colorNumbers:["red","green","blue","#000","#000","#000","#000","#000","#000","#000","#000"],
@@ -180,6 +206,7 @@ var Graphics = function(){
             tickSide:"left",
             numberSide:"left",
             needleSide:"left",
+            highlights:highLights,
             animateOnInit:true,
             colorPlate:"#fff",
             barBeginCircle:false
@@ -240,20 +267,20 @@ var Graphics = function(){
             animateOnInit: true
         }).draw(); 
     };
-    self.showMiddleRadGauge=function(rendTo,value,units,majTicks,maxVal){
+    self.showMiddleRadGauge=function(rendTo,value,units,majTicks,maxVal,minVal,minTicks,highLights){
         new RadialGauge({
             renderTo: rendTo,
             width: 150,
             height: 150,
             units: units,
-            minValue: 0,
+            minValue: minVal,
             startAngle: 90,
             ticksAngle: 180,
             valueBox: false,
             value:value,
             maxValue: maxVal,
             majorTicks: majTicks,
-            minorTicks: 10,
+            minorTicks: minTicks,
             strokeTicks: true,
             colorPlate: "#fff",
             borderShadowWidth: 0,
@@ -264,6 +291,7 @@ var Graphics = function(){
             needleCircleOuter: true,
             needleCircleInner: false,
             animationDuration: 1500,
+            highlights:highLights,
             animationRule: "linear",
             animateOnInit: true
         }).draw();

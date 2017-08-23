@@ -130,9 +130,9 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                         <?php echo $formMagnitude->error($modelMagnitudeEntDev,'serialid_sensor',array("class"=>"errorMessage")); ?>
                     </div>
                     <div class="form-group">
-                        <?php echo $formMagnitude->labelEx($modelMagnitudeEntDev,'id_meassystem'); ?>
-                        <?php echo $formMagnitude->dropDownList($modelMagnitudeEntDev,'id_meassystem',CHtml::listData($meassSystem, 'id_meassystem', 'meassystem_spanish'),array ('class' => 'form-control',"prompt"=>"Seleccione sistema de medida")); ?>
-                        <?php echo $formMagnitude->error($modelMagnitudeEntDev,'id_meassystem',array("class"=>"errorMessage")); ?>
+                        <?php echo $formMagnitude->labelEx($modelMagnitudeEntDev,'id_measscale'); ?>
+                        <?php echo $formMagnitude->dropDownList($modelMagnitudeEntDev,'id_measscale',CHtml::listData($measScale, 'id_measscale', 'measscale_name', 'measscale_unity'),array ('class' => 'form-control',"prompt"=>"Seleccione sistema de medida")); ?>
+                        <?php echo $formMagnitude->error($modelMagnitudeEntDev,'id_measscale',array("class"=>"errorMessage")); ?>
                     </div>
                     <div class="form-group">
                         <?php echo $formMagnitude->labelEx($modelMagnitudeEntDev,'min_magnitude'); ?>
@@ -143,6 +143,16 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                         <?php echo $formMagnitude->labelEx($modelMagnitudeEntDev,'max_magnitude'); ?>
                         <?php echo $formMagnitude->textField($modelMagnitudeEntDev,'max_magnitude', array ('class' => 'form-control','placeholder'=>'Digite límite superior de la medición para alarmas')); ?>
                         <?php echo $formMagnitude->error($modelMagnitudeEntDev,'max_magnitude'); ?>
+                    </div>
+                    <div class="form-group">
+                        <?php echo $formMagnitude->labelEx($modelMagnitudeEntDev,'min_magnitude_wr'); ?>
+                        <?php echo $formMagnitude->textField($modelMagnitudeEntDev,'min_magnitude_wr', array ('class' => 'form-control','placeholder'=>'Digite límite inferior de la medición para alarmas')); ?>
+                        <?php echo $formMagnitude->error($modelMagnitudeEntDev,'min_magnitude_wr'); ?>
+                    </div>
+                    <div class="form-group">
+                        <?php echo $formMagnitude->labelEx($modelMagnitudeEntDev,'max_magnitude_wr'); ?>
+                        <?php echo $formMagnitude->textField($modelMagnitudeEntDev,'max_magnitude_wr', array ('class' => 'form-control','placeholder'=>'Digite límite superior de la medición para alarmas')); ?>
+                        <?php echo $formMagnitude->error($modelMagnitudeEntDev,'max_magnitude_wr'); ?>
                     </div>
                 </div>
                 <div class="box-footer">
@@ -165,9 +175,11 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                 <th>Posición en trama</th>
                                 <th>Sensor</th>
                                 <th>Magnitud</th>
-                                <th>Sistema de medida</th>
-                                <th>Mínimo</th>
-                                <th>Máximo</th>
+                                <th>Unidad de medida</th>
+                                <th>Mínimo de medición</th>
+                                <th>Máximo de medición</th>
+                                <th>Mínimo para alertar</th>
+                                <th>Máximo para alertar</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -177,9 +189,11 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                 <th>Posición en trama</th>
                                 <th>Sensor</th>
                                 <th>Magnitud</th>
-                                <th>Sistema de medida</th>
-                                <th>Mínimo</th>
-                                <th>Máximo</th>
+                                <th>Unidad de medida</th>
+                                <th>Mínimo de medición</th>
+                                <th>Máximo de medición</th>
+                                <th>Mínimo para alertar</th>
+                                <th>Máximo para alertar</th>
                             </tr>
                         </tfoot>
                     </table>

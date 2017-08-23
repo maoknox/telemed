@@ -117,12 +117,15 @@ var Entitydevice = function(){
         self.divi.find("#btnCancelaEdicion").css("display","block");
         $.each(self.arrayMagnitude,function(key,value){
             if(value.id_magnitude==idMagnitude){
+                console.log(value.id_measscale);
                 self.divi.find("#magnitude-form #MagnitudeEntdev_position_dataframe").val(value.position_dataframe);
                 self.divi.find("#magnitude-form #MagnitudeEntdev_id_magnitude").val(value.id_magnitude);
                 self.divi.find("#magnitude-form #MagnitudeEntdev_serialid_sensor").val(value.serialid_sensor);
-                self.divi.find("#magnitude-form #MagnitudeEntdev_id_meassystem").val(value.id_meassystem);
+                self.divi.find("#magnitude-form #MagnitudeEntdev_id_measscale").val(value.id_measscale);
                 self.divi.find("#magnitude-form #MagnitudeEntdev_min_magnitude").val(value.min_magnitude);
                 self.divi.find("#magnitude-form #MagnitudeEntdev_max_magnitude").val(value.max_magnitude);
+                self.divi.find("#magnitude-form #MagnitudeEntdev_min_magnitude_wr").val(value.min_magnitude_wr);
+                self.divi.find("#magnitude-form #MagnitudeEntdev_max_magnitude_wr").val(value.max_magnitude_wr);
             }
         });
     };
@@ -276,7 +279,7 @@ var Entitydevice = function(){
                     self.div.find("#dataTableEntityMagnitude").DataTable().clear();
                     $.each(response.data,function(key,value){
                         var sensor="";
-                        if(value.sensor_name!=""){
+                        if(value.sensor_name!=null){
                             sensor=value.sensor_name;
                         }
                         else{
@@ -286,9 +289,11 @@ var Entitydevice = function(){
                             value.position_dataframe,
                             sensor,
                             value.magnitude_name,
-                            value.meassystem_spanish,
+                            value.measscale_name+" - "+value.measscale_unity,
                             value.min_magnitude,
-                            value.max_magnitude
+                            value.max_magnitude,
+                            value.min_magnitude_wr,
+                            value.max_magnitude_wr
                         ]).draw();
                         self.div.find("#btnRegMagnitude").show();
                     });
@@ -359,7 +364,7 @@ var Entitydevice = function(){
                     self.arrayMagnitude=response.data;
                     $.each(response.data,function(key,value){
                         var sensor="";
-                        if(value.sensor_name!=""){
+                        if(value.sensor_name!=null){
                             sensor=value.sensor_name;
                         }
                         else{
@@ -369,9 +374,11 @@ var Entitydevice = function(){
                             value.position_dataframe,
                             sensor,
                             value.magnitude_name,
-                            value.meassystem_spanish,
+                            value.measscale_name+" - "+value.measscale_unity,
                             value.min_magnitude,
                             value.max_magnitude,
+                            value.min_magnitude_wr,
+                            value.max_magnitude_wr,
                             "<a href='javascript:Entitydevice.loadMagnitudeToForm("+self.divi.find("#magnitude-form #MagnitudeEntdev_id_entdev").val()+","+value.id_magnitude+");'>Editar</a>"
                         ]).draw();
                         self.div.find("#btnRegMagnitude").show();
@@ -443,7 +450,8 @@ var Entitydevice = function(){
                     self.arrayMagnitude=response.data;
                     $.each(response.data,function(key,value){
                         var sensor="";
-                        if(value.sensor_name!=""){
+                        console.log(value.sensor_name);
+                        if(value.sensor_name !== null){
                             sensor=value.sensor_name;
                         }
                         else{
@@ -453,9 +461,11 @@ var Entitydevice = function(){
                             value.position_dataframe,
                             sensor,
                             value.magnitude_name,
-                            value.meassystem_spanish,
+                            value.measscale_name+" - "+value.measscale_unity,
                             value.min_magnitude,
                             value.max_magnitude,
+                            value.min_magnitude_wr,
+                            value.max_magnitude_wr,
                             "<a href='javascript:Entitydevice.loadMagnitudeToForm("+self.divi.find("#magnitude-form #MagnitudeEntdev_id_entdev").val()+","+value.id_magnitude+");'>Editar</a>"
                         ]).draw();
                         self.cancelEdition();
