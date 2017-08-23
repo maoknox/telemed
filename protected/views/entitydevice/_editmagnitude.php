@@ -3,6 +3,7 @@
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/plugins/datatables/jquery.dataTables.min.js",CClientScript::POS_END);
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/plugins/datatables/dataTables.bootstrap.min.js",CClientScript::POS_END);
     Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl."/js/Entitydevice/Entitydevice.js",CClientScript::POS_END);
+//    print_r($magnitudes);
 ?>
 <section class="content" id="divMagnitude">
     <div class="row">
@@ -37,21 +38,30 @@
                         <?php echo $formMagnitude->error($modelMagnitudeEntDev,'serialid_sensor',array("class"=>"errorMessage")); ?>
                     </div>
                     <div class="form-group">
-                        <?php echo $formMagnitude->labelEx($modelMagnitudeEntDev,'id_meassystem'); ?>
-                        <?php echo $formMagnitude->dropDownList($modelMagnitudeEntDev,'id_meassystem',CHtml::listData($meassSystem, 'id_meassystem', 'meassystem_spanish'),array ('class' => 'form-control',"prompt"=>"Seleccione sistema de medida")); ?>
-                        <?php echo $formMagnitude->error($modelMagnitudeEntDev,'id_meassystem',array("class"=>"errorMessage")); ?>
+                        <?php echo $formMagnitude->labelEx($modelMagnitudeEntDev,'id_measscale'); ?>
+                        <?php echo $formMagnitude->dropDownList($modelMagnitudeEntDev,'id_measscale',CHtml::listData($measScale, 'id_measscale', 'measscale_name', 'measscale_unity'),array ('class' => 'form-control',"prompt"=>"Seleccione sistema de medida")); ?>
+                        <?php echo $formMagnitude->error($modelMagnitudeEntDev,'id_measscale',array("class"=>"errorMessage")); ?>
                     </div>
                     <div class="form-group">
                         <?php echo $formMagnitude->labelEx($modelMagnitudeEntDev,'min_magnitude'); ?>
                         <?php echo $formMagnitude->textField($modelMagnitudeEntDev,'min_magnitude', array ('class' => 'form-control','placeholder'=>'Digite límite inferior de la medición para alarmas')); ?>
                         <?php echo $formMagnitude->error($modelMagnitudeEntDev,'min_magnitude'); ?>
-                    </div>
                     <div class="form-group">
                         <?php echo $formMagnitude->labelEx($modelMagnitudeEntDev,'max_magnitude'); ?>
                         <?php echo $formMagnitude->textField($modelMagnitudeEntDev,'max_magnitude', array ('class' => 'form-control','placeholder'=>'Digite límite superior de la medición para alarmas')); ?>
                         <?php echo $formMagnitude->error($modelMagnitudeEntDev,'max_magnitude'); ?>
                     </div>
-                </div>
+                        <div class="form-group">
+                        <?php echo $formMagnitude->labelEx($modelMagnitudeEntDev,'min_magnitude_wr'); ?>
+                        <?php echo $formMagnitude->textField($modelMagnitudeEntDev,'min_magnitude_wr', array ('class' => 'form-control','placeholder'=>'Digite límite inferior de la medición para alarmas')); ?>
+                        <?php echo $formMagnitude->error($modelMagnitudeEntDev,'min_magnitude_wr'); ?>
+                    </div>
+                    <div class="form-group">
+                        <?php echo $formMagnitude->labelEx($modelMagnitudeEntDev,'max_magnitude_wr'); ?>
+                        <?php echo $formMagnitude->textField($modelMagnitudeEntDev,'max_magnitude_wr', array ('class' => 'form-control','placeholder'=>'Digite límite superior de la medición para alarmas')); ?>
+                        <?php echo $formMagnitude->error($modelMagnitudeEntDev,'max_magnitude_wr'); ?>
+                    </div>
+                    </div>
                 <div class="box-footer">
                     <div class="col-xs-2">
                         <?php echo $formMagnitude->hiddenField($modelMagnitudeEntDev,'id_entdev',array("value"=> $id_entdev)); ?>
@@ -65,6 +75,7 @@
                 <?php $this->endWidget(); ?>
             </div>
         </div>
+        </div>
         <div class="col-md-8">
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -77,9 +88,11 @@
                                 <th>Posición en trama</th>
                                 <th>Sensor</th>
                                 <th>Magnitud</th>
-                                <th>Sistema de medida</th>
-                                <th>Mínimo</th>
-                                <th>Máximo</th>
+                                <th>Unidad de medida SI</th>
+                                <th>Mínimo de medición</th>
+                                <th>Máximo de medición</th>
+                                <th>Mínimo para alertar</th>
+                                <th>Máximo para alertar</th>
                                 <th>Acción</th>
                             </tr>
                         </thead>
@@ -95,9 +108,11 @@
                                         <td><?php echo $magnitude["position_dataframe"]?></td>
                                         <td><?php echo $sensor?></td>
                                         <td><?php echo $magnitude["magnitude_name"]?></td>
-                                        <td><?php echo $magnitude["meassystem_spanish"]?></td>
+                                        <td><?php echo $magnitude["measscale_name"]." - ".$magnitude["measscale_unity"]?></td>
                                         <td><?php echo $magnitude["min_magnitude"]?></td>
                                         <td><?php echo $magnitude["max_magnitude"]?></td>
+                                        <td><?php echo $magnitude["min_magnitude_wr"]?></td>
+                                        <td><?php echo $magnitude["max_magnitude_wr"]?></td>
                                         <td><a href='javascript:Entitydevice.loadMagnitudeToForm("<?php echo $id_entdev?>","<?php echo $magnitude["id_magnitude"]?>");'>Editar</a></td>
                                     </tr>
                                 <?php endforeach;
@@ -109,8 +124,10 @@
                                 <th>Sensor</th>
                                 <th>Magnitud</th>
                                 <th>Sistema de medida</th>
-                                <th>Mínimo</th>
-                                <th>Máximo</th>
+                                <th>Mínimo de medición</th>
+                                <th>Máximo de medición</th>
+                                <th>Mínimo para alertar</th>
+                                <th>Máximo para alertar</th>
                                 <th>Accion</th>
                             </tr>
                         </tfoot>

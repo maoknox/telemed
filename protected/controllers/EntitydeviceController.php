@@ -61,6 +61,7 @@ class EntitydeviceController extends Controller{
             $modelSensor=Sensor::model();
             $sensors=$modelSensor->searchSensorUnused();
             $meassSystem=  MeasurementSystem::model()->findAll();
+            $measScale=  MeasurementScale::model()->findAll();
             $magnitudes=$modelMagnitudeEntdev->searchMagnitudesByObject($idEntdev);
             $this->render("_editmagnitude",array(
                 "id_entdev"=>$idEntdev,
@@ -68,7 +69,8 @@ class EntitydeviceController extends Controller{
                 "modelMagnitudeEntDev"=>$modelMagnitudeEntdev,
                 "typemagnitudes"=>$typemagnitudes,
                 "sensors"=>$sensors,
-                "meassSystem"=>$meassSystem
+                "meassSystem"=>$meassSystem,
+                "measScale"=>$measScale
             ));
         }
         else{
@@ -126,6 +128,7 @@ class EntitydeviceController extends Controller{
         if(empty($_POST)){
             $magnitude=  Magnitude::model()->findAll();
             $meassSystem=  MeasurementSystem::model()->findAll();
+            $measScale=  MeasurementScale::model()->findAll();
             $country=  Country::model()->findAll();
             $state=  State::model()->findAll();
             $city=  City::model()->findAll();
@@ -138,6 +141,7 @@ class EntitydeviceController extends Controller{
                 "modelMagnitudeEntDev"=>$modelMagnitudeEntDev,
                 "magnitude"=>$magnitude,
                 "meassSystem"=>$meassSystem,
+                "measScale"=>$measScale,
                 "country"=>$country,
                 "state"=>$state,
                 "city"=>$city,
