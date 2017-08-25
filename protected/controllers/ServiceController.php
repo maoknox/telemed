@@ -24,7 +24,7 @@ class ServiceController extends Controller{
      */
     public function filters(){
         return array(
-                'enforcelogin',                      
+                'enforcelogin -recordDataMace',                      
         );
     }
     public function actionIndex(){
@@ -322,28 +322,39 @@ class ServiceController extends Controller{
         
     }
     public function actionRecordDataMace(){
+        $post=array();
         if(!empty($_GET)){
            $post=$_GET;
         }
-        elseif($_POST){
+        elseif(!empty($_POST)){
             $post=$_POST;
         }
+        elseif(!empty($_REQUEST)){
+            
+            $post=$_REQUEST;
+        }
+        print_r($_GET);
+        $dataReq = file_get_contents("php://input");
+        print_r($dataReq);
+        $headers = apache_request_headers();
+        print_r($headers);
         $conn=Yii::app()->db;
-        $username=Yii::app()->user->name;
-        $sql="select ep.id_entity from public.user as usr left join entity_person as ep on ep.id_person=usr.id_person where username=:username ;";
-        $query=$conn->createCommand($sql);
-        $query->bindParam(":username", $username);
-        $res=$query->query();
-        $read=$res->read();
-        $res->close();
-        if(!empty($read)){
-            $sqli="insert into data_mace (id_entity,datamace) values (:identity,:datamace)";
+//        $username=Yii::app()->user->name;
+//        $sql="select ep.id_entity from public.user as usr left join entity_person as ep on ep.id_person=usr.id_person where username=:username ;";
+//        $query=$conn->createCommand($sql);
+//        $query->bindParam(":username", $username);
+//        $res=$query->query();
+//        $read=$res->read();
+//        $res->close();
+//        if(!empty($read)){
+            $sqli="insert into data_mace (datamace) values (:datamace)";
             $query=$conn->createCommand($sqli);
             $data=json_encode($post);
-            $query->bindParam(":identity", $read["id_entity"]);
+            $data.=$dataReq;
+//            $query->bindParam(":identity", $read["id_entity"]);
             $query->bindParam(":datamace", $data);
             $query->execute();
-        }
+//        }
     }
     public function actionShowDataMace(){
         $conn=Yii::app()->db;
