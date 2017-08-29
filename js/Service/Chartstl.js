@@ -32,6 +32,7 @@ var Chartstl = function(){
      */
     var Chartstl = function() {
         self.div=$("#divCharts");
+        self.divi=$("#divChartsRepo");
         setDefaults();
         
     }();
@@ -70,6 +71,30 @@ var Chartstl = function(){
             format:"yyyy-mm-dd"
         });
         self.div.find('#fechaFinal').datetimepicker({
+            controlType: 'select',
+            timeFormat: 'HH:mm:ss',
+            dateFormat: "yy-mm-dd",
+            format:"yyyy-mm-dd"
+        });
+        self.divi.find("#formularioRep").validate({
+            rules: {
+                "ConsRep[fecha_inicial]":"required",
+                "ConsRep[fecha_final]":"required",
+                "ConsRep[id_entdev]":"required"
+            },
+            messages: {
+                "ConsRep[fecha_inicial]":"Debe seleccionar una fecha inicial",
+                "ConsRep[fecha_final]":"Debe seleccionar una fecha final",
+                "ConsRep[id_entdev]":"No ha asociado un id de dispositivo"
+            }
+        });
+        self.divi.find('#fechaInicialRepo').datetimepicker({
+            controlType: 'select',
+            timeFormat: 'HH:mm:ss',
+            dateFormat: "yy-mm-dd",
+            format:"yyyy-mm-dd"
+        });
+        self.divi.find('#fechaFinalRepo').datetimepicker({
             controlType: 'select',
             timeFormat: 'HH:mm:ss',
             dateFormat: "yy-mm-dd",

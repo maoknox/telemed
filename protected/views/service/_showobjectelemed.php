@@ -25,6 +25,10 @@
                         <p>Hora última medición: <div id="timelecture"><?php echo $time;?></div></p>
                     <p><?php echo CHtml::link('Consultar gráfica', '#', array('onclick'=>''
                             . '$("#historicChart").dialog("open"); return false;'));?></p>
+                    <p><?php echo CHtml::link('Consultar reporte', '#', array('onclick'=>''
+                            . '$("#reportTelemed").dialog("open"); return false;'));?></p>
+                    
+                    
                     </div>
                     
                 </div>
@@ -54,19 +58,33 @@
                     </div>
             <?php endforeach;    endif;?>
             <?php
-                        $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
-                            'id'=>'historicChart',
-                            'options'=>array(
-                                'title'=>'Grafica de históricos',
-                                'autoOpen'=>false,
-                                'width'=>'60%',
-                                 'height'=>'auto',
-                                'htmlOptions' => array( 'style' => ' z-index: 100000' ),
+                $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
+                    'id'=>'historicChart',
+                    'options'=>array(
+                        'title'=>'Grafica de históricos',
+                        'autoOpen'=>false,
+                        'width'=>'60%',
+                         'height'=>'auto',
+                        'htmlOptions' => array( 'style' => ' z-index: 100000' ),
 
-                        ))); 
-                        $this->renderPartial("_graficostl",array("identdev"=>$dataFrames->id_entdev,"positiondf"=>$positionsDF));          
-                        $this->endWidget('zii.widgets.jui.CJuiDialog');
-                        ?>
+                ))); 
+                $this->renderPartial("_graficostl",array("identdev"=>$dataFrames->id_entdev,"positiondf"=>$positionsDF));          
+                $this->endWidget('zii.widgets.jui.CJuiDialog');
+            ?>
+            <?php
+                $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
+                    'id'=>'reportTelemed',
+                    'options'=>array(
+                        'title'=>'Consultar reporte vs rango de fecha',
+                        'autoOpen'=>false,
+                        'width'=>'60%',
+                         'height'=>'auto',
+                        'htmlOptions' => array( 'style' => ' z-index: 100000' ),
+
+                ))); 
+                $this->renderPartial("_reportetelemed",array("identdev"=>$dataFrames->id_entdev));          
+                $this->endWidget('zii.widgets.jui.CJuiDialog');
+            ?>
         </div>
             <?php else:?>
              <div class="row">
