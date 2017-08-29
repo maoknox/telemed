@@ -330,7 +330,6 @@ class ServiceController extends Controller{
             $post=$_POST;
         }
         elseif(!empty($_REQUEST)){
-            
             $post=$_REQUEST;
         }
         print_r($_GET);
@@ -384,4 +383,55 @@ class ServiceController extends Controller{
         $res->close();
         $this->render("_showdatamace",array("datamace"=>$read));
     }
+    public function actionShowReportObjectTelemed(){
+        header("Content-type: application/vnd.ms-excel; name='excel'");  
+        header("Content-Disposition: filename=repAsist-.xls");  
+        header("Pragma: no-cache");  
+        header("Expires: 0"); 
+        $idEntDev=Yii::app()->request->getPost('ConsRep');
+        $modelEntityDevice=  EntityDevice::model()->findByPk($idEntDev["id_entdev"]);
+        $modelObject=  Object::model()->findByPk($modelEntityDevice->serialid_object);
+        $modelDevice=  Device::model()->findByPk($modelEntityDevice->id_device);
+        $criteria=new CDbCriteria();
+        $criteria->order="position_dataframe ASC";
+        $modelMagnitudeEntDev=  MagnitudeEntdev::model()->findAllByAttributes(array("id_entdev"=>$idEntDev["id_entdev"]),$criteria);
+        $tabla="<table style='border:1px solid #000'>";
+        $numrows=count($modelMagnitudeEntDev)+1;//".$numrows."-".$idEntDev["id_entdev"]."-".$idEntDev["fecha_inicial"]."-".$idEntDev["fecha_final"]."------
+        $tabla="<table><tr><td style='border:1px solid #000' colspan='".$numrows."'>Reporte de mediciones de objeto: ".$modelObject->object_name."</td></tr>";
+        $tabla.="<tr><td style='border:1px solid #000' colspan='".$numrows."'>Fecha inicial: ".$idEntDev["fecha_inicial"]." - Fecha final: ".$idEntDev["fecha_final"]."</td></tr>";
+        
+        $tablaNmag="<td style='border:1px solid #000' rowspan='2'>Fecha de lectura</td>";
+        $tablaMScale="";
+        foreach($modelMagnitudeEntDev as $magnitude){
+            $modelMagnitude=  Magnitude::model()->findByPk($magnitude->id_magnitude);
+            $modelMeasurementScale=  MeasurementScale::model()->findByPk($magnitude->id_measscale);
+            $tablaNmag.="<td style='border:1px solid #000'>".$modelMagnitude->magnitude_name."</td>";
+            $tablaMScale.="<td style='border:1px solid #000'>".$modelMeasurementScale->measscale_name." - ".$modelMeasurementScale->measscale_unity."</td>";
+        }
+        $tabla.="<tr>".$tablaNmag;
+        $tabla.="</tr>"; 
+        $tabla.="<tr>".$tablaMScale;
+        $tabla.="</tr>";
+        $criteriai=new CDbCriteria();
+        $criteriai->order="dataframe_date DESC";
+        $criteriai->addBetweenCondition("dataframe_date", $idEntDev["fecha_inicial"], $idEntDev["fecha_final"]);
+        $modelDataframe=  Dataframe::model()->findAllByAttributes(array("id_entdev"=>$idEntDev["id_entdev"]),$criteriai);
+        $tddataframe="";
+        if(!empty($modelDataframe)){
+            foreach($modelDataframe as $dataframe){
+                $dataFrameAux=explode(",",$dataframe->dataframe);
+                $tddataframe="<td style='border:1px solid #000'>".$dataframe->dataframe_date."</td>";
+                foreach($dataFrameAux as $pk=>$dataframeExp){
+                    $tddataframe.="<td  style='border:1px solid #000'>".$dataframeExp."</td>";
+                }
+                $tabla.="<tr>".$tddataframe."</tr>";
+            }
+        }
+        else{
+           $tddataframe="<tr><td style='border:1px solid #000' colspan='".$numrows."'>No hay lecturas en este rango de fecha</td></tr>";
+        }
+        $tabla.="</table>";
+        echo utf8_decode($tabla);
+    }
+    
 }
