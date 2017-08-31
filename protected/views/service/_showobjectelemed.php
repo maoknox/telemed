@@ -27,8 +27,7 @@
                             . '$("#historicChart").dialog("open"); return false;'));?></p>
                     <p><?php echo CHtml::link('Consultar reporte', '#', array('onclick'=>''
                             . '$("#reportTelemed").dialog("open"); return false;'));?></p>
-                    
-                    
+                    <p><?php echo CHtml::link('Consultar históricos', '#', array("submit"=>array("showFormHistoricTelemed"),"params"=>array("identdev"=>$dataFrames->id_entdev)));?></p>
                     </div>
                     
                 </div>

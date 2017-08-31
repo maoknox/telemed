@@ -433,5 +433,42 @@ class ServiceController extends Controller{
         $tabla.="</table>";
         echo utf8_decode($tabla);
     }
-    
+    /*
+     * Mostrar formulario para consultar históricos de mediciones de telemedición
+     */
+    public function actionShowFormHistoricTelemed(){
+        $identdev=Yii::app()->request->getPost("identdev");
+        $modelEntityDevice=  EntityDevice::model()->findByPk($identdev);
+        $modelObject=  Object::model()->findByPk($modelEntityDevice->serialid_object);
+        $modelDevice=  Device::model()->findByPk($modelEntityDevice->id_device);
+        $criteria=new CDbCriteria();
+        $criteria->order="position_dataframe ASC";
+        $modelMagnitudeEntDev=  MagnitudeEntdev::model()->findAllByAttributes(array("id_entdev"=>$identdev),$criteria);
+        $this->render("_showhistorictelemed",array("identdev"=>$identdev,"modelMagnitudeEntDev"=>$modelMagnitudeEntDev));
+    }
+     public function actionShowHistoricTelemed(){
+        $idEntDev=Yii::app()->request->getPost("ConsRep");
+        $criteriai=new CDbCriteria();
+        $criteriai->order="dataframe_date DESC";
+        $criteriai->addBetweenCondition("dataframe_date", $idEntDev["fecha_inicial"], $idEntDev["fecha_final"]);
+        $modelDataframe=  Dataframe::model()->findAllByAttributes(array("id_entdev"=>$idEntDev["id_entdev"]),$criteriai);
+        if(!empty($modelDataframe)){
+            foreach($modelDataframe as $pkdf=>$dataframe){
+                $dataFrameAux=explode(",",$dataframe->dataframe);
+                $response["data"][$pkdf][0]=$dataframe->dataframe_date;
+                foreach($dataFrameAux as $pk=>$dataframeExp){
+                    $response["data"][$pkdf][$pk+1]=$dataframeExp;
+                }
+            }
+        }
+        else{
+           $tddataframe="nodata";
+        }
+        
+        $response["status"]="exito";
+//        $response["data"]=$tddataframe;
+//        print_r($response["data"]);
+//        exit();
+        echo CJSON::encode($response);
+    }
 }
