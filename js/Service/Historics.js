@@ -46,7 +46,8 @@ var Historics = function(){
         dataTableRepHist=self.div.find("#dataTableTelemedHist").DataTable({
             oLanguage: Telemed.getDatatableLang(),
             scrollX: true,
-            order: [[ 0, "desc" ]]
+            order: [[ 0, "desc" ]],
+            "bDestroy": true
         });
        self.div.find("#formularioRep").validate({
             rules: {
@@ -82,7 +83,8 @@ var Historics = function(){
      */
     self.showHistoricRepo=function(identdev){
         if (self.div.find("#formularioRep").valid()) {
-            self.showHistoric();
+//            self.showHistoric();
+            self.loadPartDatatable();
 //            console.log(identdev);
         }
     };
@@ -91,6 +93,35 @@ var Historics = function(){
     /**************************************************************************/
     /******************************* SYNC METHODS *****************************/
     /**************************************************************************/ 
+    /*
+     * 
+     * @returns {undefined}
+     */
+    self.loadPartDatatable=function(){
+        var params=self.div.find("#formularioRep").serialize();
+//        self.div.find("#dataTableTelemedHist").DataTable();
+        dataTableRepHist=self.div.find("#dataTableTelemedHist").DataTable({
+            "bProcessing": true,
+            "serverSide": true,
+            "ajax":{
+                url :"showHistoricTelemedPart", // json datasource
+                type: "post",  // type of method  ,GET/POST/DELETE
+                data: {
+                    "params[identdev]": $("#id_entdev").val(),
+                    "params[fechaini]":$("#fechaInicialRepo").val(),
+                    "params[fechafin]":$("#fechaFinalRepo").val()
+                },
+                error: function(){
+                    console.debug("error");
+                }
+            },
+            oLanguage: Telemed.getDatatableLang(),
+            scrollX: true,
+            "bDestroy": true
+        });  
+    };
+    
+    
     
     /**
      * Consume webservice createEntityDevice para registrar dispositivo en formulario 2

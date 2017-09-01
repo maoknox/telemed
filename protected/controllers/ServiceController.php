@@ -446,7 +446,7 @@ class ServiceController extends Controller{
         $modelMagnitudeEntDev=  MagnitudeEntdev::model()->findAllByAttributes(array("id_entdev"=>$identdev),$criteria);
         $this->render("_showhistorictelemed",array("identdev"=>$identdev,"modelMagnitudeEntDev"=>$modelMagnitudeEntDev));
     }
-     public function actionShowHistoricTelemed(){
+    public function actionShowHistoricTelemed(){
         $idEntDev=Yii::app()->request->getPost("ConsRep");
         $criteriai=new CDbCriteria();
         $criteriai->order="dataframe_date DESC";
@@ -466,9 +466,19 @@ class ServiceController extends Controller{
         }
         
         $response["status"]="exito";
-//        $response["data"]=$tddataframe;
-//        print_r($response["data"]);
-//        exit();
         echo CJSON::encode($response);
+    }
+    public function actionShowHistoricTelemedPart(){
+        $identdev=Yii::app()->request->getPost("params");
+        $params = Yii::app()->request->getRestParams();
+        $data=  Service::model()->searchHistoricDataTl($params,$identdev);
+        $resultsNC=Service::model()->searchHistoricDataTlCount($params,$identdev);
+        $json_data = array(
+            "draw"            => intval( $params['draw'] ),   
+            "recordsTotal"    => intval( $resultsNC ),  
+            "recordsFiltered" => intval($resultsNC),
+            "data"            => $data   // total data array
+        );
+        echo CJSON::encode($json_data);
     }
 }
