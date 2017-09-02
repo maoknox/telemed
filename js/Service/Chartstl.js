@@ -367,7 +367,131 @@ var Chartstl = function(){
         }
         
     };
-    
+    self.enviaDatosHisotric=function(identdev,posdf,msname,msunit){
+//        console.log("pasa");return;
+        if ($("#formularioRep").valid()) {
+            $('#divgrhtl').highcharts({
+                chart: {
+                    defaultSeriesType: 'spline',
+                    animation: Highcharts.svg, // don't animate in old IE
+                    marginRight: 10,
+                    zoomType: 'x'
+                },
+                plotOptions: {
+                    spline: {
+                        turboThreshold: 9000,
+                        lineWidth: 2,
+                        states: {
+                            hover: {
+                                enabled: true,
+                                lineWidth: 3
+                            }
+                        },
+                        marker: {
+                            enabled: false,
+                            states: {
+                                hover: {
+                                    enabled : true,
+                                    radius: 5,
+                                    lineWidth: 1
+                                }
+                            }  
+                        }      
+                    }
+                },
+                title: {
+                    text: msname+"-"+msunit+' vs Tiempo'
+                },
+                xAxis: {
+                    type: 'datetime',
+                    tickPixelInterval: 150
+                },
+                yAxis: {
+                    title: {
+                        text: msname+"-"+msunit
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    formatter: function () {
+                        return '<b>' + this.series.name + '</b><br/>' +
+                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                        Highcharts.numberFormat(this.y, 2);
+                    }
+                },
+                legend: {
+                    enabled: true
+                },
+                exporting: {
+                    enabled: true
+                },
+                series: [{
+                    name: msname+"-"+msunit+' vs Tiempo',
+                    data: (function () {
+//                        var dataPost=$("#formularioHist").serialize();//identdev,posdf,msname,msunit
+                        var fechaIni=$("#formularioRep #fechaInicialRepo").val();
+                        var fechaFin=$("#formularioRep #fechaFinalRepo").val();
+                        var dataPost={
+                            "Hist[identdev]":identdev,
+                            "Hist[posdf]":posdf,
+                            "Hist[msname]":msname,
+                            "Hist[msunit]":msunit,
+                            "Hist[fechaIni]":fechaIni,
+                            "Hist[fechaFin]":fechaFin,
+                            "Hist[time]":"Tiempo"
+                         };
+                        // generate an array of random data
+                        var data = [];
+                        $.ajax({
+                            url: "muestrahistoricotl",    
+                            //url: "muestraArrayPuntos",                        
+                            dataType:"json",
+                            data:dataPost,
+                            type: "post",
+                            async:false,
+                            //beforeSend:function (){Loading.show();},
+                            success: function(dataJson){
+                               $.each(dataJson.datos,function(key,value){ 
+                                   datoExport={
+                                        magnitud:value.magnitud,
+                                        time:value.tempbd
+                                     };
+                                   self.datosExport.push(datoExport);
+//                                   console.debug(value.time);
+//                                   console.debug(value.magnitud);
+                                    var d=new Date(value.time);
+                                    data.push({
+                                        x: (d).getTime(),
+                                        y: value.magnitud
+                                    });
+                               });
+                               console.debug(self.datosExport);
+                            },
+                            error:function (err){
+                                console.debug(err);
+                            }
+                        }); 
+                        return data;
+//                        for (i = -19; i <= 0; i += 1) {
+//                            var dTime=time + i * 1000;
+//                            console.debug(new Date(dTime));
+//                                    data.push({
+//                                        x:dTime,
+//                                        y: Math.random()
+//                                    });
+//                                }
+//                               console.debug(data);
+//                                return data;
+                    }())
+                }]
+            }); 
+        }
+        
+    };
     /**************************************************************************/
     /******************************* DOM METHODS ******************************/
     /**************************************************************************/

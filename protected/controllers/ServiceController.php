@@ -298,6 +298,21 @@ class ServiceController extends Controller{
         }
         echo CJSON::encode(array("datos"=>$data));
     }
+    public function actionMuestrahistoricotl(){
+        $post=Yii::app()->request->getPost("Hist");
+        $modelDataFrame=  Dataframe::model();
+//        print_r($post);exit();
+        $dataFrame=$modelDataFrame->searcHistoricData($post["identdev"],$post["fechaIni"],$post["fechaFin"]);
+        usort($dataFrame,array($this, "ordenaFechaAsc"));
+        foreach($dataFrame as $pk=>$datosFecha){
+            $magnitudeBr=  explode(",", $datosFecha["dataframe"]);
+            $magnitude=$magnitudeBr[$post["posdf"]-1];
+//            print_r($magnitude);exit();
+            $time=strtotime( $datosFecha["dataframe_date"] )*1000;                             
+            $data[$pk]=array("magnitud"=>(double)$magnitude,"time"=>$time,"tempbd"=>$datosFecha["dataframe_date"]);
+        }
+        echo CJSON::encode(array("datos"=>$data));
+    }
      private function ordenaFechaAsc($date1,$date2){
         $date1 = strtotime($date1["dataframe_date"]);
         $date2 = strtotime($date2["dataframe_date"]);
