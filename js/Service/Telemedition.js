@@ -31,6 +31,7 @@ var Telemedition = function(){
      */
     var Telemedition = function() {
         self.div=$("#divTelemed");
+        self.divi=$("#divhisttl");
         setDefaults();
         
     }();
@@ -53,7 +54,11 @@ var Telemedition = function(){
             scrollX: true,
             order: [[ 0, "desc" ]]
         });
-//       self.searchDataTelemed();
+        dataTableRepHist=self.divi.find("#dataTableTelemedHist").DataTable({
+            oLanguage: Telemed.getDatatableLang(),
+            scrollX: true,
+            order: [[ 0, "desc" ]]
+        });
        
     };    
     /**************************************************************************/

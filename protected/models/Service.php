@@ -119,4 +119,120 @@ class Service extends CActiveRecord
             $read->close();
             return $res;
         }
+        
+        public function searchHistoricDataTl($params,$identdev){
+            $connect=Yii::app()->db;
+            if($params['order'][0]['column']==0){
+                $columSearch='dataframe_date';
+                $orderParam=" dataframe_date  ";//
+            }
+            else{
+                $columSearch='dataframe';
+                $orderParam=" split_part(dataframe, ',',:column)::float ";
+            }
+            $where = $sqlHist = "";
+
+                // check search value exist
+            $search="(";
+            if( !empty($params['search']['value']) ) { 
+                foreach($params["columns"] as $pkColumns=>$searchColumns){
+                    if($pkColumns==0){
+                        $search.=" dataframe_date::text  LIKE :searchvi ";
+                    }
+                    else{
+                        $search.=" or split_part(dataframe, ',',".pg_escape_string($pkColumns).") LIKE :searchvii  ";
+                    }
+                }
+                $search.=")";
+                $where =" dataframe_date BETWEEN :fechaini and :fechafin and id_entdev=:identdev and ".$search;
+            }
+            else{
+                 $where =" dataframe_date BETWEEN :fechaini and :fechafin and id_entdev=:identdev  ";
+            }
+            $sqlHist="SELECT * FROM dataframe WHERE ".$where;
+            $sqlHist.=" ORDER BY ".$orderParam." ".pg_escape_string($params['order'][0]['dir'])." LIMIT :sup OFFSET :inf ";
+            $queryHist=$connect->createCommand($sqlHist);
+            $queryHist->bindParam(":fechaini", $identdev["fechaini"]);//(int) $start, PDO::PARAM_INT
+            $queryHist->bindParam(":fechafin", $identdev["fechafin"]); 
+            $queryHist->bindParam(":identdev", $identdev["identdev"]); 
+            $start=(int) $params['start'];
+            $end=(int) $params['length'];
+            $queryHist->bindParam(":inf", $start,PDO::PARAM_INT); 
+            $queryHist->bindParam(":sup", $end,PDO::PARAM_INT); 
+            if($params['order'][0]['column']>0){
+                $columnSearch=(int) $params['order'][0]['column'];
+                $queryHist->bindParam(":column", $columnSearch,PDO::PARAM_INT);
+            }
+            if( !empty($params['search']['value']) ) {   
+                $paramaux=$params['search']['value']."%";
+                $paramauxi=$params['search']['value']."%";
+                $queryHist->bindParam(":searchvi",$paramaux,PDO::PARAM_STR); 
+                $queryHist->bindParam(":searchvii",$paramauxi); 
+            }
+            $read=$queryHist->query();
+            $res=$read->readAll();
+            $read->close();
+            $data=array();
+            if(!empty($res)){
+                foreach($res as $pkdf=>$result){
+                    $dataFrameAux=explode(",",$result["dataframe"]);
+                    $dataResult[0]=$result["dataframe_date"];
+                    foreach($dataFrameAux as $pk=>$dataframeExp){
+                        $dataResult[$pk+1]=$dataframeExp;
+                    }
+                    $data[$pkdf]=$dataResult;
+                }
+            }
+            return $data;
+        }
+        public function searchHistoricDataTlCount($params,$identdev){
+            $connect=Yii::app()->db;
+            if($params['order'][0]['column']==0){
+                $columSearch='dataframe_date';
+                $orderParam=" dataframe_date  ";//
+            }
+            else{
+                $columSearch='dataframe';
+                $orderParam=" split_part(dataframe, ',',:column)::float ";
+            }
+            $where = $sqlHist = "";
+
+                // check search value exist
+            $search="(";
+            if( !empty($params['search']['value']) ) { 
+                foreach($params["columns"] as $pkColumns=>$searchColumns){
+                    if($pkColumns==0){
+                        $search.=" dataframe_date::text  LIKE :searchvi ";
+                    }
+                    else{
+                        $search.=" or split_part(dataframe, ',',".pg_escape_string($pkColumns).") LIKE :searchvii  ";
+                    }
+                }
+                $search.=")";
+                $where =" dataframe_date BETWEEN :fechaini and :fechafin and id_entdev=:identdev and ".$search;
+            }
+            else{
+                 $where =" dataframe_date BETWEEN :fechaini and :fechafin and id_entdev=:identdev  ";
+            }
+            $sqlHist="SELECT * FROM dataframe WHERE ".$where;
+            $sqlHist.=" ORDER BY ".$orderParam." ".pg_escape_string($params['order'][0]['dir'])."  ";
+            $queryHist=$connect->createCommand($sqlHist);
+            $queryHist->bindParam(":fechaini", $identdev["fechaini"]);//(int) $start, PDO::PARAM_INT
+            $queryHist->bindParam(":fechafin", $identdev["fechafin"]); 
+            $queryHist->bindParam(":identdev", $identdev["identdev"]); 
+            if($params['order'][0]['column']>0){
+                $columnSearch=(int) $params['order'][0]['column'];
+                $queryHist->bindParam(":column", $columnSearch,PDO::PARAM_INT);
+            }
+            if( !empty($params['search']['value']) ) {   
+                $paramaux=$params['search']['value']."%";
+                $paramauxi=$params['search']['value']."%";
+                $queryHist->bindParam(":searchvi",$paramaux,PDO::PARAM_STR); 
+                $queryHist->bindParam(":searchvii",$paramauxi); 
+            }
+            $read=$queryHist->query();
+            $res=$read->rowCount;
+            $read->close();
+            return $res;
+        }
 }

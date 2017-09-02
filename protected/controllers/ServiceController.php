@@ -298,6 +298,21 @@ class ServiceController extends Controller{
         }
         echo CJSON::encode(array("datos"=>$data));
     }
+    public function actionMuestrahistoricotl(){
+        $post=Yii::app()->request->getPost("Hist");
+        $modelDataFrame=  Dataframe::model();
+//        print_r($post);exit();
+        $dataFrame=$modelDataFrame->searcHistoricData($post["identdev"],$post["fechaIni"],$post["fechaFin"]);
+        usort($dataFrame,array($this, "ordenaFechaAsc"));
+        foreach($dataFrame as $pk=>$datosFecha){
+            $magnitudeBr=  explode(",", $datosFecha["dataframe"]);
+            $magnitude=$magnitudeBr[$post["posdf"]-1];
+//            print_r($magnitude);exit();
+            $time=strtotime( $datosFecha["dataframe_date"] )*1000;                             
+            $data[$pk]=array("magnitud"=>(double)$magnitude,"time"=>$time,"tempbd"=>$datosFecha["dataframe_date"]);
+        }
+        echo CJSON::encode(array("datos"=>$data));
+    }
      private function ordenaFechaAsc($date1,$date2){
         $date1 = strtotime($date1["dataframe_date"]);
         $date2 = strtotime($date2["dataframe_date"]);
@@ -433,5 +448,52 @@ class ServiceController extends Controller{
         $tabla.="</table>";
         echo utf8_decode($tabla);
     }
-    
+    /*
+     * Mostrar formulario para consultar históricos de mediciones de telemedición
+     */
+    public function actionShowFormHistoricTelemed(){
+        $identdev=Yii::app()->request->getPost("identdev");
+        $modelEntityDevice=  EntityDevice::model()->findByPk($identdev);
+        $modelObject=  Object::model()->findByPk($modelEntityDevice->serialid_object);
+        $modelDevice=  Device::model()->findByPk($modelEntityDevice->id_device);
+        $criteria=new CDbCriteria();
+        $criteria->order="position_dataframe ASC";
+        $modelMagnitudeEntDev=  MagnitudeEntdev::model()->findAllByAttributes(array("id_entdev"=>$identdev),$criteria);
+        $this->render("_showhistorictelemed",array("identdev"=>$identdev,"modelMagnitudeEntDev"=>$modelMagnitudeEntDev));
+    }
+    public function actionShowHistoricTelemed(){
+        $idEntDev=Yii::app()->request->getPost("ConsRep");
+        $criteriai=new CDbCriteria();
+        $criteriai->order="dataframe_date DESC";
+        $criteriai->addBetweenCondition("dataframe_date", $idEntDev["fecha_inicial"], $idEntDev["fecha_final"]);
+        $modelDataframe=  Dataframe::model()->findAllByAttributes(array("id_entdev"=>$idEntDev["id_entdev"]),$criteriai);
+        if(!empty($modelDataframe)){
+            foreach($modelDataframe as $pkdf=>$dataframe){
+                $dataFrameAux=explode(",",$dataframe->dataframe);
+                $response["data"][$pkdf][0]=$dataframe->dataframe_date;
+                foreach($dataFrameAux as $pk=>$dataframeExp){
+                    $response["data"][$pkdf][$pk+1]=$dataframeExp;
+                }
+            }
+        }
+        else{
+           $tddataframe="nodata";
+        }
+        
+        $response["status"]="exito";
+        echo CJSON::encode($response);
+    }
+    public function actionShowHistoricTelemedPart(){
+        $identdev=Yii::app()->request->getPost("params");
+        $params = Yii::app()->request->getRestParams();
+        $data=  Service::model()->searchHistoricDataTl($params,$identdev);
+        $resultsNC=Service::model()->searchHistoricDataTlCount($params,$identdev);
+        $json_data = array(
+            "draw"            => intval( $params['draw'] ),   
+            "recordsTotal"    => intval( $resultsNC ),  
+            "recordsFiltered" => intval($resultsNC),
+            "data"            => $data   // total data array
+        );
+        echo CJSON::encode($json_data);
+    }
 }

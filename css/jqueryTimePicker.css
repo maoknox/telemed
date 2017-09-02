@@ -7,6 +7,11 @@ and open the template in the editor.
     Created on : 11/01/2017, 12:11:34 PM
     Author     : mauricio
 */
+.ui-datepicker-div 
+{
+ z-index: 1000; /* must be > than popup editor (950) */
+}
+.ui-datepicker { width: 17em; padding: .2em .2em 0; z-index: 9999 !important; }
 .ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
 .ui-timepicker-div dl { text-align: left; }
 .ui-timepicker-div dl dt { float: left; clear:left; padding: 0 0 0 5px; }
