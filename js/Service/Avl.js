@@ -46,7 +46,6 @@ var Avl = function(){
      * @returns {undefined}
      */
     function setDefaults(){
-       
         dataTableAct=self.div.find("#dataTableAvl").DataTable({
             oLanguage: Telemed.getDatatableLang(),
             scrollX: true
@@ -56,11 +55,97 @@ var Avl = function(){
             scrollX: true,
             order: [[ 0, "desc" ]]
         });
-       
+        /*
+         * 
+         * @returns {undefined}
+         */
+        L.mapbox.accessToken = 'pk.eyJ1IjoibWFva25veCIsImEiOiJmcGJNR09jIn0.d8dHV-Ucm_dxJRbt50d1wA';
+        var map = L.mapbox.map('map', 'mapbox.streets').setView([4.576092, -74.08157], 17);
+
+        var featureGroup = L.featureGroup().addTo(map);
+
+  // Define circle options
+  // http://leafletjs.com/reference.html#circle
+        var circle_options = {
+            color: '#fff',      // Stroke color
+            opacity: 1,         // Stroke opacity
+            weight: 10,         // Stroke weight
+            fillColor: '#000',  // Fill color
+            fillOpacity: 0.6    // Fill opacity
+        };
+
+/*  var circle_one = L.circle([38.89415, -77.03738], 20, circle_options).addTo(featureGroup);
+  var circle_two = L.circle([38.89415, -77.03578], 20, circle_options).addTo(featureGroup);
+*/
+  // Create array of lat,lon points
+        var pointsArr=Array();
+
+        var line_points = [[38.893596444352134, -77.0381498336792],
+            [38.89337933372204, -77.03792452812195],
+            [38.89316222242831, -77.03761339187622],
+            [38.893028615148424, -77.03731298446655],
+            [38.892920059048464, -77.03691601753235],
+            [38.892903358095296, -77.03637957572937],
+            [38.89301191422077, -77.03592896461487],
+            [38.89316222242831, -77.03549981117249],
+            [38.89340438498248, -77.03514575958252],
+            [38.893596444352134, -77.0349633693695]];
+
+            line_points.push([38.893596444352134, -77.0381498336792]);
+            line_points.push([38.89316222242831, -77.03761339187622]);
+            // Define polyline options
+            // http://leafletjs.com/reference.html#polyline
+            var polyline_options = {
+                color: '#000'
+            };
+
+            // Defining a polygon here instead of a polyline will connect the
+            // endpoints and fill the path.
+            // http://leafletjs.com/reference.html#polygon
+            var polyline = L.polyline(line_points, polyline_options).addTo(featureGroup);
+
+            var drawControl = new L.Control.Draw({
+              edit: {
+                featureGroup: featureGroup
+              }
+            }).addTo(map);
+
+            map.on('draw:created', function(e) {
+                featureGroup.addLayer(e.layer).bindPopup("bla");
+                    var shapes = self.getShapes(featureGroup);
+                    var shape = e.layer.toGeoJSON();
+                    var shape_for_db = JSON.stringify(shape);
+                    console.log(shape_for_db);
+                    $("#the_geom").val(shape_for_db);
+            });
+            
     };    
     /**************************************************************************/
     /********************************** METHODS *******************************/
     /**************************************************************************/
+    self.getShapes = function(drawnItems) {
+        var shapes = [];
+        drawnItems.eachLayer(function(layer) {
+
+            // Note: Rectangle extends Polygon. Polygon extends Polyline.
+            // Therefore, all of them are instances of Polyline
+            if (layer instanceof L.Polyline) {
+                shapes.push(layer.getLatLngs());
+            }
+
+            if (layer instanceof L.Circle) {
+                shapes.push([layer.getLatLng()]);
+            }
+
+            if (layer instanceof L.Marker) {
+                shapes.push([layer.getLatLng()]);
+            }
+
+        });
+        return shapes;
+    };
+    
+    
     self.searchDataAvl= function(){
         setTimeout("Avl.searchDataAvlWs()", 5000);
     };
