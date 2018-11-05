@@ -87,7 +87,7 @@ class ServiceController extends Controller{
     } 
     public function actionAvl(){
         $modelEntityDevice=  EntityDevice::model();
-        $modelObject=  Object::model();
+        $modelObject=  ObjectOb::model();
         $modelMagnitudeEntDev=  MagnitudeEntdev::model();
         $modelDevice=  Device::model();
         $modelDataFrame=  Dataframe::model();
@@ -133,7 +133,7 @@ class ServiceController extends Controller{
                     }
                 }
             }
-            $object=  Object::model()->findByPk($modelEntdev->serialid_object);
+            $object=  ObjectOb::model()->findByPk($modelEntdev->serialid_object);
             $this->render("_showobjectavl",array(
                 "object"=>$object,
                 "dataFrames"=>$dataFrames,
@@ -191,7 +191,7 @@ class ServiceController extends Controller{
     }
     public function actionTelemedicion(){
         $modelEntityDevice=  EntityDevice::model();
-        $modelObject=  Object::model();
+        $modelObject=  ObjectOb::model();
         $modelMagnitudeEntDev=  MagnitudeEntdev::model();
         $modelDevice=  Device::model();
         $modelDataFrame=  Dataframe::model();
@@ -238,7 +238,7 @@ class ServiceController extends Controller{
                     }
     //            }
             }
-            $object=  Object::model()->findByPk($modelEntdev->serialid_object);
+            $object=  ObjectOb::model()->findByPk($modelEntdev->serialid_object);
             $this->render("_showobjectelemed",array(
                 "object"=>$object,
                 "dataFrames"=>$dataFrame,
@@ -405,7 +405,7 @@ class ServiceController extends Controller{
         header("Expires: 0"); 
         $idEntDev=Yii::app()->request->getPost('ConsRep');
         $modelEntityDevice=  EntityDevice::model()->findByPk($idEntDev["id_entdev"]);
-        $modelObject=  Object::model()->findByPk($modelEntityDevice->serialid_object);
+        $modelObject=  ObjectOb::model()->findByPk($modelEntityDevice->serialid_object);
         $modelDevice=  Device::model()->findByPk($modelEntityDevice->id_device);
         $criteria=new CDbCriteria();
         $criteria->order="position_dataframe ASC";
@@ -454,7 +454,7 @@ class ServiceController extends Controller{
     public function actionShowFormHistoricTelemed(){
         $identdev=Yii::app()->request->getPost("identdev");
         $modelEntityDevice=  EntityDevice::model()->findByPk($identdev);
-        $modelObject=  Object::model()->findByPk($modelEntityDevice->serialid_object);
+        $modelObject=  ObjectOb::model()->findByPk($modelEntityDevice->serialid_object);
         $modelDevice=  Device::model()->findByPk($modelEntityDevice->id_device);
         $criteria=new CDbCriteria();
         $criteria->order="position_dataframe ASC";

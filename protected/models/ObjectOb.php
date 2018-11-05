@@ -14,7 +14,7 @@
  * @property EntityDevice[] $entityDevices
  * @property ObjectUbication[] $objectUbications
  */
-class Object extends CActiveRecord
+class ObjectOb extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
