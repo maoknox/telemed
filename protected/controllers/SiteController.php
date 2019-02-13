@@ -18,8 +18,10 @@ class SiteController extends Controller
             }
         }
         else{
-            Yii::app()->user->returnUrl = array("site/index");          
-            $this->redirect(Yii::app()->user->returnUrl);
+            if(!isset($_POST)){
+                Yii::app()->user->returnUrl = array("site/index");          
+                $this->redirect(Yii::app()->user->returnUrl);
+            }
         }
         $filterChain->run();
     }
@@ -28,7 +30,7 @@ class SiteController extends Controller
      */
     public function filters(){
         return array(
-                'enforcelogin -login -index -logout -contact -registerPlatform -searchservices',                      
+                'enforcelogin -login -index -logout -contact -registerPlatform -searchservices -searchMunicipio -searchEmpresa -searchMedidor',                      
         );
     }
 	/**
@@ -60,14 +62,147 @@ class SiteController extends Controller
                 $this->redirect(Yii::app()->user->returnUrl);
             }
             else{
-                $user=Yii::app()->user->name;
-                $service=  Service::model()->searchServiceByUsername($user);
-//                $modelEntity=  Entity::model();
-//                $modelEntityPerson=  EntityPerson::model();
-                $this->render('index',array("services"=>$service));
+                if(Yii::app()->user->getState('nombreRole')!="CLIENTEDEMO"){
+                    $user=Yii::app()->user->name;
+                    $service=  Service::model()->searchServiceByUsername($user);
+    //                $modelEntity=  Entity::model();
+    //                $modelEntityPerson=  EntityPerson::model();
+                    $this->render('index',array("services"=>$service));
+                }
+                else{
+                    $conndbi = Yii::app()->dbi;
+                    $sqlDepto="select dp.id_departamento,dp.nombre_departamento "
+                            . "from (select * from empresa group by id_municipio,id_empresa) as emp "
+                            . "left join municipio as mn on mn.id_municipio=emp.id_municipio "
+                            . "left join departamento dp on dp.id_departamento=mn.id_departamento "
+                            . "group by dp.id_departamento,dp.nombre_departamento order by nombre_departamento asc";
+                    $query=$conndbi->createCommand($sqlDepto);
+                    $read=$query->query();
+                    $resDepto=$read->readAll();
+                    $read->close();
+                    $modelDepartamento= Departamento::model();
+                    $departamentos=$modelDepartamento->findAllBySql($sqlDepto);
+                    $modelMunicipio= Municipio::model();
+                    $modelEmpresa= Empresa::model();
+                    $this->render('index_demo',array(
+                        "modelDepartamento"=>$modelDepartamento,
+                        "modelMunicipio"=>$modelMunicipio,
+                        "modelEmpresa"=>$modelEmpresa,
+                        "departamentos"=>$departamentos
+                        )
+                    );
+                }
             }
 	}
-        
+        //buscaMunicipio
+        public function actionSearchMunicipio(){
+            $idDepto=Yii::app()->request->getPost("idDepto");
+            $modelMunicipio= Municipio::model();
+            $sqlMunicipio="select mn.id_municipio,mn.nombre_municipio from "
+                    . "(select * from empresa group by id_municipio,id_empresa) as emp "
+                    . "left join municipio as mn on mn.id_municipio=emp.id_municipio "
+                    . "where mn.id_departamento=:depto "
+                    . "order by nombre_municipio asc";
+            $c=new CDbCriteria();
+            $c->condition=":depto=".$idDepto;
+            $municipios=$modelMunicipio->findAllBySql($sqlMunicipio,array(":depto"=>$idDepto));
+            echo CJSON::encode($municipios);
+        }
+         public function actionSearchEmpresa(){
+            $idMunicipio=Yii::app()->request->getPost("idMunicipio");
+            $modelEmpresa= Empresa::model();
+            $sqlEmpresa="select id_empresa,nombre_empresa from empresa where id_municipio=:idmun order by nombre_empresa asc";
+            $empresas=$modelEmpresa->findAllBySql($sqlEmpresa,array(":idmun"=>$idMunicipio));
+            echo CJSON::encode($empresas);
+        }
+        public function actionSearchMedidor(){
+            $idEmpresa=Yii::app()->request->getPost("idEmpresa");
+            $connDbi=Yii::app()->dbi;
+            $sql="select codigo_medidor as \"Medidor\",direccion_medidor as \"Ubicación\", interno_medidor as \"Interno\", ruta_medidor as \"Ruta\", ciclo_medidor as \"Ciclo\" from medidor as med "
+                    . "left join medidor_suscriptor as ms on med.id_medidor=ms.id_medidor "
+                    . "where id_empresa=:idEmpresa;";
+            $query=$connDbi->createCommand($sql);
+            $query->bindParam(":idEmpresa",$idEmpresa);
+            $read=$query->query();
+            $res=$read->readAll();
+            $read->close();
+            $columns= array_keys($res[0]);
+            $result["columns"]=$columns;
+            $result["data"]=$res;
+            echo CJSON::encode($result);
+        }
+        public function actionSearchHistFechaMedidor(){
+            $idMedidor=Yii::app()->request->getPost("idMedidor");
+            $connDbi=Yii::app()->dbi;
+            $sql="select fecha_aforo as \"Fecha_aforo\" from medidor as m left "
+                    . "join lectura_actual as la on la.id_medidor=m.id_medidor "
+                    . "where codigo_medidor=:codmed order by fecha_aforo asc";
+            $query=$connDbi->createCommand($sql);
+            $query->bindParam(":codmed",$idMedidor);
+            $read=$query->query();
+            $res=$read->readAll();
+            $read->close();
+            $columns= array_keys($res[0]);
+            $result["fecha"]=$res;
+            echo CJSON::encode($result);
+        }
+        public function actionShowDataHistAforo(){
+            $fecha=Yii::app()->request->getPost("fecha");
+            $idMedidor=Yii::app()->request->getPost("idMedidor");
+            $connDbi=Yii::app()->dbi;
+            $sqlAforo="select  
+                id_lecturaactual as \"Consecutivo\",
+                nombre_critica as \"Crítica\",
+                lectura_actual as \"Lectura_actual\",
+                lectura_aforo as \"Aforo\",
+                fecha_aforo as \"Fecha_aforo\",
+                consumo_aforo as \"Consumo_aforo\",
+                lectura_promedio as \"Lectura_promedio\",
+                lectura_manual as \"Lectura_manual\",
+                lectura_micromedicion as \"Lectura_micromedición\",
+                metros_desviacion as \"Metros_desviación\",
+                problema_lectura as \"Problema\",
+                observacion_lectura as \"Observación\",
+                lectura_consumo as \"Lectura_consumo\"
+                from medidor as m 
+                left join lectura_actual as la on la.id_medidor=m.id_medidor 
+                left join critica as cr on cr.id_critica=la.id_critica 
+                where codigo_medidor=:codmed and fecha_aforo=:fecha";
+            $query=$connDbi->createCommand($sqlAforo);
+            $query->bindParam(":codmed",$idMedidor);
+            $query->bindParam(":fecha",$fecha);
+            $read=$query->query();
+            $resAforo=$read->read();
+            $read->close();
+            $columnsAforo= array_keys($resAforo);
+            $result["colsaforo"]=$columnsAforo;
+            $result["dataaforo"]=$resAforo;
+            //consulta los históricos a partir del aforo
+            $sqlHistLect="select "
+                    . "orden_histlectura as \"orden_lectura\",fecha_historicolect as \"fecha_lectura\", historico_lectura as \"lectura\" 
+                    from historico_lecturas 
+                    where id_lecturaactual=:idLect order by orden_histlectura asc";
+            $query=$connDbi->createCommand($sqlHistLect);
+            $query->bindParam(":idLect",$resAforo["Consecutivo"]);
+            $read=$query->query();
+            $resHistLect=$read->readAll();
+            $read->close();
+            $columnsHlect= array_keys($resHistLect[0]);
+            $result["colshlect"]=$columnsHlect;
+            $result["datahlect"]=$resHistLect;
+            $sqlHistCons="select orden_histconsumo as \"orden_consumo\", historico_consumo as \"consumo\" "
+                    . "from historico_consumo "
+                    . "where id_lecturaactual=:idLect order by orden_histconsumo asc  ";
+            $query=$connDbi->createCommand($sqlHistCons);
+            $query->bindParam(":idLect",$resAforo["Consecutivo"]);
+            $read=$query->query();
+            $resHistCons=$read->readAll();
+            $read->close();
+            $columnsHCons= array_keys($resHistCons[0]);
+            $result["colshcons"]=$columnsHCons;
+            $result["datahcons"]=$resHistCons;
+            echo CJSON::encode($result);
+        }
         public function actionSearchservices(){
 //            $headers=getallheaders();
 //            print_r($headers["oauthtoken"]);

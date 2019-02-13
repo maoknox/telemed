@@ -1,26 +1,28 @@
 <?php
 
 /**
- * This is the model class for table "state".
+ * This is the model class for table "municipio".
  *
- * The followings are the available columns in table 'state':
- * @property integer $id_state
- * @property integer $id_country
- * @property string $state_code
- * @property string $state_name
+ * The followings are the available columns in table 'municipio':
+ * @property integer $id_municipio
+ * @property integer $id_departamento
+ * @property string $idvar_municipio
+ * @property string $nombre_municipio
  *
  * The followings are the available model relations:
- * @property City[] $cities
- * @property Country $idCountry
+ * @property Empresa[] $empresas
+ * @property MedidorSuscriptor[] $medidorSuscriptors
+ * @property Departamento $idDepartamento
+ * @property SuscriptorUsuario[] $suscriptorUsuarios
  */
-class State extends CActiveRecord
+class Municipio extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'state';
+		return 'municipio';
 	}
 
 	/**
@@ -31,13 +33,13 @@ class State extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('state_code, state_name', 'required'),
-			array('id_country', 'numerical', 'integerOnly'=>true),
-			array('state_code', 'length', 'max'=>50),
-			array('state_name', 'length', 'max'=>100),
+			array('id_departamento, idvar_municipio, nombre_municipio', 'required'),
+			array('id_departamento', 'numerical', 'integerOnly'=>true),
+			array('idvar_municipio', 'length', 'max'=>5),
+			array('nombre_municipio', 'length', 'max'=>100),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id_state, id_country, state_code, state_name', 'safe', 'on'=>'search'),
+			array('id_municipio, id_departamento, idvar_municipio, nombre_municipio', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -49,8 +51,10 @@ class State extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'cities' => array(self::HAS_MANY, 'City', 'id_state'),
-			'idCountry' => array(self::BELONGS_TO, 'Country', 'id_country'),
+			'empresas' => array(self::HAS_MANY, 'Empresa', 'id_municipio'),
+			'medidorSuscriptors' => array(self::HAS_MANY, 'MedidorSuscriptor', 'id_municipio'),
+			'idDepartamento' => array(self::BELONGS_TO, 'Departamento', 'id_departamento'),
+			'suscriptorUsuarios' => array(self::HAS_MANY, 'SuscriptorUsuario', 'id_municipio'),
 		);
 	}
 
@@ -60,10 +64,10 @@ class State extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id_state' => 'Id State',
-			'id_country' => 'Id Country',
-			'state_code' => 'State Code',
-			'state_name' => 'State Name',
+			'id_municipio' => 'Id Municipio',
+			'id_departamento' => 'Id Departamento',
+			'idvar_municipio' => 'Idvar Municipio',
+			'nombre_municipio' => 'Nombre Municipio',
 		);
 	}
 
@@ -85,10 +89,10 @@ class State extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id_state',$this->id_state);
-		$criteria->compare('id_country',$this->id_country);
-		$criteria->compare('state_code',$this->state_code,true);
-		$criteria->compare('state_name',$this->state_name,true);
+		$criteria->compare('id_municipio',$this->id_municipio);
+		$criteria->compare('id_departamento',$this->id_departamento);
+		$criteria->compare('idvar_municipio',$this->idvar_municipio,true);
+		$criteria->compare('nombre_municipio',$this->nombre_municipio,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -99,10 +103,13 @@ class State extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return State the static model class
+	 * @return Municipio the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
 	}
+        public function getDbConnection(){
+            return Yii::app()->dbi; // or return Yii::app()->db2;
+        }
 }

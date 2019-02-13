@@ -1,26 +1,26 @@
 <?php
 
 /**
- * This is the model class for table "state".
+ * This is the model class for table "historico_lecturas".
  *
- * The followings are the available columns in table 'state':
- * @property integer $id_state
- * @property integer $id_country
- * @property string $state_code
- * @property string $state_name
+ * The followings are the available columns in table 'historico_lecturas':
+ * @property integer $id_histlectura
+ * @property integer $id_lecturaactual
+ * @property integer $orden_histlectura
+ * @property string $fecha_historicolect
+ * @property string $historico_lectura
  *
  * The followings are the available model relations:
- * @property City[] $cities
- * @property Country $idCountry
+ * @property LecturaActual $idLecturaactual
  */
-class State extends CActiveRecord
+class HistoricoLecturas extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'state';
+		return 'historico_lecturas';
 	}
 
 	/**
@@ -31,13 +31,12 @@ class State extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('state_code, state_name', 'required'),
-			array('id_country', 'numerical', 'integerOnly'=>true),
-			array('state_code', 'length', 'max'=>50),
-			array('state_name', 'length', 'max'=>100),
+			array('orden_histlectura', 'required'),
+			array('id_lecturaactual, orden_histlectura', 'numerical', 'integerOnly'=>true),
+			array('fecha_historicolect, historico_lectura', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id_state, id_country, state_code, state_name', 'safe', 'on'=>'search'),
+			array('id_histlectura, id_lecturaactual, orden_histlectura, fecha_historicolect, historico_lectura', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -49,8 +48,7 @@ class State extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'cities' => array(self::HAS_MANY, 'City', 'id_state'),
-			'idCountry' => array(self::BELONGS_TO, 'Country', 'id_country'),
+			'idLecturaactual' => array(self::BELONGS_TO, 'LecturaActual', 'id_lecturaactual'),
 		);
 	}
 
@@ -60,10 +58,11 @@ class State extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id_state' => 'Id State',
-			'id_country' => 'Id Country',
-			'state_code' => 'State Code',
-			'state_name' => 'State Name',
+			'id_histlectura' => 'Id Histlectura',
+			'id_lecturaactual' => 'Id Lecturaactual',
+			'orden_histlectura' => 'Orden Histlectura',
+			'fecha_historicolect' => 'Fecha Historicolect',
+			'historico_lectura' => 'Historico Lectura',
 		);
 	}
 
@@ -85,10 +84,11 @@ class State extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id_state',$this->id_state);
-		$criteria->compare('id_country',$this->id_country);
-		$criteria->compare('state_code',$this->state_code,true);
-		$criteria->compare('state_name',$this->state_name,true);
+		$criteria->compare('id_histlectura',$this->id_histlectura);
+		$criteria->compare('id_lecturaactual',$this->id_lecturaactual);
+		$criteria->compare('orden_histlectura',$this->orden_histlectura);
+		$criteria->compare('fecha_historicolect',$this->fecha_historicolect,true);
+		$criteria->compare('historico_lectura',$this->historico_lectura,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -99,7 +99,7 @@ class State extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return State the static model class
+	 * @return HistoricoLecturas the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
