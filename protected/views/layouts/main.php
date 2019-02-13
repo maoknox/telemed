@@ -64,7 +64,7 @@
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           <!-- Messages: style can be found in dropdown.less-->
-          <li class="dropdown messages-menu">
+<!--          <li class="dropdown messages-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-envelope-o"></i>
               <span class="label label-success">1</span>
@@ -72,9 +72,9 @@
             <ul class="dropdown-menu">
               <li class="header">You have 1 messages</li>
               <li>
-                <!-- inner menu: contains the actual data -->
+                 inner menu: contains the actual data 
                 <ul class="menu">
-                  <li><!-- start message -->
+                  <li> start message 
                     <a href="#">
                       <h4>
                         Support Team
@@ -83,12 +83,12 @@
                       <p>Why not buy a new awesome theme?</p>
                     </a>
                   </li>
-                  <!-- end message -->
+                   end message 
                 </ul>
               </li>
               <li class="footer"><a href="#">See All Messages</a></li>
             </ul>
-          </li>
+          </li>-->
           <!-- Notifications: style can be found in dropdown.less -->
           <li class="dropdown notifications-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -111,7 +111,7 @@
             </ul>
           </li>
           <!-- Tasks: style can be found in dropdown.less -->
-          <li class="dropdown tasks-menu">
+<!--          <li class="dropdown tasks-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-flag-o"></i>
               <span class="label label-danger">9</span>
@@ -119,9 +119,9 @@
             <ul class="dropdown-menu">
               <li class="header">You have 9 tasks</li>
               <li>
-                <!-- inner menu: contains the actual data -->
+                 inner menu: contains the actual data 
                 <ul class="menu">
-                  <li><!-- Task item -->
+                  <li> Task item 
                     <a href="#">
                       <h3>
                         Design some buttons
@@ -134,14 +134,14 @@
                       </div>
                     </a>
                   </li>
-                  <!-- end task item -->
+                   end task item 
                 </ul>
               </li>
               <li class="footer">
                 <a href="#">View all tasks</a>
               </li>
             </ul>
-          </li>
+          </li>-->
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -175,9 +175,9 @@
             </ul>
           </li>
           <!-- Control Sidebar Toggle Button -->
-          <li>
+<!--          <li>
             <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-          </li>
+          </li>-->
         </ul>
       </div>
     </nav>
@@ -193,7 +193,7 @@
         </div>
         <div class="pull-left info image" >
           <p><?php echo Yii::app()->user->getState('nombreUsuario') ?></p>
-          <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+          <!--<a href="#"><i class="fa fa-circle text-success"></i> Online</a>-->
         </div>
       </div>
       <!-- search form -->
@@ -307,20 +307,21 @@
     <section class="content">
       <!-- Small boxes (Stat box) -->
       <div class="row">
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-aqua">
-            <div class="inner">
-              <h3>2</h3>
-
-              <p>Objetos asociados</p>
+        <?php   if(Yii::app()->user->getState('nombreRole')!="CLIENTEDEMO"):?> 
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-aqua">
+                <div class="inner">
+                  <h3>2</h3>
+                  <p>Objetos asociados</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-bag"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+              </div>
             </div>
-            <div class="icon">
-              <i class="ion ion-bag"></i>
-            </div>
-            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
+          
         <!-- ./col -->
 <!--        <div class="col-lg-3 col-xs-6">
            small box 
@@ -366,6 +367,7 @@
             <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
           </div>
         </div>
+        <?php endif;?> 
         <!-- ./col -->
       </div>
       <!-- /.row -->
@@ -620,6 +622,7 @@
 <script src="<?php echo Yii::app()->request->baseUrl; ?>/dist/js/demo.js"></script>
 <!-- NotifY -->
 <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/notify.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.6/dist/loadingoverlay.min.js" type="text/javascript"></script>
 <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.redirect.js"></script>
 <!-- Configuración general -->
 <?php 

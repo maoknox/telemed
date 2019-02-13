@@ -55,20 +55,28 @@ return array(
 //		),
 		// uncomment the following to use a MySQL database
 		
-		'db'=>array(
+//		'db'=>array(
+//                    'tablePrefix'=>'',
+//                    'connectionString' => 'pgsql:host=ec2-174-129-242-241.compute-1.amazonaws.com;port=5432;dbname=d1b9pv88jl26t9',
+//                    'username'=>'ajrbjyuywyluwm',
+//                    'password'=>'sRVVqYKhD2bdn_qWz6tCYSP71h',
+//                    'charset'=>'UTF8',
+//                ),
+                'db'=>array(
                     'tablePrefix'=>'',
                     'connectionString' => 'pgsql:host=ec2-174-129-242-241.compute-1.amazonaws.com;port=5432;dbname=d1b9pv88jl26t9',
                     'username'=>'ajrbjyuywyluwm',
                     'password'=>'sRVVqYKhD2bdn_qWz6tCYSP71h',
                     'charset'=>'UTF8',
                 ),
-//		'db'=>array(
-//                    'tablePrefix'=>'',
-//                    'connectionString' => 'pgsql:host=localhost;port=5432;dbname=telemed',
-//                    'username'=>'postgres',
-//                    'password'=>'root',
-//                    'charset'=>'UTF8',
-//                ),
+                'dbi'=>array(
+                    'tablePrefix'=>'',
+                    'connectionString' => 'pgsql:host=pg-e97123a-hingato-39eb.aivencloud.com;port=10518;dbname=bdagua',
+                    'username'=>'avnadmin',
+                    'password'=>'wc06staicxb5ag4h',
+                    'charset'=>'UTF8',
+                    'class'=> 'CDbConnection'
+                ),
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
 			'errorAction'=>'site/error',
