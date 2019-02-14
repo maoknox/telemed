@@ -194,7 +194,7 @@ class SiteController extends Controller
                 foreach ($res as $resultados) {
                     $campos=array();
                     array_push($campos,"0");
-                    array_push($campos,$resultados["ruta_medidor"]);
+                    array_push($campos,'="'.$resultados["ruta_medidor"].'"');
                     array_push($campos,$resultados["interno_medidor"]);
                     array_push($campos,$resultados["codigo_medidor"]);
                     array_push($campos,$resultados["lectura_aforo"]);
