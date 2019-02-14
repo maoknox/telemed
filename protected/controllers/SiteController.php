@@ -30,7 +30,7 @@ class SiteController extends Controller
      */
     public function filters(){
         return array(
-                'enforcelogin -login -index -logout -contact -registerPlatform -searchservices -searchMunicipio -searchEmpresa -searchMedidor',                      
+                'enforcelogin -login -index -logout -contact -registerPlatform -searchservices -searchMunicipio -searchEmpresa -searchMedidor -genreportePeriodo',                      
         );
     }
 	/**
@@ -94,6 +94,122 @@ class SiteController extends Controller
                 }
             }
 	}
+        public function actionReportePeriodo(){
+            $conndbi = Yii::app()->dbi;
+            $sqlDepto="select dp.id_departamento,dp.nombre_departamento "
+                    . "from (select * from empresa group by id_municipio,id_empresa) as emp "
+                    . "left join municipio as mn on mn.id_municipio=emp.id_municipio "
+                    . "left join departamento dp on dp.id_departamento=mn.id_departamento "
+                    . "group by dp.id_departamento,dp.nombre_departamento order by nombre_departamento asc";
+            $query=$conndbi->createCommand($sqlDepto);
+            $read=$query->query();
+            $resDepto=$read->readAll();
+            $read->close();
+            $modelDepartamento= Departamento::model();
+            $departamentos=$modelDepartamento->findAllBySql($sqlDepto);
+            $modelMunicipio= Municipio::model();
+            $modelEmpresa= Empresa::model();
+            $this->render('_reporteperiodo',array(
+                "modelDepartamento"=>$modelDepartamento,
+                "modelMunicipio"=>$modelMunicipio,
+                "modelEmpresa"=>$modelEmpresa,
+                "departamentos"=>$departamentos
+                )
+            );
+        }
+        public function actionGenreportePeriodo(){
+            if(!isset($_GET) || empty($_GET)){
+                echo "No se han seleccionado datos para consulta";
+            }else{
+                 header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+                header("Content-type: application/csv");
+                header("Content-disposition: csv" . date("Y-m-d") . ".csv");
+                header( "Content-disposition: filename=export.csv");
+                $out = fopen('php://output', 'w');
+                $lista[0]=array("1","2","3");
+                $lista[1]=array(utf8_decode("ñ"),utf8_decode("ó"),utf8_decode("ü"));
+                $encab=array(utf8_decode("Periodo de facturación"),utf8_decode("Año"));
+                fputcsv($out, $encab, $_GET["separador"]);
+                $dataEncab=array($_GET["periodo"],$_GET["anio"]);
+                fputcsv($out, $dataEncab, $_GET["separador"]);
+                $encab1=array();
+                array_push($encab1, "Campo en 0");
+                array_push($encab1, utf8_decode("Código ruta"));
+                array_push($encab1, utf8_decode("Cuenta interna"));
+                array_push($encab1, utf8_decode("Serial medidor"));
+                array_push($encab1, utf8_decode("Lectura (m3)"));
+                array_push($encab1, utf8_decode("Fecha de lectura"));
+                array_push($encab1, utf8_decode("Fecha y hora de lectura"));
+                $anio=$_GET["anio"];
+                switch ($_GET["periodo"]){
+                    case 1:
+                        $mesi=$anio."-1-1";
+                        $mesii=$anio."-2";
+                        $mesii= date("Y-m-t", strtotime($mesii)); 
+                        break;
+                    case 2:
+                        $mesi=$anio."-3-1";
+                        $mesii=$anio."-4";
+                        $mesii= date("Y-m-t", strtotime($mesii)); 
+                        break;
+                    case 3:
+                        $mesi=$anio."-5-1";
+                        $mesii=$anio."-6";
+                        $mesii= date("Y-m-t", strtotime($mesii)); 
+                        break;
+                    case 4:
+                        $mesi=$anio."-7-1";
+                        $mesii=$anio."-8";
+                        $mesii= date("Y-m-t", strtotime($mesii)); 
+                        break;
+                    case 5:
+                        $mesi=$anio."-9-1";
+                        $mesii=$anio."-10";
+                        $mesii= date("Y-m-t", strtotime($mesii)); 
+                        break;
+                    case 6:
+                        $mesi=$anio."-11-1";
+                        $mesii=$anio."-12";
+                        $mesii= date("Y-m-t", strtotime($mesii)); 
+                        break;
+                }
+                for($i=0;$i<23;$i++){
+                    array_push($encab1, utf8_decode("Campo en 0"));
+                }
+                array_push($encab1, utf8_decode("Campo vacío"));
+                array_push($encab1, utf8_decode("Lectura (m3)"));
+                fputcsv($out, $encab1, $_GET["separador"]);
+                $conn=Yii::app()->dbi;
+                $sql="select ruta_medidor,interno_medidor,codigo_medidor,lectura_aforo,to_char( fecha_aforo, 'DD/MM/YYYY') as fecha "
+                    ."from medidor_suscriptor as md "
+                    ."left join medidor as m on m.id_medidor=md.id_medidor "
+                    ."left join lectura_actual as la on la.id_medidor=m.id_medidor "
+                    ."where fecha_aforo >= :fechaini and fecha_aforo <= :fechafin";
+                $query=$conn->createCommand($sql);
+                $query->bindParam(":fechaini",$mesi);
+                $query->bindParam(":fechafin",$mesii);
+                $read=$query->query();
+                $res=$read->readAll();
+                $read->close();
+                foreach ($res as $resultados) {
+                    $campos=array();
+                    array_push($campos,"0");
+                    array_push($campos,$resultados["ruta_medidor"]);
+                    array_push($campos,$resultados["interno_medidor"]);
+                    array_push($campos,$resultados["codigo_medidor"]);
+                    array_push($campos,$resultados["lectura_aforo"]);
+                    array_push($campos,$resultados["fecha"]);
+                    array_push($campos,$resultados["fecha"]." 00:00");
+                    for($j=0;$j<23;$j++){
+                        array_push($campos,"0");
+                    }
+                    array_push($campos," ");
+                    array_push($campos,$resultados["lectura_aforo"]);
+                    fputcsv($out, $campos, $_GET["separador"]);
+                }
+                fclose($out);
+            }
+        }
         //buscaMunicipio
         public function actionSearchMunicipio(){
             $idDepto=Yii::app()->request->getPost("idDepto");
