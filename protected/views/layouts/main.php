@@ -90,7 +90,7 @@
             </ul>
           </li>-->
           <!-- Notifications: style can be found in dropdown.less -->
-          <li class="dropdown notifications-menu">
+<!--          <li class="dropdown notifications-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-bell-o"></i>
               <span class="label label-warning">1</span>
@@ -98,7 +98,7 @@
             <ul class="dropdown-menu">
               <li class="header">You have 10 notifications</li>
               <li>
-                <!-- inner menu: contains the actual data -->
+                 inner menu: contains the actual data 
                 <ul class="menu">
                   <li>
                     <a href="#">
@@ -109,7 +109,7 @@
               </li>
               <li class="footer"><a href="#">View all</a></li>
             </ul>
-          </li>
+          </li>-->
           <!-- Tasks: style can be found in dropdown.less -->
 <!--          <li class="dropdown tasks-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -150,7 +150,10 @@
             <ul class="dropdown-menu">
               <!-- Menu Body -->
               <li class="user-body">
-                <div class="row">
+                  <div class="pull-right">
+                  <a href="<?php echo Yii::app()->request->baseUrl?>/index.php/site/logout" class="btn btn-default btn-flat">Salir</a>
+                </div>
+<!--                <div class="row">
                   <div class="col-xs-4 text-center">
                     <a href="#">Followers</a>
                   </div>
@@ -160,18 +163,18 @@
                   <div class="col-xs-4 text-center">
                     <a href="#">Friends</a>
                   </div>
-                </div>
+                </div>-->
                 <!-- /.row -->
               </li>
               <!-- Menu Footer-->
-              <li class="user-footer">
+<!--              <li class="user-footer">
                 <div class="pull-left">
                   <a href="#" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
                   <a href="<?php echo Yii::app()->request->baseUrl?>/index.php/site/logout" class="btn btn-default btn-flat">Sign out</a>
                 </div>
-              </li>
+              </li>-->
             </ul>
           </li>
           <!-- Control Sidebar Toggle Button -->
@@ -284,7 +287,23 @@
                    <?php  endforeach;?>
               </ul>
             </li>
-         <?php endif;?> 
+        <?php endif;?> 
+        <?php if(Yii::app()->user->getState('nombreRole')=="CLIENTEDEMO"):?>
+            <li class="treeview">
+                <a href="#">
+                  <i class="fa fa-edit"></i> <span>Servicios</span>
+                  <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="<?php echo Yii::app()->request->baseUrl?>/index.php/"><i class="fa fa-circle-o"></i>Consultas por medidor</a></li>                   
+                </ul>
+                <ul class="treeview-menu">
+                    <li><a href="<?php echo Yii::app()->request->baseUrl?>/index.php/site/reportePeriodo"><i class="fa fa-circle-o"></i>Reportes por periodo</a></li>                   
+                </ul>
+            </li>
+        <?php endif;?> 
       </ul>
     </section>
     <!-- /.sidebar -->

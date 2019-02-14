@@ -9,7 +9,7 @@
  * @param {object} params Object with the class parameters
  * @param {function} callback Function to return the results
  */
-var LecturaAgua = function(){
+var ReporteAgua = function(){
     
     /**************************************************************************/
     /******************************* ATTRIBUTES *******************************/
@@ -29,8 +29,8 @@ var LecturaAgua = function(){
     /**
      * Constructor Method 
      */
-    var LecturaAgua = function() {
-        self.section=$("#sectionLectura");
+    var ReporteAgua = function() {
+        self.section=$("#sectionReportesPeriodo");
         self.divi=$("#divMagnitude");
         setDefaults();
     }();
@@ -85,16 +85,6 @@ var LecturaAgua = function(){
                 self.section.find("#Municipio_id_municipio").html("<option value=''>Seleccione un Municipio</option>");
             }
         });
-        self.section.find("#Municipio_id_municipio").change(function (){
-            if(self.section.find("#Municipio_id_municipio").val()!=""){
-                self.section.find("#Empresa_id_empresa").html("");
-               self.searchEmpresa(self.section.find("#Municipio_id_municipio").val());
-//                console.log(self.section.find("#Departamento_id_departamento").val());
-            }
-            else{
-                self.section.find("#Empresa_id_empresa").html("<option value=''>Seleccione un Municipio</option>");
-            }
-        });
         self.section.find("#fechaLectMed").change(function (){
             if(self.section.find("#fechaLectMed").val()!=""){
                self.showDataHistAforo(self.section.find("#fechaLectMed").val(),localStorage.getItem("idMedidor"));
@@ -103,12 +93,12 @@ var LecturaAgua = function(){
                 self.section.find("#divDatosLectura").fadeOut("slow");
             }
         });
-        self.section.find("#btnConsLecturas").on('click',function(){
-            if(self.section.find("#Empresa_id_empresa").val()!=""){
-                self.searchMedidor(self.section.find("#Empresa_id_empresa").val())
+        self.section.find("#btnRepoLecturas").on('click',function(){
+            if(self.section.find("#Municipio_id_municipio").val()!="" && self.section.find("#Periodo_id_periodo").val()!="" && self.section.find("#Separador_id_separador").val()!="" &&  self.section.find("#Anio_id_anio").val()!=""){
+                self.searchMedidor(self.section.find("#Municipio_id_municipio").val(),self.section.find("#Periodo_id_periodo").val(),self.section.find("#Separador_id_separador option:selected").text(),self.section.find("#Anio_id_anio").val())
             }
             else{
-                 msg="Debe seleccionar una empresa para la consulta";
+                 msg="Debe seleccionar un municipio, un año, un periodo y un separador de archivo para la consulta";
                 typeMsg="warn";
                 $.notify(msg, typeMsg);
             }
@@ -218,81 +208,10 @@ var LecturaAgua = function(){
             $.LoadingOverlay("hide");
         });
     };
-    self.searchMedidor=function(idEmpresa){ 
-        $('#dataTableMedidor thead tr').html("");
-        $('#dataTableMedidor tfoot tr').html("");
+    self.searchMedidor=function(idMunicipio,idPeriodo,separador,anio){ 
         var msg="";
         var typeMsg;
-        $.ajax({
-            type: "POST",
-            dataType:'json',
-            url: 'searchMedidor',
-            data:{idEmpresa:idEmpresa},
-            beforeSend: function(){
-                $.LoadingOverlay("show",{ zIndex: 100   });
-            }
-        }).done(function(response) {
-//                console.log(JSON.stringify(response));
-             if(response.status=="nosession"){
-                $.notify("La sesión ha caducado, debe hacer login de nuevo", "warn");
-                setTimeout(function(){document.location.href="site/login";}, 3000);
-                return;
-             }
-             else{
-                if(JSON.stringify(response).length>0){
-//                    $('#dataTableMedidor thead tr').html('');
-//                    $('#dataTableMedidor tfoot tr').html('');
-                    $.each(response.columns,function(key, value){
-                        $('#dataTableMedidor thead tr').append('<td>'+value+'</td>');
-                        $('#dataTableMedidor tfoot tr').append('<td>'+value+'</td>');
-                    });
-                    self.dataTable=$("#dataTableMedidor").DataTable({
-                        "bProcessing": true,
-//                    "serverSide": true,
-                        dom: 'lBfrtip',
-                        buttons: [
-                           'copyHtml5',
-                           'excelHtml5',
-                           'csvHtml5',
-                           'pdfHtml5'
-                       ],
-                       lengthMenu: [
-                            [25, 50, 100, 200, -1],
-                            [25, 50, 100, 200, "All"]
-                        ],
-                        fixedHeader: {
-                            header: true,
-                            footer: true
-                        },
-                        "destroy" : true,
-                        oLanguage: Telemed.getDatatableLang(),
-                        scrollX: true
-                    }); 
-                    $('#dataTableMedidorDiv').css("display","block");
-                    self.dataTable.clear();
-                    $.each(response.data,function(key,value){
-                        self.dataTable.row.add([
-                            '<a href=javascript:LecturaAgua.showDataHist("'+value.Medidor+'");>'+value.Medidor+'</a>',
-                            value.Ubicación,
-                            value.Interno,
-                            value.Ruta,
-                            value.Ciclo
-                        ]).draw();
-                    });
-                    
-                }
-                else{
-                    $.notify("No hay datos para esta empresa", "warn");
-                    self.section.find("#Empresa_id_empresa").html("<option value=''>Seleccione una empresa</option>");
-                }
-            }
-        }).fail(function(error, textStatus, xhr) {
-            msg="Error al consultar los servicios, código del error: "+error.status+" "+xhr;
-            typeMsg="error";
-            $.notify(msg, typeMsg);
-        }).always(function(){
-            $.LoadingOverlay("hide");
-        });
+        window.open('http://192.168.0.137/telemed/index.php/site/genreportePeriodo?mun='+idMunicipio+'&periodo='+idPeriodo+'&separador='+separador+'&anio='+anio,'_blank');
     };
     self.showDataHist=function(idMedidor){
         if(localStorage.getItem("idMedidor")){
@@ -347,7 +266,7 @@ var LecturaAgua = function(){
                 $.LoadingOverlay("show",{ zIndex: 100   });
             }
         }).done(function(response) {
-            console.log(response);
+            console.log(response.colshlect);
             if(JSON.stringify(response).length>0){
                 self.section.find("#divDatosLectura").fadeIn("slow");
                 $.each(response.colsaforo,function(keyclaf, valueclaf){
@@ -365,7 +284,6 @@ var LecturaAgua = function(){
                 histLectMed=[];
                 data=[];
                 self.section.find('#histLecMed tbody').html('');
-                fecha=[];
                 $.each(response.datahlect,function(key, value){
                     
                     rowHLecMed="<tr>";
@@ -378,37 +296,25 @@ var LecturaAgua = function(){
                     myDate=value.fecha_lectura.split("-");
                     var newDate=myDate[1]+"/"+myDate[2]+"/"+myDate[0];
                     value.fecha_lectura=new Date(newDate).getTime();
-                    fecha.push({fecha:value.fecha_lectura});
-                    data.push({
-                        x: value.fecha_lectura,
-                        y: value.lectura
-                    });
+                   
                 });
-                
-                
                 self.section.find('#histConsMed thead tr').html('');
                  $.each(response.colshcons,function(keyccons, valueccons){
                     self.section.find('#histConsMed thead tr').append('<td>'+valueccons+'</td>');
                 });
                 rowHLecCons="";
                 self.section.find('#histConsMed tbody').html('');
-                console.log(response.datahcons);
-                $.each(response.datahcons,function(keyi, valuehcons){
-                    fechacons=fecha[keyi]
-                    console.log(fechacons.fecha);
-                   
+                $.each(response.datahcons,function(key, value){
                     rowHLecCons="<tr>";
-                    $.each(valuehcons,function(keycl, valuecl){
+                    data.push({
+                        x: "Consumo "+value.orden_consumo,
+                        y: value.consumo
+                    });
+                    $.each(value,function(keycl, valuecl){
                         rowHLecCons+="<td>"+valuecl+"</td>";
                     });
-                    
                     rowHLecCons+="</tr>";
                     self.section.find('#histConsMed tbody').append(rowHLecCons);
-                     valuehcons.consumo=valuehcons.consumo*1;
-//                    data.push({
-//                        x: fechacons.fecha,
-//                        y: valuehcons.consumo
-//                    });
                 });
                 $('#g1').html("");
                 $('#g1').highcharts({
@@ -441,11 +347,14 @@ var LecturaAgua = function(){
                         }
                     },
                     title: {
-                        text: 'Histórico de lecturas'
+                        text: 'Histórico de consumos'
                     },
                     xAxis: {
-                        type: 'datetime',
-                        tickPixelInterval: 150
+//                        title: {
+//                            text: 'Consumos'
+//                        },
+//                        type: 'datetime',
+                        tickInterval: 1
                     },
                     yAxis: {
                         title: {
@@ -471,7 +380,7 @@ var LecturaAgua = function(){
                         enabled: true
                     },
                     series: [{
-                        name: 'Lectura vs fecha',
+                        name: 'Consumo',
                         data: data
                     }]
                 }); 
@@ -570,7 +479,7 @@ var LecturaAgua = function(){
 $(document).ready(function() {
 //    console.log($("#divRegPerson").html()+"-----------------------------------");
 
-    window.LecturaAgua=new LecturaAgua();
+    window.LecturaAgua=new ReporteAgua();
 //    Entitydevice.filtraEntity();
     
 });

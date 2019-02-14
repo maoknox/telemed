@@ -66,9 +66,15 @@ $this->pageTitle=Yii::app()->name;
         <div class="col-md-12" >
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">2. Seleccione un medidor <a id="verHist" style="cursor: pointer;">ver</a>--<a id="ocultarHist" style="cursor: pointer;">ocultar</a></h3>
+                    <h3 class="box-title">2. Seleccione un medidor</h3>
+                    <div class="box-tools pull-right">
+                        <!-- Collapse Button -->
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                          <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="box-body" id="dataTableMedidorDiv" style="display: none">
+                <div class="box-body" id="dataTableMedidorDiv">
                     <table id="dataTableMedidor" class="table table-bordered table-striped">
                         <thead>
                             <tr>
@@ -128,23 +134,49 @@ $this->pageTitle=Yii::app()->name;
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="box">
-                                  <div class="box-header with-border">
-                                    <h3 class="box-title">Histórico lecturas</h3>
-                                  </div>
-                                  <!-- /.box-header -->
-                                  <div class="box-body">
-                                      <table class="table table-bordered cl-datos-med" id="histLecMed">
-                                          <thead>
-                                              <tr>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="box">
+                                          <div class="box-header with-border">
+                                            <h3 class="box-title">Histórico lecturas</h3>
+                                          </div>
+                                          <!-- /.box-header -->
+                                          <div class="box-body">
+                                              <table class="table table-bordered cl-datos-med" id="histLecMed">
+                                                  <thead>
+                                                      <tr>
 
-                                              </tr>
-                                          </thead>
-                                          <tbody>
+                                                      </tr>
+                                                  </thead>
+                                                  <tbody>
 
-                                          </tbody>
-                                      </table>
-                                  </div>
+                                                  </tbody>
+                                              </table>
+                                          </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="box">
+                                          <div class="box-header with-border">
+                                            <h3 class="box-title">Histórico consumo</h3>
+                                          </div>
+                                          <!-- /.box-header -->
+                                          <div class="box-body">
+                                              <table class="table table-bordered cl-datos-med" id="histConsMed">
+                                                  <thead>
+                                                      <tr>
+
+                                                      </tr>
+                                                  </thead>
+                                                  <tbody>
+
+                                                  </tbody>
+                                              </table>
+                                          </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -158,26 +190,7 @@ $this->pageTitle=Yii::app()->name;
                                 </div>
                             </div>
                         
-                            <div class="col-md-6">
-                                <div class="box">
-                                  <div class="box-header with-border">
-                                    <h3 class="box-title">Histórico consumo</h3>
-                                  </div>
-                                  <!-- /.box-header -->
-                                  <div class="box-body">
-                                      <table class="table table-bordered cl-datos-med" id="histConsMed">
-                                          <thead>
-                                              <tr>
-
-                                              </tr>
-                                          </thead>
-                                          <tbody>
-
-                                          </tbody>
-                                      </table>
-                                  </div>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
