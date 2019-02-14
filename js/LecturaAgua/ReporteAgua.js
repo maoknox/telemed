@@ -211,7 +211,7 @@ var ReporteAgua = function(){
     self.searchMedidor=function(idMunicipio,idPeriodo,separador,anio){ 
         var msg="";
         var typeMsg;
-        window.open('http://192.168.0.137/telemed/index.php/site/genreportePeriodo?mun='+idMunicipio+'&periodo='+idPeriodo+'&separador='+separador+'&anio='+anio,'_blank');
+        window.open('http://telemedik.herokuapp.com/index.php/site/genreportePeriodo?mun='+idMunicipio+'&periodo='+idPeriodo+'&separador='+separador+'&anio='+anio,'_blank');
     };
     self.showDataHist=function(idMedidor){
         if(localStorage.getItem("idMedidor")){
