@@ -30,7 +30,7 @@ class SiteController extends Controller
      */
     public function filters(){
         return array(
-                'enforcelogin -login -index -logout -contact -registerPlatform -searchservices -searchMunicipio -searchEmpresa -searchMedidor -genreportePeriodo',                      
+                'enforcelogin -login -index -logout -contact -registerPlatform -searchservices ',                      
         );
     }
 	/**
