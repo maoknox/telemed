@@ -297,7 +297,7 @@
                   </span>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="<?php echo Yii::app()->request->baseUrl?>/index.php/"><i class="fa fa-circle-o"></i>Consultas por medidor</a></li>                   
+                    <li><a href="<?php echo Yii::app()->request->baseUrl?>/index.php/site/"><i class="fa fa-circle-o"></i>Consultas por medidor</a></li>                   
                 </ul>
                 <ul class="treeview-menu">
                     <li><a href="<?php echo Yii::app()->request->baseUrl?>/index.php/site/reportePeriodo"><i class="fa fa-circle-o"></i>Reportes por periodo</a></li>                   
