@@ -155,16 +155,22 @@ var ReporteAgua = function(){
                 $.LoadingOverlay("show",{ zIndex: 100   });
             }
         }).done(function(response) {
-            console.log(JSON.stringify(response));
-            if(response.length>0){
-                self.section.find("#Municipio_id_municipio").append("<option value=''>Seleccione un Municipio</option>");
-                $.each(response,function(key, value){
-                    self.section.find("#Municipio_id_municipio").append("<option value='"+value.id_municipio+"'>"+value.nombre_municipio+"</option>");
-                });
-            }
-            else{
-                $.notify("No hay municipios relacionados", "warn");
-                self.section.find("#Municipio_id_municipio").html("<option value=''>Seleccione un Departamento</option>");
+            if(response.status=="nosession"){
+                $.notify("La sesión ha caducado, debe hacer login de nuevo", "warn");
+                setTimeout(function(){document.location.href="site/login";}, 3000);
+                return;
+             }
+             else{
+                if(response.length>0){
+                    self.section.find("#Municipio_id_municipio").append("<option value=''>Seleccione un Municipio</option>");
+                    $.each(response,function(key, value){
+                        self.section.find("#Municipio_id_municipio").append("<option value='"+value.id_municipio+"'>"+value.nombre_municipio+"</option>");
+                    });
+                }
+                else{
+                    $.notify("No hay municipios relacionados", "warn");
+                    self.section.find("#Municipio_id_municipio").html("<option value=''>Seleccione un Departamento</option>");
+                }
             }
         }).fail(function(error, textStatus, xhr) {
             msg="Error al consultar los servicios, código del error: "+error.status+" "+xhr;
@@ -189,16 +195,22 @@ var ReporteAgua = function(){
                 $.LoadingOverlay("show",{ zIndex: 100   });
             }
         }).done(function(response) {
-            console.log(JSON.stringify(response));
-            if(response.length>0){
-                self.section.find("#Empresa_id_empresa").append("<option value=''>Seleccione una Empresa</option>");
-                $.each(response,function(key, value){
-                    self.section.find("#Empresa_id_empresa").append("<option value='"+value.id_empresa+"'>"+value.nombre_empresa+"</option>");
-                });
-            }
-            else{
-                $.notify("No hay empresas relacionadas al municipio", "warn");
-                self.section.find("#Empresa_id_empresa").html("<option value=''>Seleccione una empresa</option>");
+            if(response.status=="nosession"){
+                $.notify("La sesión ha caducado, debe hacer login de nuevo", "warn");
+                setTimeout(function(){document.location.href="site/login";}, 3000);
+                return;
+             }
+             else{
+                if(response.length>0){
+                    self.section.find("#Empresa_id_empresa").append("<option value=''>Seleccione una Empresa</option>");
+                    $.each(response,function(key, value){
+                        self.section.find("#Empresa_id_empresa").append("<option value='"+value.id_empresa+"'>"+value.nombre_empresa+"</option>");
+                    });
+                }
+                else{
+                    $.notify("No hay empresas relacionadas al municipio", "warn");
+                    self.section.find("#Empresa_id_empresa").html("<option value=''>Seleccione una empresa</option>");
+                }
             }
         }).fail(function(error, textStatus, xhr) {
             msg="Error al consultar los servicios, código del error: "+error.status+" "+xhr;
@@ -231,19 +243,25 @@ var ReporteAgua = function(){
                 $.LoadingOverlay("show",{ zIndex: 100   });
             }
         }).done(function(response) {
-//            console.log(JSON.stringify(response));
-            if(JSON.stringify(response).length>0){
-                self.section.find("#fechaLectMed").html("");
-                self.section.find("#fechaLectMed").append("<option value=''>Seleccione una fecha</option>");
-                $.each(response.fecha,function(key, value){
-                    self.section.find("#fechaLectMed").append("<option value='"+value.Fecha_aforo+"'>"+value.Fecha_aforo+"</option>");
-                });
-                self.section.find("#dataTableMedidorDiv").fadeOut("slow");
-                localStorage.setItem("idMedidor",idMedidor);
-            }
-            else{
-                $.notify("No hay históricos para éste medidor", "warn");
-                
+            if(response.status=="nosession"){
+                $.notify("La sesión ha caducado, debe hacer login de nuevo", "warn");
+                setTimeout(function(){document.location.href="site/login";}, 3000);
+                return;
+             }
+             else{
+                if(JSON.stringify(response).length>0){
+                    self.section.find("#fechaLectMed").html("");
+                    self.section.find("#fechaLectMed").append("<option value=''>Seleccione una fecha</option>");
+                    $.each(response.fecha,function(key, value){
+                        self.section.find("#fechaLectMed").append("<option value='"+value.Fecha_aforo+"'>"+value.Fecha_aforo+"</option>");
+                    });
+                    self.section.find("#dataTableMedidorDiv").fadeOut("slow");
+                    localStorage.setItem("idMedidor",idMedidor);
+                }
+                else{
+                    $.notify("No hay históricos para éste medidor", "warn");
+
+                }
             }
         }).fail(function(error, textStatus, xhr) {
             msg="Error al consultar los medidores";
@@ -266,7 +284,6 @@ var ReporteAgua = function(){
                 $.LoadingOverlay("show",{ zIndex: 100   });
             }
         }).done(function(response) {
-            console.log(response.colshlect);
             if(JSON.stringify(response).length>0){
                 self.section.find("#divDatosLectura").fadeIn("slow");
                 $.each(response.colsaforo,function(keyclaf, valueclaf){
