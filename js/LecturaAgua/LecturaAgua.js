@@ -260,9 +260,10 @@ var LecturaAgua = function(){
                         $('#dataTableMedidor thead tr').append('<td>'+value+'</td>');
                         $('#dataTableMedidor tfoot tr').append('<td>'+value+'</td>');
                     });
+                    dataPrint="";
                     self.dataTable=$("#dataTableMedidor").DataTable({
                         "bProcessing": true,
-//                    "serverSide": true,
+                        "serverSide": true,
                         dom: 'lBfrtip',
                         buttons: [
                            'copyHtml5',
@@ -278,21 +279,29 @@ var LecturaAgua = function(){
                             header: true,
                             footer: true
                         },
+                        "ajax":{
+                            url :"searchInfoDTables", // json datasource
+                            type: "post",  // type of method  ,GET/POST/DELETE
+                            data:{"table":"view_medidor_gen","namefunc":"search_info_meds",idEmpresa:idEmpresa},
+                            error: function(xhr, error, thrown){
+                                console.log(xhr.responseText);
+                            }
+                        },
                         "destroy" : true,
                         oLanguage: Telemed.getDatatableLang(),
                         scrollX: true
-                    }); 
+                    });  
                     $('#dataTableMedidorDiv').css("display","block");
-                    self.dataTable.clear();
-                    $.each(response.data,function(key,value){
-                        self.dataTable.row.add([
-                            '<a href=javascript:LecturaAgua.showDataHist("'+value.Medidor+'");>'+value.Medidor+'</a>',
-                            value.Ubicación,
-                            value.Interno,
-                            value.Ruta,
-                            value.Ciclo
-                        ]).draw();
-                    });
+//                    self.dataTable.clear();
+//                    $.each(response.data,function(key,value){
+//                        self.dataTable.row.add([
+//                            '<a href=javascript:LecturaAgua.showDataHist("'+value.Medidor+'");>'+value.Medidor+'</a>',
+//                            value.Ubicación,
+//                            value.Interno,
+//                            value.Ruta,
+//                            value.Ciclo
+//                        ]).draw();
+//                    });
                     
                 }
                 else{

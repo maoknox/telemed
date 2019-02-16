@@ -1734,12 +1734,14 @@ c996
         
         
     }
-    public function searchInfoPTables($nameTable,$columnNames){
+    public function searchInfoDTables($nameTable,$columnNames,$nameFun,$idEmpresa){
             // initilize all variable
             $params = $columns = $sqlRC = $data = array();
             $params = $_REQUEST;
+//            print_r($params);exit();
             //define index of column
             $params['search']['value']= mb_strtoupper($params['search']['value']);
+//            print_r($columnNames);exit();
             $i=0;
             foreach($columnNames as $pk=>$column){
                 $columns[$i]=$column["column_name"];
@@ -1748,13 +1750,13 @@ c996
             $where = $sqlTot = $sqlRec = "";
             // check search value exist
             if( !empty($params['search']['value']) ) {   
-                $where .=" WHERE (";
+                $where .=" AND (";
                 foreach($columnNames as $pk=>$column){
                     if($column["data_type"]=="integer" || $column["data_type"]=="numeric" && is_int((int)$params['search']['value']) || ctype_digit((int)$params['search']['value'])){
-                        $condition=$column["column_name"]."  = ".(int)$params['search']['value'];
+                        $condition=$column["column_name"]."  = ".(int)pg_escape_string($params['search']['value']);
                     }else{
 //                        if($column["data_type"]=="date"
-                            $condition=$column["column_name"]."  LIKE '".$params['search']['value']."%'";
+                            $condition=$column["column_name"]."  LIKE '".pg_escape_string($params['search']['value'])."%'";
                         
                     }
                     if($pk==0){
@@ -1769,8 +1771,10 @@ c996
             }
 
             // getting total number records without any search
-            $connect=Yii::app()->db;
-            $sql="SELECT * FROM ". pg_escape_string($nameTable)." ";
+            $connect=Yii::app()->dbi;
+            $sql="select codigo_medidor as \"Medidor\",direccion_medidor as \"Ubicación\", interno_medidor as \"Interno\", ruta_medidor as \"Ruta\", ciclo_medidor as \"Ciclo\" from medidor as med "
+                    . "left join medidor_suscriptor as ms on med.id_medidor=ms.id_medidor "
+                    . "where id_empresa=:idEmpresa ";
             
             $sqlTot .= $sql;
             $sqlRec .= $sql;
@@ -1782,22 +1786,31 @@ c996
             if($params['length']==-1){
                 $params['length']="all";
             }
-            $sqlRec .=  " ORDER BY ". $columns[$params['order'][0]['column']]."   ".$params['order'][0]['dir']."  OFFSET ".$params['start']." LIMIT ".$params['length']." ";
+            $sqlRec .=  " ORDER BY \"". $columns[$params['order'][0]['column']]."\"    ".$params['order'][0]['dir']."  OFFSET ".$params['start']." LIMIT ".$params['length']." ";
             $query=$connect->createCommand($sqlRec);
+            $query->bindParam(":idEmpresa",$idEmpresa);
             $read=$query->query();
             $results=$read->readAll();
             $read->close();
-            
+//            print_r($results);exit();
             /*total rows*/
-            $sqlRC = "SELECT * FROM ". pg_escape_string($nameTable)." ";
+            $sqlRC = "select codigo_medidor as \"Medidor\",direccion_medidor as \"Ubicación\", interno_medidor as \"Interno\", ruta_medidor as \"Ruta\", ciclo_medidor as \"Ciclo\" from medidor as med "
+                    . "left join medidor_suscriptor as ms on med.id_medidor=ms.id_medidor "
+                    . "where id_empresa=:idEmpresa ;";
             $queryNR=$connect->createCommand($sqlRC);
+            $queryNR->bindParam(":idEmpresa",$idEmpresa);
             $readNR=$queryNR->query();
             $resultsNC=$readNR->rowCount;
             $readNR->close();
             foreach($results as $pk=>$result){
                 $i=0;
                 foreach($columns as $pki=>$column){
-                    $dataResult[$i]=$result[$column];
+                    if($column=="Medidor"){//'<a href=javascript:LecturaAgua.showDataHist("'+value.Medidor+'");>'+value.Medidor+'</a>',
+                        $dataResult[$i]='<a href=javascript:LecturaAgua.showDataHist("'.$result[$column].'");>'.$result[$column].'</a>';
+                    }
+                    else{
+                        $dataResult[$i]=$result[$column];
+                    }
                     $i++;
                 }
                 $data[$pk]=$dataResult;
