@@ -77,6 +77,14 @@ return array(
                     'charset'=>'UTF8',
                     'class'=> 'CDbConnection'
                 ),
+//                'dbi'=>array(
+//                    'tablePrefix'=>'',
+//                    'connectionString' => 'pgsql:host=localhost;port=5432;dbname=dbagua',
+//                    'username'=>'maoknox',
+//                    'password'=>'Nevulos$',
+//                    'charset'=>'UTF8',
+//                    'class'=> 'CDbConnection'
+//                ),
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
 			'errorAction'=>'site/error',

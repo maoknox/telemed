@@ -247,6 +247,25 @@ class SiteController extends Controller
             $result["data"]=$res;
             echo CJSON::encode($result);
         }
+         public function actionSearchInfoDTables(){
+            $nameTable=Yii::app()->request->getPost("table");
+            $nameFunc=Yii::app()->request->getPost("namefunc");
+            $idEmpresa=Yii::app()->request->getPost("idEmpresa");
+            $columns=$this->loadPTableColumns($nameTable);
+            $modelLoadFiles=new LoadFiles();
+            $infoTables=$modelLoadFiles->searchInfoDTables($nameTable,$columns,$nameFunc,$idEmpresa );
+            echo CJSON::encode($infoTables);
+        }
+        public function loadPTableColumns($nameTable){
+            $conn=Yii::app()->dbi;
+            $sql="select column_name,data_type from information_schema.columns where table_name=:tablename;";
+            $query=$conn->createCommand($sql);
+            $query->bindParam(":tablename",$nameTable);
+            $read=$query->query();
+            $res=$read->readAll();
+            $read->close();
+            return $res;
+        }
         public function actionSearchHistFechaMedidor(){
             $idMedidor=Yii::app()->request->getPost("idMedidor");
             $connDbi=Yii::app()->dbi;
