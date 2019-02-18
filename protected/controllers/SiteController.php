@@ -252,8 +252,9 @@ class SiteController extends Controller
             $nameFunc=Yii::app()->request->getPost("namefunc");
             $idEmpresa=Yii::app()->request->getPost("idEmpresa");
             $columns=$this->loadPTableColumns($nameTable);
+            $columnsDb=$this->loadPTableColumns("view_medidor_columns");
             $modelLoadFiles=new LoadFiles();
-            $infoTables=$modelLoadFiles->searchInfoDTables($nameTable,$columns,$nameFunc,$idEmpresa );
+            $infoTables=$modelLoadFiles->searchInfoDTables($nameTable,$columns,$columnsDb,$nameFunc,$idEmpresa );
             echo CJSON::encode($infoTables);
         }
         public function loadPTableColumns($nameTable){

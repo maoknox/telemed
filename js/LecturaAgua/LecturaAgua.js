@@ -402,7 +402,6 @@ var LecturaAgua = function(){
                     self.section.find('#histLecMed tbody').html('');
                     fecha=[];
                     $.each(response.datahlect,function(key, value){
-
                         rowHLecMed="<tr>";
                         $.each(value,function(keyHl, valueHl){
                             rowHLecMed+="<td>"+valueHl+"</td>";
@@ -414,44 +413,50 @@ var LecturaAgua = function(){
                         var newDate=myDate[1]+"/"+myDate[2]+"/"+myDate[0];
                         value.fecha_lectura=new Date(newDate).getTime();
                         fecha.push({fecha:value.fecha_lectura});
-                        data.push({
-                            x: value.fecha_lectura,
-                            y: value.lectura
-                        });
+                        prom=0;
+                        if(response.datahlect[key+1]!== undefined){
+                            prom=response.datahlect[key]["lectura"] - response.datahlect[key+1]["lectura"];
+                            data.push({
+                                x: value.fecha_lectura,
+                                y: prom
+                            });
+                        }
+                        
                     });
 
 
-                    self.section.find('#histConsMed thead tr').html('');
-                     $.each(response.colshcons,function(keyccons, valueccons){
-                        self.section.find('#histConsMed thead tr').append('<td>'+valueccons+'</td>');
-                    });
-                    rowHLecCons="";
-                    self.section.find('#histConsMed tbody').html('');
-                    console.log(response.datahcons);
-                    $.each(response.datahcons,function(keyi, valuehcons){
-                        fechacons=fecha[keyi]
-                        console.log(fechacons.fecha);
-
-                        rowHLecCons="<tr>";
-                        $.each(valuehcons,function(keycl, valuecl){
-                            rowHLecCons+="<td>"+valuecl+"</td>";
-                        });
-
-                        rowHLecCons+="</tr>";
-                        self.section.find('#histConsMed tbody').append(rowHLecCons);
-                         valuehcons.consumo=valuehcons.consumo*1;
-    //                    data.push({
-    //                        x: fechacons.fecha,
-    //                        y: valuehcons.consumo
-    //                    });
-                    });
+//                    self.section.find('#histConsMed thead tr').html('');
+//                     $.each(response.colshcons,function(keyccons, valueccons){
+//                        self.section.find('#histConsMed thead tr').append('<td>'+valueccons+'</td>');
+//                    });
+//                    rowHLecCons="";
+//                    self.section.find('#histConsMed tbody').html('');
+//                    console.log(response.datahcons);
+//                    $.each(response.datahcons,function(keyi, valuehcons){
+//                        fechacons=fecha[keyi]
+//                        console.log(fechacons.fecha);
+//
+//                        rowHLecCons="<tr>";
+//                        $.each(valuehcons,function(keycl, valuecl){
+//                            rowHLecCons+="<td>"+valuecl+"</td>";
+//                        });
+//
+//                        rowHLecCons+="</tr>";
+//                        self.section.find('#histConsMed tbody').append(rowHLecCons);
+//                         valuehcons.consumo=valuehcons.consumo*1;
+//    //                    data.push({
+//    //                        x: fechacons.fecha,
+//    //                        y: valuehcons.consumo
+//    //                    });
+//                    });
                     $('#g1').html("");
                     $('#g1').highcharts({
                         chart: {
                             defaultSeriesType: 'spline',
                             animation: Highcharts.svg, // don't animate in old IE
                             marginRight: 10,
-                            zoomType: 'x'
+                            zoomType: 'x',
+                            type:'column'
                         },
                         plotOptions: {
                             spline: {
@@ -476,7 +481,7 @@ var LecturaAgua = function(){
                             }
                         },
                         title: {
-                            text: 'Histórico de lecturas'
+                            text: 'Consumos'
                         },
                         xAxis: {
                             type: 'datetime',
@@ -506,7 +511,7 @@ var LecturaAgua = function(){
                             enabled: true
                         },
                         series: [{
-                            name: 'Lectura vs fecha',
+                            name: 'Consumo vs fecha',
                             data: data
                         }]
                     }); 
