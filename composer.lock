@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a13dc5952b25ea979d913b5275f63028",
-    "content-hash": "1d2251587c44b06bb979f976b90314fb",
+    "hash": "812dd2b5fe437617a68e03f19a92e797",
+    "content-hash": "064d85a68520894ab9bc83cf9226d9c7",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -118,12 +118,12 @@
             "version": "v2.0.0-RC7",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-api-php-client.git",
+                "url": "https://github.com/googleapis/google-api-php-client.git",
                 "reference": "998067619ce59a849948b0a8647499b90f70ab41"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-api-php-client/zipball/998067619ce59a849948b0a8647499b90f70ab41",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/998067619ce59a849948b0a8647499b90f70ab41",
                 "reference": "998067619ce59a849948b0a8647499b90f70ab41",
                 "shasum": ""
             },
@@ -174,12 +174,12 @@
             "version": "v0.11",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-api-php-client-services.git",
+                "url": "https://github.com/googleapis/google-api-php-client-services.git",
                 "reference": "48c554aee06f2fd5700d7bdfa4fa6b82d184eb52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-api-php-client-services/zipball/48c554aee06f2fd5700d7bdfa4fa6b82d184eb52",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/48c554aee06f2fd5700d7bdfa4fa6b82d184eb52",
                 "reference": "48c554aee06f2fd5700d7bdfa4fa6b82d184eb52",
                 "shasum": ""
             },
@@ -211,12 +211,12 @@
             "version": "v0.7",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-auth-library-php.git",
+                "url": "https://github.com/googleapis/google-auth-library-php.git",
                 "reference": "f3288860ce7b3076a6768e4ff7b85e0f6100e221"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-auth-library-php/zipball/f3288860ce7b3076a6768e4ff7b85e0f6100e221",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/f3288860ce7b3076a6768e4ff7b85e0f6100e221",
                 "reference": "f3288860ce7b3076a6768e4ff7b85e0f6100e221",
                 "shasum": ""
             },
@@ -654,51 +654,41 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPMailer/PHPMailer.git",
-                "reference": "48261992765204ea5e3772b003075ad053937155"
+                "reference": "258931af903b10842d1a066b2bb1658cf10ddc62"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/48261992765204ea5e3772b003075ad053937155",
-                "reference": "48261992765204ea5e3772b003075ad053937155",
+                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/258931af903b10842d1a066b2bb1658cf10ddc62",
+                "reference": "258931af903b10842d1a066b2bb1658cf10ddc62",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.0.0"
+                "ext-ctype": "*",
+                "ext-filter": "*",
+                "php": ">=5.5.0"
             },
             "require-dev": {
                 "doctrine/annotations": "1.2.*",
-                "jms/serializer": "0.16.*",
+                "friendsofphp/php-cs-fixer": "^2.2",
                 "phpdocumentor/phpdocumentor": "2.*",
-                "phpunit/phpunit": "4.8.*",
-                "symfony/debug": "2.8.*",
-                "symfony/filesystem": "2.8.*",
-                "symfony/translation": "2.8.*",
-                "symfony/yaml": "2.8.*",
-                "zendframework/zend-cache": "2.5.1",
-                "zendframework/zend-config": "2.5.1",
-                "zendframework/zend-eventmanager": "2.5.1",
-                "zendframework/zend-filter": "2.5.1",
-                "zendframework/zend-i18n": "2.5.1",
-                "zendframework/zend-json": "2.5.1",
-                "zendframework/zend-math": "2.5.1",
-                "zendframework/zend-serializer": "2.5.*",
-                "zendframework/zend-servicemanager": "2.5.*",
-                "zendframework/zend-stdlib": "2.5.1"
+                "phpunit/phpunit": "^4.8 || ^5.7",
+                "zendframework/zend-eventmanager": "3.0.*",
+                "zendframework/zend-i18n": "2.7.3",
+                "zendframework/zend-serializer": "2.7.*"
             },
             "suggest": {
-                "league/oauth2-google": "Needed for Google XOAUTH2 authentication"
+                "ext-mbstring": "Needed to send email in multibyte encoding charset",
+                "hayageek/oauth2-yahoo": "Needed for Yahoo XOAUTH2 authentication",
+                "league/oauth2-google": "Needed for Google XOAUTH2 authentication",
+                "psr/log": "For optional PSR-3 debug logging",
+                "stevenmaguire/oauth2-microsoft": "Needed for Microsoft XOAUTH2 authentication",
+                "symfony/polyfill-mbstring": "To support UTF-8 if the Mbstring PHP extension is not enabled (^1.2)"
             },
             "type": "library",
             "autoload": {
-                "classmap": [
-                    "class.phpmailer.php",
-                    "class.phpmaileroauth.php",
-                    "class.phpmaileroauthgoogle.php",
-                    "class.smtp.php",
-                    "class.pop3.php",
-                    "extras/EasyPeasyICS.php",
-                    "extras/ntlm_sasl_client.php"
-                ]
+                "psr-4": {
+                    "PHPMailer\\PHPMailer\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -722,7 +712,7 @@
                 }
             ],
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
-            "time": "2017-04-18 15:47:46"
+            "time": "2019-02-15 09:08:43"
         },
         {
             "name": "phpseclib/phpseclib",
@@ -1069,12 +1059,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendesk/zendesk_api_client_php.git",
-                "reference": "4931eff85839c45294cdd125e79f2be170370b13"
+                "reference": "62e1f8488a78694fa88fe4c084a8c485a55f2824"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/4931eff85839c45294cdd125e79f2be170370b13",
-                "reference": "4931eff85839c45294cdd125e79f2be170370b13",
+                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/62e1f8488a78694fa88fe4c084a8c485a55f2824",
+                "reference": "62e1f8488a78694fa88fe4c084a8c485a55f2824",
                 "shasum": ""
             },
             "require": {
@@ -1086,21 +1076,23 @@
                 "fzaninotto/faker": ">=1.5.0",
                 "phpmd/phpmd": "@stable",
                 "phpunit/phpunit": "4.5.*",
+                "psy/psysh": "@stable",
                 "squizlabs/php_codesniffer": "2.*"
             },
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "Zendesk\\API\\": "src/"
+                    "Zendesk\\API\\": "src/",
+                    "Zendesk\\Console\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "Apache License Version 2.0"
+                "Apache-2.0"
             ],
-            "description": "PHP Client for Zendesk REST API. See http://developer.zendesk.com/api-docs",
+            "description": "PHP Client for Zendesk REST API. See https://developer.zendesk.com/rest_api/docs/core/introduction .",
             "homepage": "https://github.com/zendesk/zendesk_api_client_php",
-            "time": "2017-04-26 09:35:25"
+            "time": "2018-11-09 07:29:36"
         }
     ],
     "packages-dev": [
@@ -2252,8 +2244,9 @@
     "prefer-lowest": false,
     "platform": {
         "php": ">=5.3.2",
-        "ext-soap": "*",
-        "ext-memcached": "*"
+        "ext-mbstring": "*"
     },
-    "platform-dev": []
+    "platform-dev": {
+        "ext-mbstring": "*"
+    }
 }
