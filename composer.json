@@ -15,6 +15,7 @@
         "phpunit/php-invoker": "*",
         "phpunit/dbunit": ">=1.2",
         "phpunit/phpunit-story": "*",
-        "phpunit/phpunit-skeleton-generator": "*"
+        "phpunit/phpunit-skeleton-generator": "*",
+	"ext-mbstring": "*"
     }
 }
