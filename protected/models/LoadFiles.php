@@ -1734,7 +1734,7 @@ c996
         
         
     }
-    public function searchInfoDTables($nameTable,$columnNames,$nameFun,$idEmpresa){
+    public function searchInfoDTables($nameTable,$columnNames,$columnsDb,$nameFun,$idEmpresa){
             // initilize all variable
             $params = $columns = $sqlRC = $data = array();
             $params = $_REQUEST;
@@ -1747,16 +1747,17 @@ c996
                 $columns[$i]=$column["column_name"];
                 $i++;
             }
+//            print_r($columnsDb);exit();
             $where = $sqlTot = $sqlRec = "";
             // check search value exist
             if( !empty($params['search']['value']) ) {   
                 $where .=" AND (";
-                foreach($columnNames as $pk=>$column){
-                    if($column["data_type"]=="integer" || $column["data_type"]=="numeric" && is_int((int)$params['search']['value']) || ctype_digit((int)$params['search']['value'])){
+                foreach($columnsDb as $pk=>$column){
+                    if(($column["data_type"]=="integer" || $column["data_type"]=="numeric") && (is_int((int)$params['search']['value']) || ctype_digit((int)$params['search']['value']))){
                         $condition=$column["column_name"]."  = ".(int)pg_escape_string($params['search']['value']);
                     }else{
 //                        if($column["data_type"]=="date"
-                            $condition=$column["column_name"]."  LIKE '".pg_escape_string($params['search']['value'])."%'";
+                            $condition=$column["column_name"]." LIKE '".pg_escape_string($params['search']['value'])."%'";
                         
                     }
                     if($pk==0){

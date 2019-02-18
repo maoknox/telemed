@@ -156,13 +156,13 @@ $this->pageTitle=Yii::app()->name;
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
+<!--                                <div class="row">
                                     <div class="col-md-12">
                                         <div class="box">
                                           <div class="box-header with-border">
                                             <h3 class="box-title">Histórico consumo</h3>
                                           </div>
-                                          <!-- /.box-header -->
+                                           /.box-header 
                                           <div class="box-body">
                                               <table class="table table-bordered cl-datos-med" id="histConsMed">
                                                   <thead>
@@ -177,7 +177,7 @@ $this->pageTitle=Yii::app()->name;
                                           </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                             <div class="col-md-6">
                                 <div class="box box-primary">
