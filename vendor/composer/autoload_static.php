@@ -31,6 +31,7 @@ class ComposerStaticInitc84f2c5f85056766440607e5482f6b9c
         array (
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
+            'PHPMailer\\PHPMailer\\' => 20,
         ),
         'M' => 
         array (
@@ -82,6 +83,10 @@ class ComposerStaticInitc84f2c5f85056766440607e5482f6b9c
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
+        ),
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
@@ -111,6 +116,10 @@ class ComposerStaticInitc84f2c5f85056766440607e5482f6b9c
     public static $prefixesPsr0 = array (
         'Z' => 
         array (
+            'Zendesk\\Console\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/zendesk/zendesk_api_client_php/src',
+            ),
             'Zendesk\\API\\' => 
             array (
                 0 => __DIR__ . '/..' . '/zendesk/zendesk_api_client_php/src',
@@ -152,7 +161,6 @@ class ComposerStaticInitc84f2c5f85056766440607e5482f6b9c
     );
 
     public static $classMap = array (
-        'EasyPeasyICS' => __DIR__ . '/..' . '/phpmailer/phpmailer/extras/EasyPeasyICS.php',
         'File_Iterator' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Iterator.php',
         'File_Iterator_Facade' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Facade.php',
         'File_Iterator_Factory' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Factory.php',
@@ -179,9 +187,6 @@ class ComposerStaticInitc84f2c5f85056766440607e5482f6b9c
         'Google\\Auth\\Subscriber\\SimpleSubscriber' => __DIR__ . '/..' . '/google/auth/src/Subscriber/SimpleSubscriber.php',
         'Google_Service_Exception' => __DIR__ . '/..' . '/google/apiclient/src/Google/Service/Exception.php',
         'Google_Service_Resource' => __DIR__ . '/..' . '/google/apiclient/src/Google/Service/Resource.php',
-        'PHPMailer' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmailer.php',
-        'PHPMailerOAuth' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmaileroauth.php',
-        'PHPMailerOAuthGoogle' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmaileroauthgoogle.php',
         'PHPUnit_Extensions_Database_AbstractTester' => __DIR__ . '/..' . '/phpunit/dbunit/PHPUnit/Extensions/Database/AbstractTester.php',
         'PHPUnit_Extensions_Database_Constraint_DataSetIsEqual' => __DIR__ . '/..' . '/phpunit/dbunit/PHPUnit/Extensions/Database/Constraint/DataSetIsEqual.php',
         'PHPUnit_Extensions_Database_Constraint_TableIsEqual' => __DIR__ . '/..' . '/phpunit/dbunit/PHPUnit/Extensions/Database/Constraint/TableIsEqual.php',
@@ -686,8 +691,6 @@ class ComposerStaticInitc84f2c5f85056766440607e5482f6b9c
         'PHP_Token_WHITESPACE' => __DIR__ . '/..' . '/phpunit/php-token-stream/PHP/Token.php',
         'PHP_Token_XOR_EQUAL' => __DIR__ . '/..' . '/phpunit/php-token-stream/PHP/Token.php',
         'PHP_Token_YIELD' => __DIR__ . '/..' . '/phpunit/php-token-stream/PHP/Token.php',
-        'POP3' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.pop3.php',
-        'SMTP' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.smtp.php',
         'SebastianBergmann\\Comparator\\ArrayComparator' => __DIR__ . '/..' . '/sebastian/comparator/src/ArrayComparator.php',
         'SebastianBergmann\\Comparator\\Comparator' => __DIR__ . '/..' . '/sebastian/comparator/src/Comparator.php',
         'SebastianBergmann\\Comparator\\ComparisonFailure' => __DIR__ . '/..' . '/sebastian/comparator/src/ComparisonFailure.php',
@@ -724,8 +727,6 @@ class ComposerStaticInitc84f2c5f85056766440607e5482f6b9c
         'SebastianBergmann\\RecursionContext\\InvalidArgumentException' => __DIR__ . '/..' . '/sebastian/recursion-context/src/InvalidArgumentException.php',
         'SebastianBergmann\\Version' => __DIR__ . '/..' . '/sebastian/version/src/Version.php',
         'Text_Template' => __DIR__ . '/..' . '/phpunit/php-text-template/src/Template.php',
-        'ntlm_sasl_client_class' => __DIR__ . '/..' . '/phpmailer/phpmailer/extras/ntlm_sasl_client.php',
-        'phpmailerException' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmailer.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
