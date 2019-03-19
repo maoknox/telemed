@@ -1736,6 +1736,7 @@ c996
     }
     public function searchInfoDTables($nameTable,$columnNames,$columnsDb,$nameFun,$idEmpresa){
             // initilize all variable
+        
             $params = $columns = $sqlRC = $data = array();
             $params = $_REQUEST;
 //            print_r($params);exit();

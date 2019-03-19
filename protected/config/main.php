@@ -71,9 +71,9 @@ return array(
                 ),
                 'dbi'=>array(
                     'tablePrefix'=>'',
-                    'connectionString' => 'pgsql:host=pg-e97123a-hingato-39eb.aivencloud.com;port=10518;dbname=bdagua',
-                    'username'=>'avnadmin',
-                    'password'=>'wc06staicxb5ag4h',
+                    'connectionString' => 'pgsql:host=ec2-174-129-10-235.compute-1.amazonaws.com;port=5432;dbname=d1b707p8m5ll9h',
+                    'username'=>'cmkqkhmzfyvqfn',
+                    'password'=>'ca95e720fd1405b93e3738520fe8d0313f0caa8e2afb22806ad665aabb8473c5',
                     'charset'=>'UTF8',
                     'class'=> 'CDbConnection'
                 ),
