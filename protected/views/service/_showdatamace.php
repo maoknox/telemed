@@ -40,4 +40,16 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Magnitudes de sensum</h3>
+                </div>
+                <div class="box-body">
+                    <button id="getMagnitues">obtener</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>

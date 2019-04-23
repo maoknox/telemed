@@ -104,6 +104,10 @@ var Entitydevice = function(){
         self.divi.find("#btnCancelaEdicion").click(function(){
             self.cancelEdition();
         });
+        self.divi.find("#getMagnitues").click(function(){
+            console.log("getMag");
+            self.getSensumMag();
+        });
     };    
     /**************************************************************************/
     /********************************** METHODS *******************************/
@@ -141,6 +145,41 @@ var Entitydevice = function(){
     /**************************************************************************/
     /******************************* SYNC METHODS *****************************/
     /**************************************************************************/ 
+    self.getSensumMag=function(){
+        $.ajax({
+            type:"GET",
+            dataType:'json',
+            contentType: "application/json; charset=utf-8",
+            url: 'https://api.sensum.co.nz/b2856b5d899fa79137167b62c68918eb/deviceinfo',
+            headers: {
+                "Access-Control-Allow-Origin":"*"
+            },
+            beforeSend: function(){
+                $.LoadingOverlay("show",{ zIndex: 100   });
+            }
+        }).done(function(response) {
+            if(response.status=="nosession"){
+                $.notify("La sesión ha caducado, debe hacer login de nuevo", "warn");
+                setTimeout(function(){document.location.href="site/login";}, 3000);
+                return;
+             }
+             else{
+                
+                if(response.length>0){
+                  $("#receiverInfo").html(JSON.stringify(response));
+                }
+                else{
+                    $.notify("No hay datos del api rest", "warn");
+                }
+            }
+        }).fail(function(error, textStatus, xhr) {
+            msg="Error al consultar los servicios, código del error: "+error.status+" "+xhr;
+            typeMsg="error";
+            $.notify(msg, typeMsg);
+        }).always(function(){
+            $.LoadingOverlay("hide");
+        });
+    }
     /**
      * Busca dispositivos por tipo de servicio
      */
