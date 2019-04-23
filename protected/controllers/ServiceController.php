@@ -396,7 +396,14 @@ class ServiceController extends Controller{
         $res=$query->query();
         $read=$res->readAll();
         $res->close();
-        $this->render("_showdatamace",array("datamace"=>$read));
+        $cliente = curl_init();
+        curl_setopt($cliente, CURLOPT_URL, "https://api.sensum.co.nz/b2856b5d899fa79137167b62c68918eb/deviceinfo");
+        curl_setopt($cliente, CURLOPT_HEADER, 0);
+        curl_setopt($cliente, CURLOPT_RETURNTRANSFER, true); 
+
+        $contenido = curl_exec($cliente);
+        curl_close($cliente);
+        $this->render("_showdatamace",array("datamace"=>$read,"contenido"=>$contenido));
     }
     public function actionShowReportObjectTelemed(){
         header("Content-type: application/vnd.ms-excel; name='excel'");  

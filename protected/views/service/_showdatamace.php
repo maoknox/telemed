@@ -47,6 +47,9 @@
                   <h3 class="box-title">Magnitudes de sensum</h3>
                 </div>
                 <div class="box-body">
+                    <?php
+                    print_r($contenido);
+                    ?>
                     <button id="getMagnitues">obtener</button>
                 </div>
             </div>

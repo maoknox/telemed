@@ -150,11 +150,9 @@ var Entitydevice = function(){
             type:"GET",
             dataType:'json',
             crossDomain:true,
-            contentType: "application/json; charset=utf-8",
+            contentType: false,
+            processData: false,
             url: 'https://api.sensum.co.nz/b2856b5d899fa79137167b62c68918eb/deviceinfo',
-            headers: {
-                "Access-Control-Allow-Origin":"*"
-            },
             beforeSend: function(){
                 $.LoadingOverlay("show",{ zIndex: 100   });
             }
