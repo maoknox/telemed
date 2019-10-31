@@ -2,3 +2,5 @@
 /vendor/zendesk/
 *.sql
 /assets/
+composer.lock
+composer.phar
